@@ -18,6 +18,8 @@ import ja.insepector.bxapp.startup.ApplicationAnchorTaskCreator
 import com.xj.anchortask.library.AnchorProject
 import com.xj.anchortask.library.OnProjectExecuteListener
 import com.xj.anchortask.library.log.LogUtils
+import ja.insepector.base.ext.startAct
+import ja.insepector.bxapp.ui.activity.login.LoginActivity
 import kotlinx.coroutines.runBlocking
 
 class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
@@ -80,12 +82,9 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
         Handler(Looper.getMainLooper()).postDelayed({
             runBlocking {
                 if (PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token).isEmpty()) {
-                    finish()
-//                    val intent = Intent(this@SplashActivity, LoginActivity::class.java)
-//                    startActivity(intent)
+                    startAct<LoginActivity>()
                 } else {
-//                    val intent = Intent(this@SplashActivity, MainActivity::class.java)
-//                    startActivity(intent)
+                    startAct<MainActivity>()
                 }
                 finish()
             }

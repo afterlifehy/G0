@@ -7,6 +7,8 @@ object ARouterMap {
 
     const val MAIN = "/ipms_app/main"
 
+    const val LOGIN_INFO = "loginInfo"
+
     class common {
         companion object {
 

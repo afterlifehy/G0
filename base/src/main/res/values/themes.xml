@@ -1,11 +1,11 @@
 <resources>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryDark">@color/white</item>
-        <item name="colorAccent">@color/white</item>
-        <item name="android:navigationBarColor">@color/white</item>
-        <item name="android:statusBarColor">@color/white</item>
+        <item name="colorPrimary">@color/color_ff04a091</item>
+        <item name="colorPrimaryDark">@color/color_ff04a091</item>
+        <item name="colorAccent">@color/color_ff04a091</item>
+        <item name="android:navigationBarColor">@color/color_ff04a091</item>
+        <item name="android:statusBarColor">@color/color_ff04a091</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowTranslucentNavigation">true</item>

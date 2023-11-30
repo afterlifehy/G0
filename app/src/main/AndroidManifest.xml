@@ -63,12 +63,12 @@
         android:name=".AppApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_app_logo"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:persistent="true"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_app_logo"
         android:supportsRtl="true"
         android:theme="@style/MyAppTheme"
         android:usesCleartextTraffic="true"
@@ -112,5 +112,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.activity.login.LoginActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.login.StreetChooseActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.mine.LogoutActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

@@ -61,7 +61,7 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_16"
-            app:rv_backgroundColor="@color/color_ff0371f4"
+            app:rv_backgroundColor="@color/color_ff04a091"
             app:rv_radius="@dimen/dp_8"
             tools:text="CONFIRM" />
     </LinearLayout>

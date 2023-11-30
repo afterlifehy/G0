@@ -21,7 +21,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         val keys = keyboard.keys
         if (keys != null && keys.size > 0) {
             val paint = Paint()
-            paint.setColor(getContext().getResources().getColor(ja.insepector.base.R.color.color_ff0371f4));
+            paint.setColor(getContext().getResources().getColor(ja.insepector.base.R.color.color_ff04a091));
             paint.setTextAlign(Paint.Align.CENTER)
             val font: Typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
             paint.setTypeface(font)
@@ -85,7 +85,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
                 if (key.codes[0] == -3) {
                     val paint = Paint()
-                    paint.setColor(getContext().getResources().getColor(ja.insepector.base.R.color.color_ff0371f4));
+                    paint.setColor(getContext().getResources().getColor(ja.insepector.base.R.color.color_ff04a091));
 
                     val rect = RectF(
                         key.x.toFloat(),
