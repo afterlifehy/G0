@@ -52,6 +52,7 @@ import ja.insepector.bxapp.pop.StreetPop
 import com.tbruyelle.rxpermissions3.RxPermissions
 import ja.insepector.base.ext.startAct
 import ja.insepector.bxapp.ui.activity.mine.LogoutActivity
+import ja.insepector.bxapp.ui.activity.parking.ParkingLotActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -136,8 +137,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.ll_parkingLot -> {
-//                val intent = Intent(this@MainActivity, ParkingLotActivity::class.java)
-//                startActivity(intent)
+                startAct<ParkingLotActivity>()
             }
 
             R.id.fl_incomeCounting -> {

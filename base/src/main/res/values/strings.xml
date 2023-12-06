@@ -27,4 +27,26 @@
     <string name="壬通科技祝您健康幸福">勤勤恳恳工作，平平安安回家\n壬通科技祝您健康幸福</string>
     <string name="确认签退">确认签退</string>
     <string name="签退成功">签退成功</string>
+    <string name="空闲">空闲</string>
+    <string name="历史欠费">历史欠费：</string>
+    <string name="离场方式">离场方式：</string>
+    <string name="在场图片">在场图片：</string>
+    <string name="告知书">告知书</string>
+    <string name="上报">上报</string>
+    <string name="续费">续费</string>
+    <string name="结束">结束</string>
+    <string name="开始时间">开始时间：</string>
+    <string name="预付金额">预付金额：</string>
+    <string name="超时时长">超时时长：</string>
+    <string name="待缴费用">待缴费用：</string>
+    <string name="相册">相册</string>
+    <string name="拍照">拍照</string>
+    <string name="收费员不在场欠费驶离">收费员不在场欠费驶离</string>
+    <string name="正常缴费驶离">正常缴费驶离</string>
+    <string name="当面拒绝驶离">当面拒绝驶离</string>
+    <string name="强制关单">强制关单</string>
+    <string name="线上支付">线上支付</string>
+    <string name="其他">其他</string>
+    <string name="车辆图片">车辆图片</string>
+    <string name="无车辆图片">无车辆图片</string>
 </resources>

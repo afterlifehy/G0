@@ -132,5 +132,20 @@
             android:name=".ui.activity.mine.LogoutActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.parking.ParkingLotActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.parking.ParkingSpaceActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.parking.PicActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

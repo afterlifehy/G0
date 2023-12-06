@@ -1,0 +1,29 @@
+package ja.insepector.bxapp.adapter
+
+import android.view.LayoutInflater
+import android.view.View.OnClickListener
+import android.view.ViewGroup
+import com.aries.ui.view.radius.RadiusFrameLayout
+import ja.insepector.base.adapter.BaseBindingAdapter
+import ja.insepector.base.adapter.VBViewHolder
+import ja.insepector.bxapp.databinding.ItemPicBinding
+import ja.insepector.common.util.GlideUtils
+
+class PicAdapter(data: MutableList<String>? = null, val onClickListener: OnClickListener) :
+    BaseBindingAdapter<String, ItemPicBinding>(data) {
+    override fun convert(holder: VBViewHolder<ItemPicBinding>, item: String) {
+        val lp = holder.itemView.layoutParams
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT
+        holder.itemView.layoutParams = lp
+
+        holder.vb.tvTime.text = "2023-06-30 10:12:24"
+        holder.vb.tvParkingNo.text = "JAZ02109"
+        GlideUtils.instance?.loadImage(holder.vb.rivPic, item)
+        holder.vb.rivPic.tag = item
+        holder.vb.rivPic.setOnClickListener(onClickListener)
+    }
+
+    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemPicBinding {
+        return ItemPicBinding.inflate(inflater)
+    }
+}
