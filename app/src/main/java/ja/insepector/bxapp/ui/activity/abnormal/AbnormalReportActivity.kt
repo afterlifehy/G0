@@ -8,8 +8,6 @@ import android.view.View.OnClickListener
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
-import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
@@ -17,6 +15,7 @@ import ja.insepector.base.bean.Street
 import ja.insepector.base.ds.PreferencesDataStore
 import ja.insepector.base.ds.PreferencesKeys
 import ja.insepector.base.ext.gone
+import ja.insepector.base.ext.hide
 import ja.insepector.base.ext.i18n
 import ja.insepector.base.ext.show
 import ja.insepector.base.util.ToastUtil
@@ -32,6 +31,8 @@ import ja.insepector.bxapp.databinding.ActivityAbnormalReportBinding
 import ja.insepector.bxapp.dialog.AbnormalClassificationDialog
 import ja.insepector.bxapp.dialog.AbnormalStreetListDialog
 import ja.insepector.bxapp.mvvm.viewmodel.AbnormalReportViewModel
+import ja.insepector.common.event.RefreshParkingSpaceEvent
+import ja.insepector.common.util.Constant
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 
@@ -70,13 +71,13 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             carColor = intent.getStringExtra(ARouterMap.ABNORMAL_CAR_COLOR)!!
         }
 
-        collectioPlateColorList.add("5")
-        collectioPlateColorList.add("9")
-        collectioPlateColorList.add("6")
-        collectioPlateColorList.add("20")
-        collectioPlateColorList.add("2")
-        collectioPlateColorList.add("1")
-        collectioPlateColorList.add("99")
+        collectioPlateColorList.add(Constant.BLUE)
+        collectioPlateColorList.add(Constant.GREEN)
+        collectioPlateColorList.add(Constant.YELLOW)
+        collectioPlateColorList.add(Constant.YELLOW_GREEN)
+        collectioPlateColorList.add(Constant.WHITE)
+        collectioPlateColorList.add(Constant.BLACK)
+        collectioPlateColorList.add(Constant.OTHERS)
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
         collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)
@@ -89,7 +90,6 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.cbLotName.setOnClickListener(this)
-        binding.rflLotName.setOnClickListener(this)
         binding.cbAbnormalClassification.setOnClickListener(this)
         binding.rflAbnormalClassification.setOnClickListener(this)
         binding.rflRecognize.setOnClickListener(this)
@@ -110,12 +110,19 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         } else {
             currentStreet = RealmUtil.instance?.findCurrentStreet()
         }
+        if (streetList.size == 1) {
+            binding.cbLotName.hide()
+            binding.rflLotName.setOnClickListener(null)
+        } else {
+            binding.cbLotName.show()
+            binding.rflLotName.setOnClickListener(this)
+        }
         binding.tvLotName.text = currentStreet?.streetName
         binding.rtvStreetNo.text = currentStreet?.streetNo
 
-        classificationList.add(i18n(ja.insepector.base.R.string.泊位有车POS无订单))
-        classificationList.add(i18n(ja.insepector.base.R.string.泊位无车POS有订单))
-        classificationList.add(i18n(ja.insepector.base.R.string.在停车牌与POS不一致))
+        classificationList.add(i18n(ja.insepector.base.R.string.无法关单))
+        classificationList.add(i18n(ja.insepector.base.R.string.订单丢失))
+        classificationList.add(i18n(ja.insepector.base.R.string.车牌录入错误))
 
 
     }
@@ -174,7 +181,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             }
 
             R.id.iv_right -> {
-                ARouter.getInstance().build(ARouterMap.ABNORMAL_HELP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+
             }
 
             R.id.cb_lotName -> {
@@ -196,7 +203,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             }
 
             R.id.rfl_recognize -> {
-                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@AbnormalReportActivity, 1)
+
             }
 
             R.id.rfl_report -> {
@@ -205,9 +212,19 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请填写泊位号))
                     return
                 }
-                if (type.isEmpty()) {
+                if (type == "00") {
                     ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请选择异常分类))
                     return
+                }
+                if (type != "02" && binding.etPlate.text.toString().isEmpty()) {
+                    ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请填写车牌))
+                    return
+                }
+                if (type != "02") {
+                    if (binding.etPlate.text.toString().length != 7 && binding.etPlate.text.toString().length != 8) {
+                        ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.车牌长度只能是7位或8位))
+                        return
+                    }
                 }
                 if (type != "02" && checkedColor.isEmpty()) {
                     ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请选择车牌颜色))
@@ -219,7 +236,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     val jsonobject = JSONObject()
                     jsonobject["loginName"] = loginName
                     jsonobject["streetNo"] = currentStreet?.streetNo
-                    jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + binding.retParkingNo.text.toString()
+                    jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
 
                     jsonobject["type"] = type
                     jsonobject["remark"] = binding.retRemarks.text.toString()
@@ -248,6 +265,16 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         }
     }
 
+    fun fillZero(value: String): String {
+        if (value.length == 2) {
+            return "0" + value
+        } else if (value.length == 1) {
+            return "00" + value
+        } else {
+            return value
+        }
+    }
+
     fun showAbnormalStreetListDialog() {
         abnormalStreetListDialog =
             AbnormalStreetListDialog(streetList, currentStreet!!, object : AbnormalStreetListDialog.AbnormalStreetCallBack {
@@ -269,7 +296,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             object : AbnormalClassificationDialog.AbnormalClassificationCallBack {
                 override fun chooseClassification(classification: String) {
                     binding.tvAbnormalClassification.text = classification
-                    if (classification == i18n(ja.insepector.base.R.string.在停车牌与POS不一致) || classification == i18n(ja.insepector.base.R.string.泊位有车POS无订单)) {
+                    if (classification == i18n(ja.insepector.base.R.string.车牌录入错误)) {
                         binding.llPlate.show()
                         binding.rvPlateColor.show()
                     } else {
@@ -298,19 +325,19 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     binding.etPlate.setText(plateId)
                     binding.etPlate.setSelection(plateId.length)
                     if (plate.startsWith("蓝")) {
-                        collectionPlateColorAdapter?.updateColor("5", 0)
+                        collectionPlateColorAdapter?.updateColor(Constant.BLUE, 0)
                     } else if (plate.startsWith("绿")) {
-                        collectionPlateColorAdapter?.updateColor("9", 1)
+                        collectionPlateColorAdapter?.updateColor(Constant.GREEN, 1)
                     } else if (plate.startsWith("黄")) {
-                        collectionPlateColorAdapter?.updateColor("6", 2)
+                        collectionPlateColorAdapter?.updateColor(Constant.YELLOW, 2)
                     } else if (plate.startsWith("黄绿")) {
-                        collectionPlateColorAdapter?.updateColor("20", 3)
+                        collectionPlateColorAdapter?.updateColor(Constant.YELLOW_GREEN, 3)
                     } else if (plate.startsWith("白")) {
-                        collectionPlateColorAdapter?.updateColor("2", 4)
+                        collectionPlateColorAdapter?.updateColor(Constant.WHITE, 4)
                     } else if (plate.startsWith("黑")) {
-                        collectionPlateColorAdapter?.updateColor("1", 5)
+                        collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
                     } else {
-                        collectionPlateColorAdapter?.updateColor("99", 6)
+                        collectionPlateColorAdapter?.updateColor(Constant.OTHERS, 6)
                     }
                 }
             }
@@ -338,7 +365,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
     }
 
     override fun getVbBindingView(): ViewBinding {
-        return ActivityBerthAbnormalBinding.inflate(layoutInflater)
+        return ActivityAbnormalReportBinding.inflate(layoutInflater)
     }
 
     override fun onReloadData() {
@@ -351,8 +378,8 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         return binding.layoutToolbar.ablToolbar
     }
 
-    override fun providerVMClass(): Class<BerthAbnormalViewModel> {
-        return BerthAbnormalViewModel::class.java
+    override fun providerVMClass(): Class<AbnormalReportViewModel> {
+        return AbnormalReportViewModel::class.java
     }
 
 }

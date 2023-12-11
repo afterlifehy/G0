@@ -1,7 +1,5 @@
 package ja.insepector.common.realm
 
-//import ja.insepector.base.bean.BlueToothDeviceBean
-//import ja.insepector.base.bean.Street
 import io.realm.*
 import ja.insepector.base.bean.BlueToothDeviceBean
 import ja.insepector.base.bean.Street
@@ -11,7 +9,7 @@ class RealmUtil {
     private val versionCode = 1
     private var transaction: RealmAsyncTask? = null
     private val config: RealmConfiguration = RealmConfiguration.Builder() // 文件名
-        .name("rt.realm") // 版本号
+        .name("rt_insepector.realm") // 版本号
         .schemaVersion(versionCode.toLong())
         .allowWritesOnUiThread(true)
         .allowQueriesOnUiThread(true)

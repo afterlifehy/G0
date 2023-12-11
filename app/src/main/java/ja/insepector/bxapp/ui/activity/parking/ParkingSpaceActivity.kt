@@ -11,6 +11,7 @@ import android.view.View.OnClickListener
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.ImageUtils
@@ -31,11 +32,13 @@ import ja.insepector.bxapp.mvvm.viewmodel.ParkingSpaceViewModel
 import com.zrq.spanbuilder.TextStyle
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.ext.startAct
+import ja.insepector.base.ext.startArouter
 import ja.insepector.bxapp.dialog.ExitMethodDialog
 import ja.insepector.bxapp.dialog.SelectPicDialog
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 
+@Route(path = ARouterMap.PARKING_SPACE)
 class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParkingSpaceBinding>(), OnClickListener {
     val sizes = intArrayOf(19, 19)
     val colors = intArrayOf(ja.insepector.base.R.color.color_ff666666, ja.insepector.base.R.color.color_ff1a1a1a)
@@ -53,6 +56,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var exitMethodDialog: ExitMethodDialog? = null
     var exitMethodList: MutableList<String> = ArrayList()
     var currentMethod = ""
+
+    var type = ""
 
     override fun initView() {
         carLicense = intent.getStringExtra(ARouterMap.CAR_LICENSE).toString()
@@ -110,7 +115,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.iv_right -> {
-                startAct<PicActivity>()
+                startArouter(ARouterMap.PIC)
             }
 
             R.id.rrl_arrears -> {
@@ -151,10 +156,16 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_renewal -> {
-
+                startArouter(ARouterMap.PREPAID)
             }
 
             R.id.rfl_finish -> {
+                type = AppUtil.fillZero((exitMethodList.indexOf(binding.tvExitMethod.text.toString()) + 1).toString())
+                if (type == "02") {
+                    startArouter(ARouterMap.ORDER_INFO)
+                } else {
+
+                }
             }
         }
     }

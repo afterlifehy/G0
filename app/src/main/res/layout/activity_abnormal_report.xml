@@ -202,7 +202,7 @@
                         android:layout_weight="1"
                         app:rv_backgroundColor="@color/white"
                         app:rv_radius="@dimen/dp_7"
-                        app:rv_strokeColor="@color/color_ff0371f4"
+                        app:rv_strokeColor="@color/color_ff04a091"
                         app:rv_strokeWidth="@dimen/dp_1">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -214,7 +214,7 @@
                             android:drawablePadding="@dimen/dp_10"
                             android:gravity="center"
                             android:text="@string/识别"
-                            android:textColor="@color/color_ff0371f4"
+                            android:textColor="@color/color_ff04a091"
                             android:textSize="@dimen/sp_19" />
                     </com.aries.ui.view.radius.RadiusFrameLayout>
                 </LinearLayout>
@@ -255,7 +255,7 @@
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginEnd="@dimen/dp_13"
         android:layout_marginBottom="@dimen/dp_13"
-        app:rv_backgroundColor="@color/color_ff0371f4"
+        app:rv_backgroundColor="@color/color_ff04a091"
         app:rv_radius="@dimen/dp_7">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -271,7 +271,7 @@
             android:textStyle="bold" />
     </com.aries.ui.view.radius.RadiusFrameLayout>
 
-    <com.peakinfo.common.view.keyboard.MyKeyboardView
+    <ja.insepector.common.view.keyboard.MyKeyboardView
         android:id="@+id/kv_keyBoard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

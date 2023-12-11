@@ -1,6 +1,5 @@
 package ja.insepector.bxapp.ui.activity.parking
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,7 +8,6 @@ import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewbinding.ViewBinding
-import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
@@ -17,6 +15,7 @@ import ja.insepector.base.bean.ParkingLotBean
 import ja.insepector.base.bean.Street
 import ja.insepector.base.ext.i18N
 import ja.insepector.base.ext.startAct
+import ja.insepector.base.ext.startArouter
 import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.common.realm.RealmUtil
@@ -98,7 +97,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
 //                        .withString(ARouterMap.ABNORMAL_CAR_COLOR, "")
 //                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 } else {
-                    startAct<ParkingSpaceActivity>(data = Bundle().apply {
+                    startArouter(ARouterMap.PARKING_SPACE,data = Bundle().apply {
                         putString(ARouterMap.CAR_LICENSE, parkingLotBean.carLicense)
                         putString(ARouterMap.PARKING_NO, parkingLotBean.parkingNo)
                         putString(ARouterMap.CAR_COLOR,parkingLotBean.carColor)

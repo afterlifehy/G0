@@ -1,5 +1,6 @@
 package ja.insepector.bxapp.mvvm.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import ja.insepector.base.base.mvvm.BaseViewModel
 import ja.insepector.bxapp.mvvm.repository.AbnormalRepository
 
@@ -8,9 +9,10 @@ class AbnormalReportViewModel: BaseViewModel() {
         AbnormalRepository()
     }
 
-//    val abnormalReportLiveData = MutableLiveData<AbnormalReportResultBean>()
-//
-//    fun abnormalReport(param: Map<String, Any?>) {
+    val abnormalReportLiveData = MutableLiveData<Any>()
+
+    fun abnormalReport(param: Map<String, Any?>) {
+        abnormalReportLiveData.value = true
 //        launch {
 //            val response = withContext(Dispatchers.IO) {
 //                mAbnormalRepository.abnormalReport(param)
@@ -21,5 +23,5 @@ class AbnormalReportViewModel: BaseViewModel() {
 //                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
 //            })
 //        }
-//    }
+    }
 }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import com.alibaba.android.arouter.launcher.ARouter
 
 
 fun Activity.i18N(id: Int): String {
@@ -22,5 +23,9 @@ inline fun <reified T : Activity> Context.startAct(data: Bundle? = null) {
     }
 
     this.startActivity(intent)
+}
+
+inline fun startArouter(path: String, data: Bundle? = null) {
+    ARouter.getInstance().build(path).with(data).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
 }
 

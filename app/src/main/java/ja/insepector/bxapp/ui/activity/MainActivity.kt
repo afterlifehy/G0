@@ -59,7 +59,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     override fun initListener() {
         binding.ivHead.setOnClickListener(this)
-        binding.tvTitle.setOnClickListener(this)
         binding.llParkingLot.setOnClickListener(this)
         binding.flIncomeCounting.setOnClickListener(this)
         binding.flOrder.setOnClickListener(this)
@@ -78,6 +77,17 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         } else {
             binding.tvTitle.text =
                 currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+        }
+        if (streetList.size == 1) {
+            binding.tvTitle.setCompoundDrawables(
+                null,
+                null,
+                null,
+                null
+            )
+            binding.tvTitle.setOnClickListener(null)
+        } else {
+            binding.tvTitle.setOnClickListener(this)
         }
     }
 
@@ -153,6 +163,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                         if (connectResult == 0) {
                             RealmUtil.instance?.deleteAllDevice()
                             RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
+                        } else if (printList.size > 1) {
+                            multipleDevice()
                         } else {
                             DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.未检测到已配对的打印设备))
                                 .setLeftMsg(i18N(ja.insepector.base.R.string.取消))
@@ -185,6 +197,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 }
 
                 override fun onRightClickLinsener(msg: String) {
+//                    Todo("注释")
 //                    val intent = Intent(this@MainActivity, MineActivity::class.java)
 //                    intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
 //                    startActivity(intent)
@@ -196,6 +209,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.iv_head -> {
+                //                    Todo("注释")
 //                val intent = Intent(this@MainActivity, MineActivity::class.java)
 //                intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 0)
 //                startActivity(intent)

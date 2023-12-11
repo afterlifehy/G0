@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_ffeefffd">
@@ -45,10 +46,12 @@
             android:background="@null"
             android:gravity="center_vertical"
             android:hint="@string/请输入账号"
+            android:imeOptions="actionGo"
             android:textColor="@color/black"
             android:textColorHint="@color/color_ff99a7a6"
             android:textCursorDrawable="@drawable/shape_cursor"
-            android:textSize="@dimen/sp_19" />
+            android:textSize="@dimen/sp_19"
+            tools:text="34351302" />
     </com.aries.ui.view.radius.RadiusLinearLayout>
 
     <com.aries.ui.view.radius.RadiusLinearLayout

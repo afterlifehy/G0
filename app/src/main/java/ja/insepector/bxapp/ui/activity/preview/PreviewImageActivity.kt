@@ -6,6 +6,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager.widget.ViewPager
+import com.alibaba.android.arouter.facade.annotation.Route
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.bxapp.adapter.SamplePagerAdapter
@@ -14,6 +15,7 @@ import ja.insepector.bxapp.mvvm.viewmodel.PreviewImageViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import java.util.ArrayList
 
+@Route(path = ARouterMap.PREVIEW_IMAGE)
 class PreviewImageActivity : VbBaseActivity<PreviewImageViewModel, ActivityPreviewImageBinding>(), OnClickListener {
     var index = 0
     var imageList: ArrayList<String> = ArrayList()

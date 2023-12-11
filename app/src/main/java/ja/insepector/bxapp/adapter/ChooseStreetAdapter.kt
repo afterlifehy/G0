@@ -2,6 +2,8 @@ package ja.insepector.bxapp.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.WindowManager
+import com.blankj.utilcode.util.SizeUtils
 import ja.insepector.base.adapter.BaseBindingAdapter
 import ja.insepector.base.adapter.VBViewHolder
 import ja.insepector.bxapp.databinding.ItemChooseStreetBinding
@@ -35,7 +37,10 @@ class ChooseStreetAdapter(data: MutableList<Street>? = null, var streetChoosedLi
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemChooseStreetBinding {
-        return ItemChooseStreetBinding.inflate(inflater)
+        val lp = ViewGroup.MarginLayoutParams(WindowManager.LayoutParams.MATCH_PARENT, SizeUtils.dp2px(60f))
+        val binding = ItemChooseStreetBinding.inflate(inflater)
+        binding.root.layoutParams = lp
+        return binding
     }
 
 //    fun getCheckedList(): MutableList<Int> {

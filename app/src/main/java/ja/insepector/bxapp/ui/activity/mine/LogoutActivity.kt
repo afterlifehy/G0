@@ -7,6 +7,7 @@ import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
@@ -30,6 +31,7 @@ import ja.insepector.bxapp.databinding.ActivityLogOutBinding
 import ja.insepector.bxapp.mvvm.viewmodel.LogoutViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import ja.insepector.base.ext.startAct
+import ja.insepector.base.ext.startArouter
 import ja.insepector.bxapp.ui.activity.login.LoginActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -43,8 +45,8 @@ import kotlinx.coroutines.withContext
 class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(), OnClickListener {
     private var job: Job? = null
     var locationManager: LocationManager? = null
-    var lat = 121.123212
-    var lon = 31.434312
+    var lat = 0.00
+    var lon = 0.00
     var locationEnable = false
 
     @SuppressLint("MissingPermission", "CheckResult")
@@ -97,6 +99,13 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
     }
 
     override fun initData() {
+        runBlocking {
+            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            val workingHour = RealmUtil.instance?.findCurrentWorkingHour(loginName)
+            if (workingHour != null) {
+                binding.tvWorkingHours.text = TimeUtils.millis2String(workingHour.time, "yyyy-MM-dd HH:mm:ss")
+            }
+        }
     }
 
     @SuppressLint("MissingPermission", "CheckResult")
@@ -168,7 +177,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         mViewModel.apply {
             logoutLiveData.observe(this@LogoutActivity) {
                 dismissProgressDialog()
-                startAct<LoginActivity>()
+                startArouter(ARouterMap.LOGIN)
                 for (i in ActivityCacheManager.instance().getAllActivity()) {
                     if (i != LoginActivity::class.java) {
                         i.finish()
@@ -179,6 +188,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
                 }
                 RealmUtil.instance?.deleteAllStreet()
             }

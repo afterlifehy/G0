@@ -1,6 +1,5 @@
 package ja.insepector.bxapp.ui.activity.parking
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,20 +8,20 @@ import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
-import com.alibaba.android.arouter.launcher.ARouter
+import com.alibaba.android.arouter.facade.annotation.Route
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.ext.gone
 import ja.insepector.base.ext.i18N
-import ja.insepector.base.ext.startAct
+import ja.insepector.base.ext.startArouter
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.bxapp.R
 import ja.insepector.bxapp.adapter.PicAdapter
 import ja.insepector.bxapp.databinding.ActivityPicBinding
 import ja.insepector.bxapp.mvvm.viewmodel.PicViewModel
-import ja.insepector.bxapp.ui.activity.preview.PreviewImageActivity
 import ja.insepector.common.util.GlideUtils
 
+@Route(path = ARouterMap.PIC)
 class PicActivity : VbBaseActivity<PicViewModel, ActivityPicBinding>(), OnClickListener {
     var picList: MutableList<String> = ArrayList()
     var picAdapter: PicAdapter? = null
@@ -60,7 +59,7 @@ class PicActivity : VbBaseActivity<PicViewModel, ActivityPicBinding>(), OnClickL
 
             R.id.riv_pic -> {
                 val pic = v.tag as String
-                startAct<PreviewImageActivity>(data = Bundle().apply {
+                startArouter(ARouterMap.PREVIEW_IMAGE,data = Bundle().apply {
                     putInt(ARouterMap.IMG_INDEX, picList.indexOf(pic))
                     putStringArrayList(ARouterMap.IMG_LIST, picList as ArrayList<String>)
                 })

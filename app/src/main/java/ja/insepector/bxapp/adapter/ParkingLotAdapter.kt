@@ -15,6 +15,7 @@ import ja.insepector.base.ext.i18n
 import ja.insepector.base.ext.show
 import ja.insepector.bxapp.databinding.ItemParkingLotBinding
 import ja.insepector.common.util.AppUtil
+import ja.insepector.common.util.Constant
 
 class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickListener: OnClickListener) :
     BaseBindingAdapter<ParkingLotBean, ItemParkingLotBinding>(data) {
@@ -25,35 +26,35 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
     var sizes = intArrayOf(24, 24)
 
     init {
-        plateBgMap["1"] = ja.insepector.common.R.mipmap.ic_plate_bg_black
-        plateBgMap["2"] = ja.insepector.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["3"] = ja.insepector.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["4"] = ja.insepector.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["5"] = ja.insepector.common.R.mipmap.ic_plate_bg_blue
-        plateBgMap["6"] = ja.insepector.common.R.mipmap.ic_plate_bg_yellow
-        plateBgMap["7"] = ja.insepector.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["8"] = ja.insepector.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["9"] = ja.insepector.common.R.mipmap.ic_plate_bg_green
-        plateBgMap["10"] = ja.insepector.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["11"] = ja.insepector.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["12"] = ja.insepector.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["13"] = ja.insepector.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["99"] = ja.insepector.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.BLACK] = ja.insepector.common.R.mipmap.ic_plate_bg_black
+        plateBgMap[Constant.WHITE] = ja.insepector.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.GREY] = ja.insepector.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.RED] = ja.insepector.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.BLUE] = ja.insepector.common.R.mipmap.ic_plate_bg_blue
+        plateBgMap[Constant.YELLOW] = ja.insepector.common.R.mipmap.ic_plate_bg_yellow
+        plateBgMap[Constant.ORANGE] = ja.insepector.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.BROWN] = ja.insepector.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.GREEN] = ja.insepector.common.R.mipmap.ic_plate_bg_green
+        plateBgMap[Constant.PURPLE] = ja.insepector.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.CYAN] = ja.insepector.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.PINK] = ja.insepector.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.TRANSPARENT] = ja.insepector.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.OTHERS] = ja.insepector.common.R.mipmap.ic_plate_bg_white
 
-        plateTxtColorMap["1"] = ja.insepector.base.R.color.white
-        plateTxtColorMap["2"] = ja.insepector.base.R.color.black
-        plateTxtColorMap["3"] = ja.insepector.base.R.color.black
-        plateTxtColorMap["4"] = ja.insepector.base.R.color.black
-        plateTxtColorMap["5"] = ja.insepector.base.R.color.white
-        plateTxtColorMap["6"] = ja.insepector.base.R.color.black
-        plateTxtColorMap["7"] = ja.insepector.base.R.color.black
-        plateTxtColorMap["8"] = ja.insepector.base.R.color.black
-        plateTxtColorMap["9"] = ja.insepector.base.R.color.black
-        plateTxtColorMap["10"] = ja.insepector.base.R.color.black
-        plateTxtColorMap["11"] = ja.insepector.base.R.color.black
-        plateTxtColorMap["12"] = ja.insepector.base.R.color.black
-        plateTxtColorMap["13"] = ja.insepector.base.R.color.black
-        plateTxtColorMap["99"] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.BLACK] = ja.insepector.base.R.color.white
+        plateTxtColorMap[Constant.WHITE] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.GREY] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.RED] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.BLUE] = ja.insepector.base.R.color.white
+        plateTxtColorMap[Constant.YELLOW] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.ORANGE] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.BROWN] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.GREEN] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.PURPLE] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.CYAN] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.PINK] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.TRANSPARENT] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.OTHERS] = ja.insepector.base.R.color.black
     }
 
     override fun convert(holder: VBViewHolder<ItemParkingLotBinding>, item: ParkingLotBean) {

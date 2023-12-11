@@ -23,6 +23,7 @@ class StreetPop(val context: Context?, var currentStreet: Street?, val streetLis
 
     private lateinit var binding: PopStreetBinding
     var parkingChooseStreetAdapter: ParkingChooseStreetAdapter? = null
+    var selectedStreet: Street? = null
 
     init {
         initView()
@@ -62,7 +63,9 @@ class StreetPop(val context: Context?, var currentStreet: Street?, val streetLis
             }
 
             R.id.rtv_ok -> {
-                callback.selectStreet(currentStreet!!)
+                if (selectedStreet != null) {
+                    callback.selectStreet(selectedStreet!!)
+                }
                 dismiss()
             }
         }

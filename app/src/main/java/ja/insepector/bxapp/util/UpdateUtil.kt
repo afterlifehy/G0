@@ -15,9 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-/**
- * Created by kxrt_android_03 on 2017/4/20.
- */
 class UpdateUtil {
     private var updateDialog: UpdateDialog? = null
     private var updateBean: UpdateBean? = null

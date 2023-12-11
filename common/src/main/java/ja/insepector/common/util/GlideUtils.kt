@@ -47,10 +47,14 @@ class GlideUtils private constructor() {
         Glide.with(BaseApplication.instance()).load(url).apply(defaultOption!!).into(iv!!)
     }
 
-    fun loadImage(iv: ImageView?, url: String?, placeholder: Int) {
-        val options =
-            RequestOptions().error(placeholder).placeholder(placeholder).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-        Glide.with(BaseApplication.instance()).load(url).apply(options).into(iv!!)
+    fun loadImage(iv: ImageView, url: String?, placeholder: Int) {
+        iv.tag = null
+        val options: RequestOptions = RequestOptions()
+            .format(DecodeFormat.PREFER_RGB_565)
+            .error(placeholder)
+            .placeholder(placeholder)
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+        Glide.with(BaseApplication.instance()).load(url).apply(options).into(iv)
     }
 
     fun loadImage(iv: ImageView?, url: Int, placeholder: Int) {
@@ -80,16 +84,6 @@ class GlideUtils private constructor() {
     fun loadImagePreview(imageView: PhotoView, url: String?) {
         imageView.tag = null
         Glide.with(BaseApplication.instance()).load(url).dontTransform().override(-1).into(imageView)
-    }
-
-    fun loadLongImage(iv: ImageView, url: String?) {
-        iv.tag = null
-        val options: RequestOptions = RequestOptions()
-            .format(DecodeFormat.PREFER_RGB_565)
-            .error(R.mipmap.ic_placeholder)
-            .placeholder(R.mipmap.ic_placeholder)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-        Glide.with(BaseApplication.instance()).load(url).apply(options).into(iv)
     }
 
     fun loadLongImage(iv: ImageView, bitmap: Bitmap?) {
