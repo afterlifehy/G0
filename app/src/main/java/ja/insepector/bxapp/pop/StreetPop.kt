@@ -33,7 +33,7 @@ class StreetPop(val context: Context?, var currentStreet: Street?, val streetLis
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(BaseApplication.instance())
         parkingChooseStreetAdapter =
-            ParkingChooseStreetAdapter(streetList, currentStreet!!, object : ParkingChooseStreetAdapter.ChooseStreetAdapterCallBack {
+            ParkingChooseStreetAdapter(streetList, currentStreet!!.copy(), object : ParkingChooseStreetAdapter.ChooseStreetAdapterCallBack {
                 override fun chooseStreet(street: Street) {
                     currentStreet = street
                 }

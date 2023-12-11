@@ -9,15 +9,20 @@ import ja.insepector.base.BaseApplication
 import ja.insepector.base.adapter.BaseBindingAdapter
 import ja.insepector.base.adapter.VBViewHolder
 import ja.insepector.base.bean.ParkingLotBean
+import ja.insepector.base.ext.gone
 import ja.insepector.base.ext.hide
 import ja.insepector.base.ext.i18n
 import ja.insepector.base.ext.show
 import ja.insepector.bxapp.databinding.ItemParkingLotBinding
+import ja.insepector.common.util.AppUtil
 
 class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickListener: OnClickListener) :
     BaseBindingAdapter<ParkingLotBean, ItemParkingLotBinding>(data) {
     var plateBgMap: MutableMap<String, Int> = ArrayMap()
     var plateTxtColorMap: MutableMap<String, Int> = ArrayMap()
+    var colors = intArrayOf(ja.insepector.base.R.color.color_ffeb0000, ja.insepector.base.R.color.black)
+    var colors2 = intArrayOf(ja.insepector.base.R.color.black, ja.insepector.base.R.color.color_ffeb0000)
+    var sizes = intArrayOf(24, 24)
 
     init {
         plateBgMap["1"] = ja.insepector.common.R.mipmap.ic_plate_bg_black
@@ -68,13 +73,25 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                 holder.vb.llParkingLotBg.setBackgroundResource(ja.insepector.common.R.mipmap.ic_parking_bg_red)
                 holder.vb.tvParkingLotNum.setBackgroundResource(ja.insepector.common.R.mipmap.ic_parking_num_bg_red)
             }
-            holder.vb.tvPlate.text = item.carLicense
             if (item.carColor == "20") {
                 holder.vb.llPlate.show()
-                holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), ja.insepector.base.R.color.black))
-                holder.vb.tvPlate.background = null
+                holder.vb.tvPlate.gone()
+                holder.vb.tvPlate1.text = item.carLicense.substring(0, 2)
+                holder.vb.tvPlate2.text = item.carLicense.substring(2, item.carLicense.length)
+                holder.vb.tvPlate1.setTextColor(ContextCompat.getColor(BaseApplication.instance(), ja.insepector.base.R.color.black))
+                holder.vb.tvPlate2.setTextColor(ContextCompat.getColor(BaseApplication.instance(), ja.insepector.base.R.color.black))
             } else {
                 holder.vb.llPlate.hide()
+                holder.vb.tvPlate.show()
+                if (item.carLicense.contains("WJ")) {
+                    val strings = arrayOf("WJ", item.carLicense.substring(2, item.carLicense.length))
+                    holder.vb.tvPlate.text = AppUtil.getSpan(strings, sizes, colors)
+                } else if (item.carLicense.contains("警")) {
+                    val strings = arrayOf(item.carLicense.substring(0, item.carLicense.length - 1), "警")
+                    holder.vb.tvPlate.text = AppUtil.getSpan(strings, sizes, colors2)
+                } else {
+                    holder.vb.tvPlate.text = item.carLicense
+                }
                 holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), plateTxtColorMap[item.carColor]!!))
                 holder.vb.tvPlate.background = plateBgMap[item.carColor]?.let { ContextCompat.getDrawable(BaseApplication.instance(), it) }
             }

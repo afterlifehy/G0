@@ -24,6 +24,7 @@ class ExitMethodDialog(
     }
 
     private fun initView() {
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         binding.rvExitMethod.setHasFixedSize(true)
         binding.rvExitMethod.layoutManager = LinearLayoutManager(BaseApplication.instance())
         exitMethodAdapter =

@@ -1,46 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.aries.ui.view.radius.RadiusFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.makeramen.roundedimageview.RoundedImageView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/riv_pic"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:rv_radius="@dimen/dp_15">
-
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/riv_pic"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        app:riv_corner_radius="@dimen/dp_15" />
-
-    <com.aries.ui.view.radius.RadiusLinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/dp_17"
-        android:paddingTop="@dimen/dp_13"
-        android:paddingEnd="@dimen/dp_17"
-        android:paddingBottom="@dimen/dp_13"
-        app:rv_backgroundColor="@color/color_b2282828"
-        app:rv_topLeftRadius="@dimen/dp_15"
-        app:rv_topRightRadius="@dimen/dp_15">
-
-        <TextView
-            android:id="@+id/tv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textColor="@color/color_ffff0000"
-            android:textSize="@dimen/sp_19"
-            tools:text="2023-06-30 10:12:24" />
-
-        <TextView
-            android:id="@+id/tv_parkingNo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textColor="@color/color_ffff0000"
-            android:textSize="@dimen/sp_19"
-            tools:text="JAZ02109" />
-    </com.aries.ui.view.radius.RadiusLinearLayout>
-</com.aries.ui.view.radius.RadiusFrameLayout>
+    android:scaleType="center"
+    app:riv_corner_radius="@dimen/dp_15" />

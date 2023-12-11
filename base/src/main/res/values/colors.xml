@@ -65,4 +65,7 @@
     <color name="color_fff70f0f">#fff70f0f</color>
     <color name="color_ffff0000">#ff0000</color>
     <color name="color_b2282828">#b2282828</color>
+    <color name="color_ffeb0000">#ffeb0000</color>
+    <color name="color_ffe8eef6">#ffe8eef6</color>
+    <color name="color_ff999999">#ff999999</color>
 </resources>

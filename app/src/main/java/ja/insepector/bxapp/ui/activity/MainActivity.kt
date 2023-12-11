@@ -8,30 +8,22 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.PopupWindow
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
-import com.blankj.utilcode.util.PathUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
-import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloadListener
-import com.liulishuo.filedownloader.FileDownloader
-import com.liulishuo.filedownloader.util.FileDownloadUtils
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.bean.Street
-import ja.insepector.base.bean.UpdateBean
 import ja.insepector.base.dialog.DialogHelp
-import ja.insepector.base.ds.PreferencesDataStore
-import ja.insepector.base.ds.PreferencesKeys
 import ja.insepector.base.ext.i18N
 import ja.insepector.base.help.ActivityCacheManager
 import ja.insepector.base.util.ToastUtil
@@ -43,24 +35,15 @@ import ja.insepector.bxapp.R
 import ja.insepector.bxapp.databinding.ActivityMainBinding
 import ja.insepector.bxapp.mvvm.viewmodel.MainViewModel
 import ja.insepector.bxapp.pop.StreetPop
-//import ja.insepector.bxapp.ui.activity.abnormal.BerthAbnormalActivity
-//import ja.insepector.bxapp.ui.activity.income.IncomeCountingActivity
-//import ja.insepector.bxapp.ui.activity.mine.LogoutActivity
-//import ja.insepector.bxapp.ui.activity.mine.MineActivity
-//import ja.insepector.bxapp.ui.activity.order.OrderMainActivity
-//import ja.insepector.bxapp.ui.activity.parking.ParkingLotActivity
 import com.tbruyelle.rxpermissions3.RxPermissions
+import ja.insepector.base.bean.BlueToothDeviceBean
 import ja.insepector.base.ext.startAct
 import ja.insepector.bxapp.ui.activity.mine.LogoutActivity
 import ja.insepector.bxapp.ui.activity.parking.ParkingLotActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import ja.insepector.bxapp.util.UpdateUtil
 
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
-    var updateBean: UpdateBean? = null
     var streetPop: StreetPop? = null
     var streetList: MutableList<Street> = ArrayList()
     var currentStreet: Street? = null
@@ -88,15 +71,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun initData() {
         streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
         currentStreet = RealmUtil.instance?.findCurrentStreet()
-
-        Thread {
-            if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
-                val device = RealmUtil.instance?.findCurrentDeviceList()!![0]
-                if (device != null) {
-                    BluePrint.instance?.connet(device.address)
-                }
-            }
-        }.start()
+        connectBluePrint()
 
         if (currentStreet!!.streetName.indexOf("(") < 0) {
             binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
@@ -104,36 +79,164 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             binding.tvTitle.text =
                 currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
         }
-//        TODO("检查更新")
-//        val param = HashMap<String, Any>()
-//        val jsonobject = JSONObject()
-//        jsonobject["version"] = AppUtils.getAppVersionName()
-//        param["attr"] = jsonobject
-//        mViewModel.checkUpdate(param)
+    }
+
+    @SuppressLint("CheckResult", "MissingPermission")
+    fun connectBluePrint() {
+        BluePrint.instance?.disConnect()
+        if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
+            Thread {
+                val device = RealmUtil.instance?.findCurrentDeviceList()!![0]
+                if (device != null) {
+                    val printResult = BluePrint.instance?.connet(device.address)
+                    if (printResult != 0) {
+                        runOnUiThread {
+                            DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.打印机连接失败需要手动连接))
+                                .setLeftMsg(i18N(ja.insepector.base.R.string.取消))
+                                .setRightMsg(i18N(ja.insepector.base.R.string.去连接)).setCancelable(true)
+                                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                    override fun onLeftClickLinsener(msg: String) {
+                                    }
+
+                                    override fun onRightClickLinsener(msg: String) {
+//                                        val intent = Intent(this@MainActivity, MineActivity::class.java)
+//                                        intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
+//                                        startActivity(intent)
+                                    }
+
+                                }).build(this@MainActivity).showDailog()
+                        }
+                    }
+                }
+            }.start()
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                var rxPermissions = RxPermissions(this@MainActivity)
+                rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                    if (it) {
+                        Thread {
+                            BluePrint.instance?.disConnect()
+                            val printList = BluePrint.instance?.blueToothDevice!!
+                            if (printList.size == 1) {
+                                val device = printList[0]
+                                var connectResult = BluePrint.instance?.connet(device.address)
+                                if (connectResult == 0) {
+                                    RealmUtil.instance?.deleteAllDevice()
+                                    RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
+                                }
+                            } else if (printList.size > 1) {
+                                multipleDevice()
+                            } else {
+                                DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.未检测到已配对的打印设备))
+                                    .setLeftMsg(i18N(ja.insepector.base.R.string.取消))
+                                    .setRightMsg(i18N(ja.insepector.base.R.string.去配对)).setCancelable(true)
+                                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                        override fun onLeftClickLinsener(msg: String) {
+                                        }
+
+                                        override fun onRightClickLinsener(msg: String) {
+                                            val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
+                                            startActivity(intent)
+                                        }
+
+                                    }).build(this@MainActivity).showDailog()
+                            }
+                        }.start()
+                    }
+                }
+            } else {
+                val printList = BluePrint.instance?.blueToothDevice!!
+                if (printList.size == 1) {
+                    val device = printList[0]
+                    Thread {
+                        var connectResult = BluePrint.instance?.connet(device.address)
+                        if (connectResult == 0) {
+                            RealmUtil.instance?.deleteAllDevice()
+                            RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
+                        } else {
+                            DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.未检测到已配对的打印设备))
+                                .setLeftMsg(i18N(ja.insepector.base.R.string.取消))
+                                .setRightMsg(i18N(ja.insepector.base.R.string.去配对)).setCancelable(true)
+                                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                    override fun onLeftClickLinsener(msg: String) {
+                                    }
+
+                                    override fun onRightClickLinsener(msg: String) {
+                                        val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
+                                        startActivity(intent)
+                                    }
+
+                                }).build(this@MainActivity).showDailog()
+                        }
+                    }.start()
+                } else if (printList.size > 1) {
+                    multipleDevice()
+                }
+            }
+        }
+    }
+
+    fun multipleDevice() {
+        DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.检测到存在多台打印设备需手动连接))
+            .setLeftMsg(i18N(ja.insepector.base.R.string.取消))
+            .setRightMsg(i18N(ja.insepector.base.R.string.去连接)).setCancelable(true)
+            .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                override fun onLeftClickLinsener(msg: String) {
+                }
+
+                override fun onRightClickLinsener(msg: String) {
+//                    val intent = Intent(this@MainActivity, MineActivity::class.java)
+//                    intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
+//                    startActivity(intent)
+                }
+
+            }).build(this@MainActivity).showDailog()
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.iv_head -> {
 //                val intent = Intent(this@MainActivity, MineActivity::class.java)
+//                intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 0)
 //                startActivity(intent)
             }
 
             R.id.tv_title -> {
+                currentStreet = RealmUtil.instance?.findCurrentStreet()
                 streetPop = StreetPop(this@MainActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
                     override fun selectStreet(street: Street) {
-                        currentStreet = street
                         val old = RealmUtil.instance?.findCurrentStreet()
-                        RealmUtil.instance?.updateCurrentStreet(currentStreet!!, old)
-                        if (currentStreet!!.streetName.indexOf("(") < 0) {
-                            binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
+                        RealmUtil.instance?.updateCurrentStreet(street, old)
+                        if (street.streetName.indexOf("(") < 0) {
+                            binding.tvTitle.text = street.streetNo + street.streetName
                         } else {
                             binding.tvTitle.text =
-                                currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+                                street.streetNo + street.streetName.substring(0, street.streetName.indexOf("("))
                         }
                     }
                 })
                 streetPop?.showAsDropDown((v.parent) as RelativeLayout)
+                val upDrawable = ContextCompat.getDrawable(BaseApplication.instance(), ja.insepector.common.R.mipmap.ic_arrow_up)
+                upDrawable?.setBounds(0, 0, upDrawable.intrinsicWidth, upDrawable.intrinsicHeight)
+                binding.tvTitle.setCompoundDrawables(
+                    null,
+                    null,
+                    upDrawable,
+                    null
+                )
+                streetPop?.setOnDismissListener(object : PopupWindow.OnDismissListener {
+                    override fun onDismiss() {
+                        val downDrawable =
+                            ContextCompat.getDrawable(BaseApplication.instance(), ja.insepector.common.R.mipmap.ic_arrow_down)
+                        downDrawable?.setBounds(0, 0, downDrawable.intrinsicWidth, downDrawable.intrinsicHeight)
+                        binding.tvTitle.setCompoundDrawables(
+                            null,
+                            null,
+                            downDrawable,
+                            null
+                        )
+                    }
+                })
             }
 
             R.id.ll_parkingLot -> {
@@ -175,67 +278,26 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            checkUpdateLiveDate.observe(this@MainActivity) {
-                updateBean = it
-                if (updateBean?.state == "0" && updateBean?.force == "1") {
-                    DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.发现新版本是否下载安装更新))
-                        .setRightMsg(i18N(ja.insepector.base.R.string.确定)).setCancelable(false)
-                        .isAloneButton(true)
-                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                            override fun onLeftClickLinsener(msg: String) {
-                            }
-
-                            override fun onRightClickLinsener(msg: String) {
-                                requestionPermission()
-                            }
-
-                        }).build(this@MainActivity).showDailog()
-                    runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putLong(
-                            PreferencesKeys.lastCheckUpdateTime,
-                            System.currentTimeMillis()
-                        )
-                    }
-                } else if (updateBean?.state == "0" && updateBean?.force == "0") {
-                    runBlocking {
-                        val lastTime = PreferencesDataStore(BaseApplication.instance()).getLong(PreferencesKeys.lastCheckUpdateTime)
-                        if (System.currentTimeMillis() - lastTime > 12 * 60 * 60 * 1000) {
-                            DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.发现新版本是否下载安装更新))
-                                .setRightMsg(i18N(ja.insepector.base.R.string.确定)).setCancelable(true)
-                                .setLeftMsg(i18N(ja.insepector.base.R.string.取消)).setCancelable(true)
-                                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                    override fun onLeftClickLinsener(msg: String) {
-                                    }
-
-                                    override fun onRightClickLinsener(msg: String) {
-                                        requestionPermission()
-                                    }
-
-                                }).build(this@MainActivity).showDailog()
-                            PreferencesDataStore(BaseApplication.instance()).putLong(
-                                PreferencesKeys.lastCheckUpdateTime,
-                                System.currentTimeMillis()
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CheckResult")
-    fun requestionPermission() {
+    fun requestPermissions() {
         var rxPermissions = RxPermissions(this@MainActivity)
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe {
             if (it) {
-                if (packageManager.canRequestPackageInstalls()) {
-                    downloadFileAndInstall()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (packageManager.canRequestPackageInstalls()) {
+                        UpdateUtil.instance?.downloadFileAndInstall()
+                    } else {
+                        val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
+                        val intent =
+                            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
+                        requestInstallPackageLauncher.launch(intent)
+                    }
                 } else {
-                    val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
-                    val intent =
-                        Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
-                    requestInstallPackageLauncher.launch(intent)
+                    UpdateUtil.instance?.downloadFileAndInstall()
                 }
             } else {
 
@@ -245,42 +307,9 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            downloadFileAndInstall()
+            UpdateUtil.instance?.downloadFileAndInstall()
         } else {
 
-        }
-    }
-
-    fun downloadFileAndInstall() {
-        ToastUtil.showToast(i18N(ja.insepector.base.R.string.开始下载更新))
-        GlobalScope.launch(Dispatchers.IO) {
-            FileDownloader.setup(this@MainActivity)
-            val path = "${PathUtils.getExternalDownloadsPath()}/${FileDownloadUtils.generateFileName(updateBean?.url)}.apk"
-            FileDownloader.getImpl().create(updateBean?.url)
-                .setPath(path)
-                .setListener(object : FileDownloadListener() {
-                    override fun pending(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-
-                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                        Log.v("123", "${(soFarBytes * 100f / totalBytes.toFloat()).toInt()}")
-                    }
-
-                    override fun completed(task: BaseDownloadTask?) {
-                        AppUtils.installApp(path)
-                    }
-
-                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-
-                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                        Log.v("123", e.toString())
-                    }
-
-                    override fun warn(task: BaseDownloadTask?) {
-                    }
-
-                }).start()
         }
     }
 
@@ -307,7 +336,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 }
             }
         } else {
-            ToastUtil.showToast(i18N(ja.insepector.base.R.string.再按一次退出程序))
+            ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.再按一次退出程序))
         }
     }
 }

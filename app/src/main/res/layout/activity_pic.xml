@@ -18,11 +18,12 @@
 
     <com.aries.ui.view.radius.RadiusFrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/layout_toolbar"
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_6"
         android:layout_marginEnd="@dimen/dp_13"
+        android:layout_marginBottom="@dimen/dp_17"
         android:padding="@dimen/dp_14"
         app:rv_radius="@dimen/dp_10">
 
@@ -31,12 +32,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <include
-            android:id="@+id/layout_noData"
-            layout="@layout/no_data_layout"
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_noPic"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp_70" />
+            android:layout_marginTop="@dimen/dp_70"
+            android:drawableTop="@mipmap/ic_no_data"
+            android:gravity="center"
+            android:text="@string/无车辆图片"
+            android:textColor="@color/color_ff999999"
+            android:textSize="@dimen/sp_19" />
     </com.aries.ui.view.radius.RadiusFrameLayout>
 </RelativeLayout>

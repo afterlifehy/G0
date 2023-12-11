@@ -1,6 +1,5 @@
 package ja.insepector.bxapp.ui.activity
 
-import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
@@ -20,6 +19,7 @@ import com.xj.anchortask.library.OnProjectExecuteListener
 import com.xj.anchortask.library.log.LogUtils
 import ja.insepector.base.ext.startAct
 import ja.insepector.bxapp.ui.activity.login.LoginActivity
+import ja.insepector.common.realm.RealmUtil
 import kotlinx.coroutines.runBlocking
 
 class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
@@ -79,6 +79,13 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
     }
 
     override fun onProjectFinish() {
+        runBlocking {
+            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
+            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
+            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+        }
+        RealmUtil.instance?.deleteAllStreet()
         Handler(Looper.getMainLooper()).postDelayed({
             runBlocking {
                 if (PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token).isEmpty()) {

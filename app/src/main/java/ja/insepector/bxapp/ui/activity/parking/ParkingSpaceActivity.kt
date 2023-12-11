@@ -37,7 +37,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 
 class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParkingSpaceBinding>(), OnClickListener {
-    var job: Job? = null
     val sizes = intArrayOf(19, 19)
     val colors = intArrayOf(ja.insepector.base.R.color.color_ff666666, ja.insepector.base.R.color.color_ff1a1a1a)
     val colors2 = intArrayOf(ja.insepector.base.R.color.color_ff666666, ja.insepector.base.R.color.color_fff70f0f)
@@ -49,7 +48,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var parkingNo = ""
     var token = ""
 
-    var selectPicDialog: SelectPicDialog? = null
     var picBase64 = ""
 
     var exitMethodDialog: ExitMethodDialog? = null
@@ -140,19 +138,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ).subscribe {
                     if (it) {
-                        selectPicDialog = null
-                        if (selectPicDialog == null) {
-                            selectPicDialog = SelectPicDialog(object : SelectPicDialog.Callback {
-                                override fun onTakePhoto() {
-                                    takePhoto()
-                                }
-
-                                override fun onPickPhoto() {
-                                    selectPhoto()
-                                }
-                            })
-                        }
-                        selectPicDialog?.show()
+                        takePhoto()
                     }
                 }
             }
@@ -178,10 +164,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         takePictureLauncher.launch(takePictureIntent)
     }
 
-    fun selectPhoto() {
-        selectImageLauncher.launch("image/*")
-    }
-
     val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val imageBitmap = result.data?.extras?.get("data") as Bitmap
@@ -191,15 +173,15 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         }
     }
 
-    val selectImageLauncher = registerForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let {
-            val file = UriUtils.uri2File(it)
-            val bytes = file?.readBytes()
-            picBase64 = EncodeUtils.base64Encode2String(bytes)
-        }
-    }
+//    val selectImageLauncher = registerForActivityResult(
+//        ActivityResultContracts.GetContent()
+//    ) { uri ->
+//        uri?.let {
+//            val file = UriUtils.uri2File(it)
+//            val bytes = file?.readBytes()
+//            picBase64 = EncodeUtils.base64Encode2String(bytes)
+//        }
+//    }
 
     @SuppressLint("CheckResult")
     override fun startObserve() {
@@ -231,7 +213,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                ToastUtil.showToast(it.msg)
+                ToastUtil.showMiddleToast(it.msg)
             }
         }
     }

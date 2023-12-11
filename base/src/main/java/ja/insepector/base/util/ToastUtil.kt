@@ -18,7 +18,7 @@ object ToastUtil {
     var toast: Toast? = null
         private set
 
-    fun showToast(msg: String?, icon: Int = -1) {
+    fun showMiddleToast(msg: String?, icon: Int = -1) {
         val mView = ToastViewManager.get().getTostView(msg!!, icon)
         val mTost = ToastViewManager.get().getToast()
         mTost.view = mView
@@ -31,7 +31,7 @@ object ToastUtil {
      */
     fun showSucessToast(msg: String?) {
         msg?.let {
-            showToast(it, R.mipmap.ic_launcher)
+            showMiddleToast(it, R.mipmap.ic_launcher)
         }
     }
 
@@ -40,7 +40,7 @@ object ToastUtil {
      */
     fun showErrorToast(msg: String?) {
         msg?.let {
-            showToast(it, R.mipmap.ic_launcher)
+            showMiddleToast(it, R.mipmap.ic_launcher)
 
         }
     }
@@ -78,9 +78,7 @@ object ToastUtil {
 
     fun showMiddleToast(text: String?) {
         if (!TextUtils.isEmpty(text)) {
-            if (toast == null) {
-                toast = Toast(BaseApplication.instance())
-            }
+            toast = Toast(BaseApplication.instance())
             val view = RadiusTextView(BaseApplication.instance())
             view.delegate.radius = 12f
             view.delegate.setBackgroundColor(ContextCompat.getColor(BaseApplication.instance(), R.color.black))

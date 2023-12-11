@@ -5,6 +5,7 @@ package ja.insepector.common.realm
 import io.realm.*
 import ja.insepector.base.bean.BlueToothDeviceBean
 import ja.insepector.base.bean.Street
+import ja.insepector.base.bean.WorkingHoursBean
 
 class RealmUtil {
     private val versionCode = 1
@@ -104,6 +105,14 @@ class RealmUtil {
         return realm.where(BlueToothDeviceBean::class.java).findAll()
     }
 
+    fun findCurrentWorkingHour(loginName: String): WorkingHoursBean? {
+        val list = realm.where(WorkingHoursBean::class.java).equalTo("loginName", loginName).findAll()
+        if (list != null && list.size > 0) {
+            return list.first()
+        }
+        return null
+    }
+
     /**
      *删除所有street
      */
@@ -113,12 +122,12 @@ class RealmUtil {
         }
     }
 
-//    /**
-//     *删除所有device
-//     */
-//    fun deleteAllDevice() {
-//        realm.executeTransaction {
-//            it.delete(BlueToothDeviceBean::class.java)
-//        }
-//    }
+    /**
+     *删除所有device
+     */
+    fun deleteAllDevice() {
+        realm.executeTransaction {
+            it.delete(BlueToothDeviceBean::class.java)
+        }
+    }
 }

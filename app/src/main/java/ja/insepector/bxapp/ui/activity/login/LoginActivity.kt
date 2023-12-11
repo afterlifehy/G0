@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,16 +22,8 @@ import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
-import com.blankj.utilcode.util.PathUtils
-import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloadListener
-import com.liulishuo.filedownloader.FileDownloader
-import com.liulishuo.filedownloader.util.FileDownloadUtils
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
-import ja.insepector.base.dialog.DialogHelp
-import ja.insepector.base.ds.PreferencesDataStore
-import ja.insepector.base.ds.PreferencesKeys
 import ja.insepector.base.ext.i18N
 import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseActivity
@@ -42,15 +33,12 @@ import ja.insepector.base.ext.startAct
 import ja.insepector.bxapp.R
 import ja.insepector.bxapp.databinding.ActivityLoginBinding
 import ja.insepector.bxapp.mvvm.viewmodel.LoginViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import ja.insepector.bxapp.util.UpdateUtil
 
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
     var locationManager: LocationManager? = null
-    var lat = 121.123212
-    var lon = 31.434312
+    var lat = 0.00
+    var lon = 0.00
     var updateBean: UpdateBean? = null
     var locationEnable = false
 
@@ -70,7 +58,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
                     override fun onProviderDisabled(provider: String) {
                         locationEnable = false
-                        ToastUtil.showToast(i18N(ja.insepector.base.R.string.请打开位置信息))
+                        ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.请打开位置信息))
                     }
 
                     override fun onProviderEnabled(provider: String) {
@@ -83,7 +71,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     override fun initListener() {
         binding.tvForgetPw.setOnClickListener(this)
-        binding.rtvLogin.setOnClickListener(this)
         binding.etAccount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -100,6 +87,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             ja.insepector.base.R.color.color_ff04a091
                         )
                     )
+                    binding.rtvLogin.setOnClickListener(this@LoginActivity)
                 } else {
                     binding.rtvLogin.delegate.setBackgroundColor(
                         ContextCompat.getColor(
@@ -107,11 +95,15 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             ja.insepector.base.R.color.color_9904a091
                         )
                     )
+                    binding.rtvLogin.setOnClickListener(null)
                 }
                 binding.rtvLogin.delegate.init()
             }
 
         })
+        binding.etAccount.setOnEditorActionListener { textView, i, keyEvent ->
+            binding.etPw.requestFocus()
+        }
         binding.etPw.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -127,6 +119,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             ja.insepector.base.R.color.color_ff04a091
                         )
                     )
+                    binding.rtvLogin.setOnClickListener(this@LoginActivity)
                 } else {
                     binding.rtvLogin.delegate.setBackgroundColor(
                         ContextCompat.getColor(
@@ -134,6 +127,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             ja.insepector.base.R.color.color_9904a091
                         )
                     )
+                    binding.rtvLogin.setOnClickListener(null)
                 }
                 binding.rtvLogin.delegate.init()
             }
@@ -157,14 +151,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
 
             R.id.rtv_login -> {
-                if (binding.etAccount.text.isEmpty()) {
-                    ToastUtil.showToast(i18N(ja.insepector.base.R.string.请输入账号))
-                    return
-                }
-                if (binding.etPw.text.isEmpty()) {
-                    i18N(ja.insepector.base.R.string.请输入密码)
-                    return
-                }
                 var rxPermissions = RxPermissions(this@LoginActivity)
                 rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
                     if (it) {
@@ -180,7 +166,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
                                 override fun onProviderDisabled(provider: String) {
                                     locationEnable = false
-                                    ToastUtil.showToast(i18N(ja.insepector.base.R.string.请打开位置信息))
+                                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.请打开位置信息))
                                 }
 
                                 override fun onProviderEnabled(provider: String) {
@@ -199,7 +185,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             param["attr"] = jsonobject
                             mViewModel.login(param)
                         } else {
-                            ToastUtil.showToast(i18N(ja.insepector.base.R.string.请打开位置信息))
+                            ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.请打开位置信息))
                         }
                     }
                 }
@@ -219,69 +205,38 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             checkUpdateLiveDate.observe(this@LoginActivity) {
                 updateBean = it
-                if (updateBean?.state == "0" && updateBean?.force == "1") {
-                    DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.发现新版本是否下载安装更新))
-                        .setRightMsg(i18N(ja.insepector.base.R.string.确定)).setCancelable(false)
-                        .isAloneButton(true)
-                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                            override fun onLeftClickLinsener(msg: String) {
-                            }
-
-                            override fun onRightClickLinsener(msg: String) {
-                                requestionPermission()
-                            }
-
-                        }).build(this@LoginActivity).showDailog()
-                    runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putLong(
-                            PreferencesKeys.lastCheckUpdateTime,
-                            System.currentTimeMillis()
-                        )
-                    }
-                } else if (updateBean?.state == "0" && updateBean?.force == "0") {
-                    runBlocking {
-                        val lastTime = PreferencesDataStore(BaseApplication.instance()).getLong(PreferencesKeys.lastCheckUpdateTime)
-                        if (System.currentTimeMillis() - lastTime > 12 * 60 * 60 * 1000) {
-                            DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.发现新版本是否下载安装更新))
-                                .setRightMsg(i18N(ja.insepector.base.R.string.确定)).setCancelable(true)
-                                .setLeftMsg(i18N(ja.insepector.base.R.string.取消)).setCancelable(true)
-                                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                    override fun onLeftClickLinsener(msg: String) {
-                                    }
-
-                                    override fun onRightClickLinsener(msg: String) {
-                                        requestionPermission()
-                                    }
-
-                                }).build(this@LoginActivity).showDailog()
-                            PreferencesDataStore(BaseApplication.instance()).putLong(
-                                PreferencesKeys.lastCheckUpdateTime,
-                                System.currentTimeMillis()
-                            )
+                if (updateBean?.state == "0") {
+                    UpdateUtil.instance?.checkNewVersion(updateBean!!, object : UpdateUtil.UpdateInterface {
+                        override fun requestionPermission() {
+                            requestPermissions()
                         }
-                    }
+                    })
                 }
             }
             errMsg.observe(this@LoginActivity) {
                 dismissProgressDialog()
-                ToastUtil.showToast(it.msg)
+                ToastUtil.showMiddleToast(it.msg)
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CheckResult")
-    fun requestionPermission() {
+    fun requestPermissions() {
         var rxPermissions = RxPermissions(this@LoginActivity)
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe {
             if (it) {
-                if (packageManager.canRequestPackageInstalls()) {
-                    downloadFileAndInstall()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (packageManager.canRequestPackageInstalls()) {
+                        UpdateUtil.instance?.downloadFileAndInstall()
+                    } else {
+                        val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
+                        val intent =
+                            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
+                        requestInstallPackageLauncher.launch(intent)
+                    }
                 } else {
-                    val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
-                    val intent =
-                        Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
-                    requestInstallPackageLauncher.launch(intent)
+                    UpdateUtil.instance?.downloadFileAndInstall()
                 }
             } else {
 
@@ -291,42 +246,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            downloadFileAndInstall()
+            UpdateUtil.instance?.downloadFileAndInstall()
         } else {
 
-        }
-    }
-
-    fun downloadFileAndInstall() {
-        ToastUtil.showToast(i18N(ja.insepector.base.R.string.开始下载更新))
-        GlobalScope.launch(Dispatchers.IO) {
-            FileDownloader.setup(this@LoginActivity)
-            val path = "${PathUtils.getExternalDownloadsPath()}/${FileDownloadUtils.generateFileName(updateBean?.url)}.apk"
-            FileDownloader.getImpl().create(updateBean?.url)
-                .setPath(path)
-                .setListener(object : FileDownloadListener() {
-                    override fun pending(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-
-                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                        Log.v("123", "${(soFarBytes * 100f / totalBytes.toFloat()).toInt()}")
-                    }
-
-                    override fun completed(task: BaseDownloadTask?) {
-                        AppUtils.installApp(path)
-                    }
-
-                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-
-                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                        Log.v("123", e.toString())
-                    }
-
-                    override fun warn(task: BaseDownloadTask?) {
-                    }
-
-                }).start()
         }
     }
 

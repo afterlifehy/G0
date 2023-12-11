@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.github.chrisbanes.photoview.PhotoView
 import ja.insepector.base.BaseApplication
 import ja.insepector.common.R
 import java.io.File
@@ -76,12 +77,29 @@ class GlideUtils private constructor() {
         Glide.with(BaseApplication.instance()).asBitmap().load(file).apply(options).into(imageView)
     }
 
-    fun loadImagePreview(imageView: ImageView, url: String?) {
+    fun loadImagePreview(imageView: PhotoView, url: String?) {
         imageView.tag = null
+        Glide.with(BaseApplication.instance()).load(url).dontTransform().override(-1).into(imageView)
+    }
+
+    fun loadLongImage(iv: ImageView, url: String?) {
+        iv.tag = null
         val options: RequestOptions = RequestOptions()
             .format(DecodeFormat.PREFER_RGB_565)
+            .error(R.mipmap.ic_placeholder)
+            .placeholder(R.mipmap.ic_placeholder)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
-        Glide.with(BaseApplication.instance()).asBitmap().fitCenter().load(url).apply(options).into(imageView)
+        Glide.with(BaseApplication.instance()).load(url).apply(options).into(iv)
+    }
+
+    fun loadLongImage(iv: ImageView, bitmap: Bitmap?) {
+        iv.tag = null
+        val options: RequestOptions = RequestOptions()
+            .format(DecodeFormat.PREFER_RGB_565)
+            .error(R.mipmap.ic_placeholder)
+            .placeholder(R.mipmap.ic_placeholder)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+        Glide.with(BaseApplication.instance()).load(bitmap).apply(options).into(iv)
     }
 
     companion object {

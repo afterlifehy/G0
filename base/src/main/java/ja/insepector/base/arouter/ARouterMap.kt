@@ -11,7 +11,13 @@ object ARouterMap {
 
     const val CAR_LICENSE = "carLicense"
     const val PARKING_NO = "parkingNo"
+    const val CAR_COLOR = "carColor"
 
+    const val IMG_INDEX = "imgIndex"
+    const val IMG_LIST = "imgList"
+
+    const val MINE_BLUE_PRINT = "mineBluePrint"
+    
     class common {
         companion object {
 

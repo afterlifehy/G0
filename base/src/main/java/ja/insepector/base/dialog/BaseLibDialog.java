@@ -16,9 +16,7 @@ import android.widget.EditText;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
-import androidx.viewbinding.ViewBinding;
 
-import ja.insepector.base.dialog.BackgroundDarkDialog;
 import ja.insepector.base.viewbase.BaseViewAddManagers;
 import ja.insepector.base.viewbase.BaseViewAddManagersImpl;
 
@@ -122,7 +120,7 @@ public abstract class BaseLibDialog extends BackgroundDarkDialog {
 //        setLayout(getWidth(), getHeight());
 //    }
 
-    private void setLayout(float width, float height) {
+    public void setLayout(float width, float height) {
         setCanceledOnTouchOutside(getCanceledOnTouchOutside());
         Window dialogWindow = getWindow();
         WindowManager.LayoutParams p = dialogWindow.getAttributes();

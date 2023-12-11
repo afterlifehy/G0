@@ -182,7 +182,7 @@
                     android:maxLines="1"
                     android:textColor="@color/color_ff1a1a1a"
                     android:textSize="@dimen/sp_19"
-                    tools:text="15.00元" />
+                    tools:text="15.00000000000000000元" />
             </com.aries.ui.view.radius.RadiusFrameLayout>
         </LinearLayout>
 
