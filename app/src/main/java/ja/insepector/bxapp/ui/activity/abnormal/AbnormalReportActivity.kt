@@ -8,6 +8,8 @@ import android.view.View.OnClickListener
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
@@ -18,6 +20,7 @@ import ja.insepector.base.ext.gone
 import ja.insepector.base.ext.hide
 import ja.insepector.base.ext.i18n
 import ja.insepector.base.ext.show
+import ja.insepector.base.ext.startArouter
 import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.common.realm.RealmUtil
@@ -36,6 +39,7 @@ import ja.insepector.common.util.Constant
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 
+@Route(path = ARouterMap.ABNORMAL_REPORT)
 class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityAbnormalReportBinding>(), OnClickListener {
     var collectionPlateColorAdapter: CollectionPlateColorAdapter? = null
     var collectioPlateColorList: MutableList<String> = ArrayList()
@@ -181,7 +185,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             }
 
             R.id.iv_right -> {
-
+                startArouter(ARouterMap.ABNORMAL_HELP)
             }
 
             R.id.cb_lotName -> {
@@ -203,7 +207,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             }
 
             R.id.rfl_recognize -> {
-
+                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@AbnormalReportActivity, 1)
             }
 
             R.id.rfl_report -> {
@@ -216,17 +220,17 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请选择异常分类))
                     return
                 }
-                if (type != "02" && binding.etPlate.text.toString().isEmpty()) {
+                if (type == "03" && binding.etPlate.text.toString().isEmpty()) {
                     ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请填写车牌))
                     return
                 }
-                if (type != "02") {
+                if (type == "03") {
                     if (binding.etPlate.text.toString().length != 7 && binding.etPlate.text.toString().length != 8) {
                         ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.车牌长度只能是7位或8位))
                         return
                     }
                 }
-                if (type != "02" && checkedColor.isEmpty()) {
+                if (type == "02" && checkedColor.isEmpty()) {
                     ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请选择车牌颜色))
                     return
                 }
@@ -240,12 +244,12 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
 
                     jsonobject["type"] = type
                     jsonobject["remark"] = binding.retRemarks.text.toString()
-                    if (type == "02") {
-                        jsonobject["carLicense"] = carLicense
-                        jsonobject["carColor"] = carColor
-                    } else {
+                    if (type == "03") {
                         jsonobject["carLicense"] = binding.etPlate.text.toString()
                         jsonobject["carColor"] = checkedColor
+                    } else {
+                        jsonobject["carLicense"] = carLicense
+                        jsonobject["carColor"] = carColor
                     }
                     jsonobject["orderNo"] = orderNo
                     param["attr"] = jsonobject

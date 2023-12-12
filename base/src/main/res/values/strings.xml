@@ -90,4 +90,12 @@
     <string name="元">元</string>
     <string name="APP支付">APP支付</string>
     <string name="拒绝支付">拒绝支付</string>
+    <string name="订单信息">订单信息</string>
+    <string name="是否确定结束订单">是否确定结束订单</string>
+    <string name="异常上报使用帮助">异常上报使用帮助</string>
+    <string name="闪光灯">闪光灯</string>
+    <string name="请对准车牌">请对准车牌</string>
+    <string name="一车多位">一车多位</string>
+    <string name="车牌号码">车牌号码</string>
+    <string name="入场拍照">入场拍照</string>
 </resources>

@@ -24,15 +24,22 @@ object ARouterMap {
 
     const val MINE_BLUE_PRINT = "mineBluePrint"
 
+    const val PREPAID = "/ipms_app/prepaid"
+
+    const val ORDER_INFO = "/ipms_app/orderInfo"
+
+    const val ABNORMAL_REPORT = "/ipms_app/abnormalReport"
     const val ABNORMAL_STREET_NO = "streetNo"
     const val ABNORMAL_PARKING_NO = "parkingNo"
     const val ABNORMAL_ORDER_NO = "orderNo"
     const val ABNORMAL_CARLICENSE = "carLicense"
     const val ABNORMAL_CAR_COLOR = "carColor"
 
-    const val PREPAID = "/ipms_app/prepaid"
+    const val ABNORMAL_HELP = "/ipms_app/abnormalHelp"
 
-    const val ORDER_INFO = "/ipms_app/orderInfo"
+    const val SCAN_PLATE = "/ipms_app/scanPlate"
+
+    const val ADMISSION_TAKE_PHOTO = "/ipms_app/admissionTakePhoto"
 
     class common {
         companion object {

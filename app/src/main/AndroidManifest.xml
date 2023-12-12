@@ -162,5 +162,25 @@
             android:name=".ui.activity.parking.OrderInfoActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.abnormal.AbnormalReportActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.abnormal.AbnormalHelpActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.camera.ScanPlateActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.parking.AdmissionTakePhotoActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

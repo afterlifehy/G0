@@ -96,11 +96,12 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
 //                        .withString(ARouterMap.ABNORMAL_CARLICENSE, "")
 //                        .withString(ARouterMap.ABNORMAL_CAR_COLOR, "")
 //                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                    startArouter(ARouterMap.ADMISSION_TAKE_PHOTO)
                 } else {
-                    startArouter(ARouterMap.PARKING_SPACE,data = Bundle().apply {
+                    startArouter(ARouterMap.PARKING_SPACE, data = Bundle().apply {
                         putString(ARouterMap.CAR_LICENSE, parkingLotBean.carLicense)
                         putString(ARouterMap.PARKING_NO, parkingLotBean.parkingNo)
-                        putString(ARouterMap.CAR_COLOR,parkingLotBean.carColor)
+                        putString(ARouterMap.CAR_COLOR, parkingLotBean.carColor)
                     })
                 }
             }

@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
+import android.provider.Settings
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +32,7 @@ import ja.insepector.bxapp.databinding.ActivityParkingSpaceBinding
 import ja.insepector.bxapp.mvvm.viewmodel.ParkingSpaceViewModel
 import com.zrq.spanbuilder.TextStyle
 import ja.insepector.base.arouter.ARouterMap
+import ja.insepector.base.dialog.DialogHelp
 import ja.insepector.base.ext.startAct
 import ja.insepector.base.ext.startArouter
 import ja.insepector.bxapp.dialog.ExitMethodDialog
@@ -153,6 +155,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_report -> {
+                startArouter(ARouterMap.ABNORMAL_REPORT)
             }
 
             R.id.rfl_renewal -> {
@@ -164,7 +167,18 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (type == "02") {
                     startArouter(ARouterMap.ORDER_INFO)
                 } else {
+                    DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.是否确定结束订单))
+                        .setLeftMsg(i18N(ja.insepector.base.R.string.取消))
+                        .setRightMsg(i18N(ja.insepector.base.R.string.确定)).setCancelable(true)
+                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                            override fun onLeftClickLinsener(msg: String) {
+                            }
 
+                            override fun onRightClickLinsener(msg: String) {
+                                onBackPressedSupport()
+                            }
+
+                        }).build(this@ParkingSpaceActivity).showDailog()
                 }
             }
         }

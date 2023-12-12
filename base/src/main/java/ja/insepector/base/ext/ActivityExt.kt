@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import com.alibaba.android.arouter.launcher.ARouter
+import ja.insepector.base.help.ActivityCacheManager
 
 
 fun Activity.i18N(id: Int): String {
