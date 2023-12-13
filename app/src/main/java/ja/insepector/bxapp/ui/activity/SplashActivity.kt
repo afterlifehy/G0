@@ -1,5 +1,6 @@
 package ja.insepector.bxapp.ui.activity
 
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
@@ -31,7 +32,10 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
             this,
             ContextCompat.getColor(this, ja.insepector.base.R.color.transparent)
         )
-
+        if (intent.flags and Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT != 0) {
+            finish()
+            return
+        }
         setCustomDensity()
     }
 

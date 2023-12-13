@@ -98,4 +98,17 @@
     <string name="一车多位">一车多位</string>
     <string name="车牌号码">车牌号码</string>
     <string name="入场拍照">入场拍照</string>
+    <string name="订单拍照">订单拍照</string>
+    <string name="上传车牌照">上传车牌照</string>
+    <string name="开始计费">开始计费</string>
+    <string name="上传全景照">上传全景照</string>
+    <string name="提示">提示</string>
+    <string name="下单成功当前车辆有欠费记录是否追缴">下单成功！当前车辆有欠费记录，是否追缴？</string>
+    <string name="是">是</string>
+    <string name="否">否</string>
+    <string name="下单成功是否预支付">下单成功！是否预支付？</string>
+    <string name="不打印">不打印</string>
+    <string name="打印">打印</string>
+    <string name="请选择要打印的票据">请选择要打印的票据：</string>
+    <string name="数据打印">数据打印</string>
 </resources>

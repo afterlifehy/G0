@@ -41,6 +41,9 @@ object ARouterMap {
 
     const val ADMISSION_TAKE_PHOTO = "/ipms_app/admissionTakePhoto"
 
+    const val DATA_PRINT = "/ipms_app/dataPrint"
+    const val DATA_PRINT_LOGIN_NAME = "loginName"
+
     class common {
         companion object {
 

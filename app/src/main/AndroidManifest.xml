@@ -182,5 +182,10 @@
             android:name=".ui.activity.parking.AdmissionTakePhotoActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.mine.DataPrintActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

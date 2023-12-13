@@ -17,6 +17,7 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
     private var editText: EditText? = null
 
     private var hideAction: (() -> Unit)? = null
+    private var callback: KeyInputCallBack? = null
 
     // private var hideEdit:(()->Unit)? = null
     init {
@@ -70,6 +71,9 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
                                     val etValue = editText?.text.toString().substring(0, editText?.text.toString().length - 1)
                                     editText?.setText(etValue)
                                     editText?.text?.length?.let { editText?.setSelection(it) };
+                                    if (callback != null) {
+                                        callback?.keyDelete()
+                                    }
                                 }
                             }
                         }
@@ -82,6 +86,9 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
                             // 清空之前数据
                             //editText?.text?.clear()
                             editable?.insert(editable.length, primaryCode.toChar().toString())
+                            if (callback != null) {
+                                callback?.keyInput(primaryCode.toChar().toString())
+                            }
                         }
                     }
                 }
@@ -156,5 +163,14 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun setCallBack(callBack: KeyInputCallBack) {
+        this.callback = callBack
+    }
+
+    interface KeyInputCallBack {
+        fun keyInput(value: String)
+        fun keyDelete()
     }
 }

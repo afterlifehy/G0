@@ -48,6 +48,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
     var lat = 0.00
     var lon = 0.00
     var locationEnable = false
+    var loginName = ""
 
     @SuppressLint("MissingPermission", "CheckResult")
     override fun initView() {
@@ -100,7 +101,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
 
     override fun initData() {
         runBlocking {
-            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
             val workingHour = RealmUtil.instance?.findCurrentWorkingHour(loginName)
             if (workingHour != null) {
                 binding.tvWorkingHours.text = TimeUtils.millis2String(workingHour.time, "yyyy-MM-dd HH:mm:ss")
@@ -177,12 +178,9 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         mViewModel.apply {
             logoutLiveData.observe(this@LogoutActivity) {
                 dismissProgressDialog()
-                startArouter(ARouterMap.LOGIN)
-                for (i in ActivityCacheManager.instance().getAllActivity()) {
-                    if (i != LoginActivity::class.java) {
-                        i.finish()
-                    }
-                }
+                startArouter(ARouterMap.DATA_PRINT, data = Bundle().apply {
+                    putString(ARouterMap.DATA_PRINT_LOGIN_NAME, loginName)
+                })
                 ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.签退成功))
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")

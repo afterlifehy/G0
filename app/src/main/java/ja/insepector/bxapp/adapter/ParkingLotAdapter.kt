@@ -54,6 +54,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
         plateTxtColorMap[Constant.CYAN] = ja.insepector.base.R.color.black
         plateTxtColorMap[Constant.PINK] = ja.insepector.base.R.color.black
         plateTxtColorMap[Constant.TRANSPARENT] = ja.insepector.base.R.color.black
+        plateTxtColorMap[Constant.YELLOW_GREEN] = ja.insepector.base.R.color.black
         plateTxtColorMap[Constant.OTHERS] = ja.insepector.base.R.color.black
     }
 
