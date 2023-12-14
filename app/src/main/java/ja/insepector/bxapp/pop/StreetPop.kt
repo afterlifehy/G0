@@ -36,7 +36,7 @@ class StreetPop(val context: Context?, var currentStreet: Street?, val streetLis
         parkingChooseStreetAdapter =
             ParkingChooseStreetAdapter(streetList, currentStreet!!.copy(), object : ParkingChooseStreetAdapter.ChooseStreetAdapterCallBack {
                 override fun chooseStreet(street: Street) {
-                    currentStreet = street
+                    selectedStreet = street
                 }
             })
         binding.rvStreet.adapter = parkingChooseStreetAdapter

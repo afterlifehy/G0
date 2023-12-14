@@ -22,8 +22,6 @@ object ARouterMap {
 
     const val PIC = "/ipms_app/pic"
 
-    const val MINE_BLUE_PRINT = "mineBluePrint"
-
     const val PREPAID = "/ipms_app/prepaid"
 
     const val ORDER_INFO = "/ipms_app/orderInfo"
@@ -44,6 +42,10 @@ object ARouterMap {
     const val DATA_PRINT = "/ipms_app/dataPrint"
     const val DATA_PRINT_LOGIN_NAME = "loginName"
 
+    const val MINE = "/ipms_app/mine"
+    const val MINE_BLUE_PRINT = "mineBluePrint"
+
+    const val BASE_INFO = "/ipms_app/baseInfo"
     class common {
         companion object {
 

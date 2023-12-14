@@ -5,6 +5,9 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.PopupWindow
+import android.widget.RelativeLayout
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewbinding.ViewBinding
@@ -24,6 +27,7 @@ import ja.insepector.bxapp.R
 import ja.insepector.bxapp.adapter.ParkingLotAdapter
 import ja.insepector.bxapp.databinding.ActivityParkingLotBinding
 import ja.insepector.bxapp.mvvm.viewmodel.ParkingLotViewModel
+import ja.insepector.bxapp.pop.StreetPop
 
 class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLotBinding>(), OnClickListener {
     var parkingLotAdapter: ParkingLotAdapter? = null
@@ -32,10 +36,11 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     var count = 0
     var handler = Handler(Looper.getMainLooper())
 
+    var streetPop: StreetPop? = null
+    var streetList: MutableList<Street> = ArrayList()
+
     override fun initView() {
-        GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, ja.insepector.common.R.mipmap.ic_back_white)
-        binding.layoutToolbar.tvTitle.text = i18N(ja.insepector.base.R.string.停车场)
-        binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), ja.insepector.base.R.color.white))
+        GlideUtils.instance?.loadImage(binding.ivBack, ja.insepector.common.R.mipmap.ic_back_white)
 
         binding.rvParkingLot.setHasFixedSize(true)
         binding.rvParkingLot.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -44,11 +49,29 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     }
 
     override fun initListener() {
-        binding.layoutToolbar.flBack.setOnClickListener(this)
+        binding.flBack.setOnClickListener(this)
     }
 
     override fun initData() {
+        streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
         currentStreet = RealmUtil.instance?.findCurrentStreet()
+        if (currentStreet!!.streetName.indexOf("(") < 0) {
+            binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
+        } else {
+            binding.tvTitle.text =
+                currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+        }
+        if (streetList.size == 1) {
+            binding.tvTitle.setCompoundDrawables(
+                null,
+                null,
+                null,
+                null
+            )
+            binding.tvTitle.setOnClickListener(null)
+        } else {
+            binding.tvTitle.setOnClickListener(this)
+        }
     }
 
     val runnable = object : Runnable {
@@ -85,7 +108,43 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
             R.id.fl_back -> {
                 onBackPressedSupport()
             }
-
+            R.id.tv_title -> {
+                currentStreet = RealmUtil.instance?.findCurrentStreet()
+                streetPop = StreetPop(this@ParkingLotActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
+                    override fun selectStreet(street: Street) {
+                        val old = RealmUtil.instance?.findCurrentStreet()
+                        RealmUtil.instance?.updateCurrentStreet(street, old)
+                        if (street.streetName.indexOf("(") < 0) {
+                            binding.tvTitle.text = street.streetNo + street.streetName
+                        } else {
+                            binding.tvTitle.text =
+                                street.streetNo + street.streetName.substring(0, street.streetName.indexOf("("))
+                        }
+                    }
+                })
+                streetPop?.showAsDropDown((v.parent) as Toolbar)
+                val upDrawable = ContextCompat.getDrawable(BaseApplication.instance(), ja.insepector.common.R.mipmap.ic_arrow_up)
+                upDrawable?.setBounds(0, 0, upDrawable.intrinsicWidth, upDrawable.intrinsicHeight)
+                binding.tvTitle.setCompoundDrawables(
+                    null,
+                    null,
+                    upDrawable,
+                    null
+                )
+                streetPop?.setOnDismissListener(object : PopupWindow.OnDismissListener {
+                    override fun onDismiss() {
+                        val downDrawable =
+                            ContextCompat.getDrawable(BaseApplication.instance(), ja.insepector.common.R.mipmap.ic_arrow_down)
+                        downDrawable?.setBounds(0, 0, downDrawable.intrinsicWidth, downDrawable.intrinsicHeight)
+                        binding.tvTitle.setCompoundDrawables(
+                            null,
+                            null,
+                            downDrawable,
+                            null
+                        )
+                    }
+                })
+            }
             R.id.rfl_parking -> {
                 val parkingLotBean = v.tag as ParkingLotBean
                 if (parkingLotBean.state == "01") {
@@ -135,7 +194,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
         get() = true
 
     override fun marginStatusBarView(): View {
-        return binding.layoutToolbar.ablToolbar
+        return binding.ablToolbar
     }
 
     override fun providerVMClass(): Class<ParkingLotViewModel> {

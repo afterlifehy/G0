@@ -20,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
 import ja.insepector.base.BaseApplication
@@ -35,6 +36,7 @@ import ja.insepector.bxapp.databinding.ActivityLoginBinding
 import ja.insepector.bxapp.mvvm.viewmodel.LoginViewModel
 import ja.insepector.bxapp.util.UpdateUtil
 
+@Route(path = ARouterMap.LOGIN)
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
     var locationManager: LocationManager? = null
     var lat = 0.00

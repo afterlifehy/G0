@@ -111,4 +111,16 @@
     <string name="打印">打印</string>
     <string name="请选择要打印的票据">请选择要打印的票据：</string>
     <string name="数据打印">数据打印</string>
+    <string name="基本信息">基本信息</string>
+    <string name="版本更新">版本更新</string>
+    <string name="费率信息">费率信息</string>
+    <string name="打印管理">打印管理</string>
+    <string name="重新登录">重新登录</string>
+    <string name="我的">我的</string>
+    <string name="是否确定进行不签退退出">是否确定进行不签退退出</string>
+    <string name="无打印机连接">无打印机连接</string>
+    <string name="姓名">姓名</string>
+    <string name="账户名">账户名</string>
+    <string name="手机号">手机号</string>
+    <string name="路段名">路段名</string>
 </resources>

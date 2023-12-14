@@ -38,16 +38,16 @@ import ja.insepector.bxapp.pop.StreetPop
 import com.tbruyelle.rxpermissions3.RxPermissions
 import ja.insepector.base.bean.BlueToothDeviceBean
 import ja.insepector.base.ext.startAct
+import ja.insepector.base.ext.startArouter
 import ja.insepector.bxapp.ui.activity.abnormal.AbnormalReportActivity
+import ja.insepector.bxapp.ui.activity.login.LoginActivity
+import ja.insepector.bxapp.ui.activity.login.StreetChooseActivity
 import ja.insepector.bxapp.ui.activity.mine.LogoutActivity
 import ja.insepector.bxapp.ui.activity.parking.ParkingLotActivity
 import ja.insepector.bxapp.util.UpdateUtil
 
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
-    var streetPop: StreetPop? = null
-    var streetList: MutableList<Street> = ArrayList()
-    var currentStreet: Street? = null
 
     override fun onSaveInstanceState(outState: Bundle) {
         // super.onSaveInstanceState(outState)
@@ -55,7 +55,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     override fun initView() {
         initHyperLPR()
-//        setStatusBarColor(ja.insepector.base.R.color.black, false)
     }
 
     override fun initListener() {
@@ -69,27 +68,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     @SuppressLint("SetTextI18n")
     override fun initData() {
-        streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
-        currentStreet = RealmUtil.instance?.findCurrentStreet()
         connectBluePrint()
-
-        if (currentStreet!!.streetName.indexOf("(") < 0) {
-            binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
-        } else {
-            binding.tvTitle.text =
-                currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
-        }
-        if (streetList.size == 1) {
-            binding.tvTitle.setCompoundDrawables(
-                null,
-                null,
-                null,
-                null
-            )
-            binding.tvTitle.setOnClickListener(null)
-        } else {
-            binding.tvTitle.setOnClickListener(this)
-        }
     }
 
     @SuppressLint("CheckResult", "MissingPermission")
@@ -110,12 +89,16 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                                     }
 
                                     override fun onRightClickLinsener(msg: String) {
-//                                        val intent = Intent(this@MainActivity, MineActivity::class.java)
-//                                        intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
-//                                        startActivity(intent)
+                                        if (ActivityCacheManager.instance().getCurrentActivity() !is LoginActivity &&
+                                            ActivityCacheManager.instance().getCurrentActivity() !is StreetChooseActivity
+                                        ) {
+                                            startArouter(ARouterMap.MINE, data = Bundle().apply {
+                                                putInt(ARouterMap.MINE_BLUE_PRINT, 1)
+                                            })
+                                        }
                                     }
 
-                                }).build(this@MainActivity).showDailog()
+                                }).build(ActivityCacheManager.instance().getCurrentActivity()).showDailog()
                         }
                     }
                 }
@@ -196,10 +179,13 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 }
 
                 override fun onRightClickLinsener(msg: String) {
-//                    Todo("注释")
-//                    val intent = Intent(this@MainActivity, MineActivity::class.java)
-//                    intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
-//                    startActivity(intent)
+                    if (ActivityCacheManager.instance().getCurrentActivity() !is LoginActivity &&
+                        ActivityCacheManager.instance().getCurrentActivity() !is StreetChooseActivity
+                    ) {
+                        startArouter(ARouterMap.MINE, data = Bundle().apply {
+                            putInt(ARouterMap.MINE_BLUE_PRINT, 1)
+                        })
+                    }
                 }
 
             }).build(this@MainActivity).showDailog()
@@ -208,47 +194,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.iv_head -> {
-                //                    Todo("注释")
-//                val intent = Intent(this@MainActivity, MineActivity::class.java)
-//                intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 0)
-//                startActivity(intent)
-            }
-
-            R.id.tv_title -> {
-                currentStreet = RealmUtil.instance?.findCurrentStreet()
-                streetPop = StreetPop(this@MainActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
-                    override fun selectStreet(street: Street) {
-                        val old = RealmUtil.instance?.findCurrentStreet()
-                        RealmUtil.instance?.updateCurrentStreet(street, old)
-                        if (street.streetName.indexOf("(") < 0) {
-                            binding.tvTitle.text = street.streetNo + street.streetName
-                        } else {
-                            binding.tvTitle.text =
-                                street.streetNo + street.streetName.substring(0, street.streetName.indexOf("("))
-                        }
-                    }
-                })
-                streetPop?.showAsDropDown((v.parent) as RelativeLayout)
-                val upDrawable = ContextCompat.getDrawable(BaseApplication.instance(), ja.insepector.common.R.mipmap.ic_arrow_up)
-                upDrawable?.setBounds(0, 0, upDrawable.intrinsicWidth, upDrawable.intrinsicHeight)
-                binding.tvTitle.setCompoundDrawables(
-                    null,
-                    null,
-                    upDrawable,
-                    null
-                )
-                streetPop?.setOnDismissListener(object : PopupWindow.OnDismissListener {
-                    override fun onDismiss() {
-                        val downDrawable =
-                            ContextCompat.getDrawable(BaseApplication.instance(), ja.insepector.common.R.mipmap.ic_arrow_down)
-                        downDrawable?.setBounds(0, 0, downDrawable.intrinsicWidth, downDrawable.intrinsicHeight)
-                        binding.tvTitle.setCompoundDrawables(
-                            null,
-                            null,
-                            downDrawable,
-                            null
-                        )
-                    }
+                startArouter(ARouterMap.MINE, data = Bundle().apply {
+                    putInt(ARouterMap.MINE_BLUE_PRINT, 0)
                 })
             }
 

@@ -47,25 +47,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_back_home" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_20"
-                android:layout_toStartOf="@+id/iv_head"
-                android:layout_toEndOf="@+id/iv_g2"
-                android:drawableEnd="@mipmap/ic_arrow_down"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxEms="8"
-                android:maxLines="1"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_23"
-                android:textStyle="bold"
-                tools:text="CN007定西路(愚园CN007定西路(愚园" />
         </RelativeLayout>
 
         <LinearLayout

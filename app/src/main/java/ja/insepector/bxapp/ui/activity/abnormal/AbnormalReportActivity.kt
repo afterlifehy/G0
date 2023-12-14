@@ -100,7 +100,6 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         binding.rflReport.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.llBerthAbnormal2.setOnClickListener(this)
-
     }
 
     override fun initData() {
@@ -143,6 +142,9 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
 
         binding.etPlate.setOnTouchListener { v, p1 ->
             (v as EditText).requestFocus()
+            keyboardUtil.changeKeyboard(true)
+            val clickPosition = v.getOffsetForPosition(p1!!.x, p1.y)
+            keyboardUtil.setEditText(v,clickPosition)
             keyboardUtil.showKeyboard(show = {
                 val location = IntArray(2)
                 v.getLocationOnScreen(location)
@@ -158,8 +160,6 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             }, hide = {
                 binding.llBerthAbnormal.translationY = 0f
             })
-            keyboardUtil.changeKeyboard(true)
-            keyboardUtil.setEditText(v)
             true
         }
     }

@@ -187,5 +187,15 @@
             android:name=".ui.activity.mine.DataPrintActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.mine.MineActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.mine.BaseInfoActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>
