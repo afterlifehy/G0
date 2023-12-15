@@ -156,7 +156,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             }
 
             R.id.fl_feeRate -> {
-//                ARouter.getInstance().build(ARouterMap.FEE_RATE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                startArouter(ARouterMap.FEE_RATE)
             }
 
             R.id.fl_blueToothPrint -> {

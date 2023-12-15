@@ -164,6 +164,7 @@
     <dimen name="dp_155">155dp</dimen>
     <dimen name="dp_156">156dp</dimen>
     <dimen name="dp_157">157dp</dimen>
+    <dimen name="dp_158">158dp</dimen>
     <dimen name="dp_160">160dp</dimen>
     <dimen name="dp_161">161dp</dimen>
     <dimen name="dp_162">162dp</dimen>
@@ -205,6 +206,7 @@
     <dimen name="dp_226">226dp</dimen>
     <dimen name="dp_233">233dp</dimen>
     <dimen name="dp_234">234dp</dimen>
+    <dimen name="dp_235">235dp</dimen>
     <dimen name="dp_240">240dp</dimen>
     <dimen name="dp_250">250dp</dimen>
     <dimen name="dp_251">251dp</dimen>

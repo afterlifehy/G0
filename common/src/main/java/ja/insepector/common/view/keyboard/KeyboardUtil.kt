@@ -18,6 +18,7 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
 
     private var hideAction: (() -> Unit)? = null
     private var clickPosition = 0
+    private var callback: KeyInputCallBack? = null
 
     // private var hideEdit:(()->Unit)? = null
     init {
@@ -67,6 +68,9 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
                             } else {
                                 val stringBuilder: StringBuilder = StringBuilder(etValue)
                                 if (clickPosition > 0) {
+                                    if (callback != null) {
+                                        callback?.keyDelete()
+                                    }
                                     editText?.setText(stringBuilder.deleteCharAt(clickPosition - 1))
                                     clickPosition -= 1
                                     editText?.setSelection(clickPosition)
@@ -82,6 +86,9 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
                             if (editable!!.length < 8) {
                                 editable.insert(clickPosition, primaryCode.toChar().toString())
                                 clickPosition += 1
+                                if (callback != null) {
+                                    callback?.keyInput(primaryCode.toChar().toString())
+                                }
                             }
                         }
                     }
@@ -164,5 +171,15 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+
+    fun setCallBack(callBack: KeyInputCallBack) {
+        this.callback = callBack
+    }
+
+    interface KeyInputCallBack {
+        fun keyInput(value: String)
+        fun keyDelete()
     }
 }

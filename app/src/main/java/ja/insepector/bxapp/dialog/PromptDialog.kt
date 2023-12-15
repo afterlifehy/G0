@@ -7,11 +7,18 @@ import android.view.WindowManager
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.ScreenUtils
 import ja.insepector.base.dialog.VBBaseLibDialog
+import ja.insepector.base.ext.gone
 import ja.insepector.base.help.ActivityCacheManager
 import ja.insepector.bxapp.R
 import ja.insepector.bxapp.databinding.DialogPromptBinding
 
-class PromptDialog(val content: String, val leftString: String, val rightString: String, val callBack: PromptCallBack) :
+class PromptDialog(
+    val content: String,
+    val leftString: String,
+    val rightString: String,
+    val callBack: PromptCallBack,
+    val isSingleButton: Boolean = false,
+) :
     VBBaseLibDialog<DialogPromptBinding>(ActivityCacheManager.instance().getCurrentActivity()!!), OnClickListener {
 
     init {
@@ -23,6 +30,9 @@ class PromptDialog(val content: String, val leftString: String, val rightString:
         binding.rtvLeft.text = leftString
         binding.rtvRight.text = rightString
 
+        if (isSingleButton) {
+            binding.rtvLeft.gone()
+        }
         binding.rtvLeft.setOnClickListener(this)
         binding.rtvRight.setOnClickListener(this)
     }

@@ -46,6 +46,12 @@ object ARouterMap {
     const val MINE_BLUE_PRINT = "mineBluePrint"
 
     const val BASE_INFO = "/ipms_app/baseInfo"
+
+    const val FEE_RATE = "/ipms_app/feeRate"
+
+    const val INCOME_COUNTING = "/ipms_app/incomeCounting"
+
+    const val ORDER_MAIN = "/ipms_app/orderMain"
     class common {
         companion object {
 

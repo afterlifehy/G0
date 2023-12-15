@@ -197,5 +197,21 @@
             android:name=".ui.activity.mine.BaseInfoActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.mine.FeeRateActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.income.IncomeCountingActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".ui.activity.order.OrderMainActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

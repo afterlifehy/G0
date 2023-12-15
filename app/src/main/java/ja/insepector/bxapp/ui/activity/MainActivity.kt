@@ -40,9 +40,11 @@ import ja.insepector.base.bean.BlueToothDeviceBean
 import ja.insepector.base.ext.startAct
 import ja.insepector.base.ext.startArouter
 import ja.insepector.bxapp.ui.activity.abnormal.AbnormalReportActivity
+import ja.insepector.bxapp.ui.activity.income.IncomeCountingActivity
 import ja.insepector.bxapp.ui.activity.login.LoginActivity
 import ja.insepector.bxapp.ui.activity.login.StreetChooseActivity
 import ja.insepector.bxapp.ui.activity.mine.LogoutActivity
+import ja.insepector.bxapp.ui.activity.order.OrderMainActivity
 import ja.insepector.bxapp.ui.activity.parking.ParkingLotActivity
 import ja.insepector.bxapp.util.UpdateUtil
 
@@ -204,13 +206,11 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.fl_incomeCounting -> {
-//                val intent = Intent(this@MainActivity, IncomeCountingActivity::class.java)
-//                startActivity(intent)
+                startAct<IncomeCountingActivity>()
             }
 
             R.id.fl_order -> {
-//                val intent = Intent(this@MainActivity, OrderMainActivity::class.java)
-//                startActivity(intent)
+                startAct<OrderMainActivity>()
             }
 
             R.id.fl_berthAbnormal -> {
