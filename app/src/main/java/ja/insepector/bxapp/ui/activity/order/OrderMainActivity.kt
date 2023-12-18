@@ -10,6 +10,7 @@ import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.ext.gone
 import ja.insepector.base.ext.i18N
 import ja.insepector.base.ext.show
+import ja.insepector.base.ext.startArouter
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.bxapp.R
 import ja.insepector.bxapp.databinding.ActivityOrderMainBinding
@@ -42,9 +43,11 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
             }
 
             R.id.rfl_transactionQuery -> {
+                startArouter(ARouterMap.TRANSACTION_INQUIRY)
             }
 
             R.id.rfl_debtCollect -> {
+                startArouter(ARouterMap.DEBT_COLLECTION)
             }
 
             R.id.rfl_orderInquiry -> {

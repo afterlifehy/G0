@@ -52,6 +52,12 @@ object ARouterMap {
     const val INCOME_COUNTING = "/ipms_app/incomeCounting"
 
     const val ORDER_MAIN = "/ipms_app/orderMain"
+
+    const val TRANSACTION_INQUIRY = "/ipms_app/transactionInquiry"
+
+    const val DEBT_COLLECTION = "/ipms_app/debtCollection"
+    const val DEBT_CAR_LICENSE = "carLicense"
+
     class common {
         companion object {
 

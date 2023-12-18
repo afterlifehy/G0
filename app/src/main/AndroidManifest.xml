@@ -213,5 +213,16 @@
             android:name=".ui.activity.order.OrderMainActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.TransactionInquiryActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.DebtCollectionActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

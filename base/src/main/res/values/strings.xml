@@ -152,4 +152,13 @@
     <string name="交易查询">交易查询</string>
     <string name="欠费追缴">欠费追缴</string>
     <string name="订单查询">订单查询</string>
+    <string name="搜索">搜索</string>
+    <string name="请输入车牌号">请输入车牌号</string>
+    <string name="无内容">无内容</string>
+    <string name="付费时段">付费时段</string>
+    <string name="支付查询">支付查询</string>
+    <string name="支付成功">支付成功</string>
+    <string name="催缴">催缴</string>
+    <string name="详情">详情</string>
+    <string name="通过车牌号未查询到欠费订单">通过车牌号未查询到欠费订单</string>
 </resources>
