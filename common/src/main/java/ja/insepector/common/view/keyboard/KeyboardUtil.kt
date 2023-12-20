@@ -63,17 +63,21 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
                         -2 -> changeKeyboard(false)
                         -3 -> {
                             val etValue = editText?.text.toString()
-                            if (etValue.isEmpty()) {
-
-                            } else {
-                                val stringBuilder: StringBuilder = StringBuilder(etValue)
-                                if (clickPosition > 0) {
-                                    if (callback != null) {
-                                        callback?.keyDelete()
+                            if (etValue != null) {
+                                if (etValue.isNotEmpty()) {
+                                    val stringBuilder: StringBuilder = StringBuilder(etValue)
+                                    if (clickPosition > 0) {
+                                        if (callback != null) {
+                                            callback?.keyDelete()
+                                        }
+                                        editText?.setText(stringBuilder.deleteCharAt(clickPosition - 1))
+                                        clickPosition -= 1
+                                        editText?.setSelection(clickPosition)
                                     }
-                                    editText?.setText(stringBuilder.deleteCharAt(clickPosition - 1))
-                                    clickPosition -= 1
-                                    editText?.setSelection(clickPosition)
+                                }
+                            } else {
+                                if (callback != null) {
+                                    callback?.keyDelete()
                                 }
                             }
                         }
@@ -83,12 +87,12 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
                         }
 
                         else -> {
-                            if (editable!!.length < 8) {
+                            if (editable != null && editable.length < 8) {
                                 editable.insert(clickPosition, primaryCode.toChar().toString())
-                                clickPosition += 1
-                                if (callback != null) {
-                                    callback?.keyInput(primaryCode.toChar().toString())
-                                }
+                            }
+                            clickPosition += 1
+                            if (callback != null) {
+                                callback?.keyInput(primaryCode.toChar().toString())
                             }
                         }
                     }

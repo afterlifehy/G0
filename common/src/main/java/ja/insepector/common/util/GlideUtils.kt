@@ -53,7 +53,7 @@ class GlideUtils private constructor() {
             .format(DecodeFormat.PREFER_RGB_565)
             .error(placeholder)
             .placeholder(placeholder)
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
         Glide.with(BaseApplication.instance()).load(url).apply(options).into(iv)
     }
 

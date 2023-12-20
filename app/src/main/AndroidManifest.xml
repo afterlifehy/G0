@@ -217,11 +217,31 @@
         <activity
             android:name=".ui.activity.order.TransactionInquiryActivity"
             android:exported="false"
-            android:theme="@style/AppTheme"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".ui.activity.order.DebtCollectionActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.DebtOrderDetailActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.OrderInquiryActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.OrderDetailActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.TransactionRecordActivity"
             android:exported="false"
             android:launchMode="singleTask" />
     </application>

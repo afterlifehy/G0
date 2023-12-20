@@ -13,6 +13,7 @@ import ja.insepector.bxapp.adapter.SamplePagerAdapter
 import ja.insepector.bxapp.databinding.ActivityPreviewImageBinding
 import ja.insepector.bxapp.mvvm.viewmodel.PreviewImageViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
+import ja.insepector.bxapp.R
 import java.util.ArrayList
 
 @Route(path = ARouterMap.PREVIEW_IMAGE)
@@ -72,6 +73,11 @@ class PreviewImageActivity : VbBaseActivity<PreviewImageViewModel, ActivityPrevi
     }
 
     override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.pv_img -> {
+                onBackPressedSupport()
+            }
+        }
     }
 
     override fun getVbBindingView(): ViewBinding {

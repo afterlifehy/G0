@@ -160,8 +160,9 @@
             android:layout_height="@dimen/dp_120"
             android:layout_below="@+id/tv_takePhoto"
             android:layout_marginTop="@dimen/dp_10"
+            app:rv_backgroundColor="@color/color_ffeefaf9"
             app:rv_radius="@dimen/dp_7"
-            app:rv_strokeColor="@color/color_ffeefaf9"
+            app:rv_strokeColor="@color/color_ff04a091"
             app:rv_strokeWidth="@dimen/dp_1">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -182,7 +183,7 @@
             android:layout_height="@dimen/dp_123"
             android:layout_below="@+id/tv_takePhoto"
             android:layout_marginTop="@dimen/dp_7"
-            android:visibility="invisible">
+            android:visibility="gone">
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/riv_plate"
@@ -208,8 +209,9 @@
             android:layout_marginStart="@dimen/dp_13"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_toEndOf="@+id/rfl_takePhoto"
+            app:rv_backgroundColor="@color/color_ffeefaf9"
             app:rv_radius="@dimen/dp_7"
-            app:rv_strokeColor="@color/color_ffeefaf9"
+            app:rv_strokeColor="@color/color_ff04a091"
             app:rv_strokeWidth="@dimen/dp_1">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -231,7 +233,7 @@
             android:layout_marginStart="@dimen/dp_13"
             android:layout_marginTop="@dimen/dp_7"
             android:layout_toEndOf="@+id/rfl_takePhoto"
-            android:visibility="invisible">
+            android:visibility="gone">
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/riv_panorama"

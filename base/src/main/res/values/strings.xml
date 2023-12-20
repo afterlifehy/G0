@@ -159,6 +159,20 @@
     <string name="支付查询">支付查询</string>
     <string name="支付成功">支付成功</string>
     <string name="催缴">催缴</string>
-    <string name="详情">详情</string>
+    <string name="详情">详情></string>
     <string name="通过车牌号未查询到欠费订单">通过车牌号未查询到欠费订单</string>
+    <string name="欠费订单详情">欠费订单详情</string>
+    <string name="泊位">泊位</string>
+    <string name="路段">路段</string>
+    <string name="入场">入场</string>
+    <string name="出场">出场</string>
+    <string name="订单金额">订单金额</string>
+    <string name="上传">上传</string>
+    <string name="已付">已付:</string>
+    <string name="欠">欠:</string>
+    <string name="是否立即上传">是否立即上传</string>
+    <string name="订单详细信息">订单详细信息</string>
+    <string name="总额">总额</string>
+    <string name="交易记录">交易记录</string>
+    <string name="交易记录信息">交易记录信息</string>
 </resources>

@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -71,6 +72,22 @@ object FileUtil {
         intent.data = uri
         BaseApplication.instance().sendBroadcast(intent)
         return file
+    }
+
+    fun compressToMaxSize(src: Bitmap, maxSizeKB: Int, recycle: Boolean): Bitmap? {
+        val baos = ByteArrayOutputStream()
+        var quality = 100 // 初始质量设为100
+        src.compress(Bitmap.CompressFormat.JPEG, quality, baos)
+        while (baos.toByteArray().size / 1024 > maxSizeKB) {
+            baos.reset() // 重置baos即清空baos
+            quality -= 10 // 每次减少10
+            src.compress(Bitmap.CompressFormat.JPEG, quality, baos)
+        }
+        val bytes = baos.toByteArray()
+        if (recycle && !src.isRecycled) {
+            src.recycle()
+        }
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     }
 
     fun saveBitmapMediaStore(image: Bitmap) {

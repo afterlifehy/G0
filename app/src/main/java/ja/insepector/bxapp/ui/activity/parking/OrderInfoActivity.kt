@@ -11,11 +11,16 @@ import ja.insepector.base.ext.i18N
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.bxapp.R
 import ja.insepector.bxapp.databinding.ActivityOrderInfoBinding
+import ja.insepector.bxapp.dialog.PaymentQrDialog
 import ja.insepector.bxapp.mvvm.viewmodel.OrderInfoViewModel
+import ja.insepector.common.event.OrderFinishEvent
 import ja.insepector.common.util.GlideUtils
+import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.ORDER_INFO)
 class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBinding>(), OnClickListener {
+    var paymentQrDialog: PaymentQrDialog? = null
+    var qr = "www.baidu.com"
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18N(ja.insepector.base.R.string.订单信息)
@@ -40,15 +45,18 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
             }
 
             R.id.rfl_appPay -> {
-
+                EventBus.getDefault().post(OrderFinishEvent())
+                onBackPressedSupport()
             }
 
             R.id.rfl_refusePay -> {
-
+                EventBus.getDefault().post(OrderFinishEvent())
+                onBackPressedSupport()
             }
 
             R.id.rfl_scanPay -> {
-
+                paymentQrDialog = PaymentQrDialog(qr)
+                paymentQrDialog?.show()
             }
         }
     }

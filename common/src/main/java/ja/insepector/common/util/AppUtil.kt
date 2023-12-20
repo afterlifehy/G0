@@ -108,6 +108,15 @@ object AppUtil {
         }
     }
 
+    fun keepNDecimals(value: String, N: Int): String {
+        val number = value.toDoubleOrNull()
+        return if (number != null) {
+            String.format("%.2f", number)
+        } else {
+            "Invalid Input"
+        }
+    }
+
     /**
      * 保留N位小数，最多maxLength位数
      */
@@ -231,5 +240,19 @@ object AppUtil {
         } else {
             Uri.fromFile(file)
         }
+    }
+
+    fun dayHourMin(parkingTime: Int): String {
+        val day = parkingTime / (3600 * 24)
+        val hour = parkingTime / 3600 - day * 24
+        val minute = parkingTime / 60 - day * 24 * 60 - hour * 60
+        if (day == 0 && hour == 0) {
+            return "${minute}分钟"
+        } else if (day == 0) {
+            return "${hour}小时${minute}分钟"
+        } else {
+            return "${day}天${hour}小时${minute}分钟"
+        }
+        return "${day}天${hour}小时${minute}分钟"
     }
 }

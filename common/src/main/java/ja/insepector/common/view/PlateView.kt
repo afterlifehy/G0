@@ -105,6 +105,10 @@ class PlateView @JvmOverloads constructor(
         emptyPosition = -1
     }
 
+    fun getPvTxt(): String {
+        return "${binding!!.tvPlate1.text}${binding!!.tvPlate2.text}${binding!!.tvPlate3.text}${binding!!.tvPlate4.text}${binding!!.tvPlate5.text}${binding!!.tvPlate6.text}${binding!!.tvPlate7.text}${binding!!.tvPlate8.text}"
+    }
+
     fun keyDelete() {
         when (emptyPosition) {
             0 -> {
@@ -180,14 +184,12 @@ class PlateView @JvmOverloads constructor(
             Constant.WHITE -> {
                 binding!!.tvPlate1.setTextColor(
                     ContextCompat.getColor(
-                        BaseApplication.instance(),
-                        ja.insepector.base.R.color.color_ffeb0000
+                        BaseApplication.instance(), ja.insepector.base.R.color.color_ffeb0000
                     )
                 )
                 binding!!.tvPlate2.setTextColor(
                     ContextCompat.getColor(
-                        BaseApplication.instance(),
-                        ja.insepector.base.R.color.color_ffeb0000
+                        BaseApplication.instance(), ja.insepector.base.R.color.color_ffeb0000
                     )
                 )
                 setPlateImgBg(R.mipmap.ic_plate_white_bg_start, R.mipmap.ic_plate_white_bg_middle, R.mipmap.ic_plate_white_bg_end)
@@ -198,7 +200,7 @@ class PlateView @JvmOverloads constructor(
             }
 
             Constant.OTHERS -> {
-                setPlateImgBg(R.mipmap.ic_plate_blue_bg_start, R.mipmap.ic_plate_blue_bg_middle, R.mipmap.ic_plate_blue_bg_end)
+                setPlateImgBg(R.mipmap.ic_plate_white_bg_start, R.mipmap.ic_plate_white_bg_middle, R.mipmap.ic_plate_white_bg_end)
             }
         }
     }

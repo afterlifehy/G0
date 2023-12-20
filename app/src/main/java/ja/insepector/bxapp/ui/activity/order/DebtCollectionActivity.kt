@@ -2,6 +2,7 @@ package ja.insepector.bxapp.ui.activity.order
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -21,6 +22,7 @@ import ja.insepector.base.ext.gone
 import ja.insepector.base.ext.i18N
 import ja.insepector.base.ext.i18n
 import ja.insepector.base.ext.show
+import ja.insepector.base.ext.startArouter
 import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.common.event.RefreshDebtOrderListEvent
@@ -135,9 +137,11 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             }
 
             R.id.rrl_debtCollection -> {
+//                TODO(debtCollectionBean)
                 val debtCollectionBean = v.tag as Int
-//                ARouter.getInstance().build(ARouterMap.DEBT_ORDER_DETAIL).withParcelable(ARouterMap.DEBT_ORDER, debtCollectionBean)
-//                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                startArouter(ARouterMap.DEBT_ORDER_DETAIL, data = Bundle().apply {
+//                    putParcelable(ARouterMap.DEBT_ORDER, debtCollectionBean)
+                })
             }
         }
     }
@@ -170,6 +174,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
                 tempList.add(1)
                 tempList.add(1)
                 tempList.add(1)
+//                TODO()
 //                debtCollectionList.addAll(it.result)
                 debtCollectionList.addAll(tempList)
                 if (debtCollectionList.size > 0) {

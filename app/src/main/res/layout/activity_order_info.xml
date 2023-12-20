@@ -44,7 +44,7 @@
                 android:layout_gravity="end"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_19"
-                tools:text="订单金额" />
+                android:text="@string/订单金额" />
         </FrameLayout>
 
 
@@ -108,7 +108,6 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_10"
                 android:background="@color/color_ffcccccc" />
 
             <RelativeLayout

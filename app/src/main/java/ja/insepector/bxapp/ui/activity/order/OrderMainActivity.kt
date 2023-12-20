@@ -23,7 +23,12 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
         binding.layoutToolbar.flBack.gone()
         binding.layoutToolbar.ivBackHome.show()
         binding.layoutToolbar.tvTitle.text = i18N(ja.insepector.base.R.string.订单)
-        binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.baseApplication, ja.insepector.base.R.color.white))
+        binding.layoutToolbar.tvTitle.setTextColor(
+            ContextCompat.getColor(
+                BaseApplication.baseApplication,
+                ja.insepector.base.R.color.white
+            )
+        )
     }
 
     override fun initListener() {
@@ -51,6 +56,7 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
             }
 
             R.id.rfl_orderInquiry -> {
+                startArouter(ARouterMap.ORDER_INQUIRY)
             }
         }
     }

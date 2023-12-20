@@ -2,8 +2,14 @@ package ja.insepector.bxapp.ui.activity.parking
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.net.Uri
+import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.View
@@ -11,13 +17,17 @@ import android.view.View.OnClickListener
 import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.EncodeUtils
+import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.ImageUtils
 import com.blankj.utilcode.util.SizeUtils
+import com.blankj.utilcode.util.TimeUtils
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.ext.gone
@@ -34,8 +44,13 @@ import ja.insepector.bxapp.mvvm.viewmodel.AdmissionTakePhotoViewModel
 import ja.insepector.bxapp.pop.MultipleSeatsPop
 import ja.insepector.common.util.AppUtil
 import ja.insepector.common.util.Constant
+import ja.insepector.common.util.FileUtil
 import ja.insepector.common.util.GlideUtils
 import ja.insepector.common.view.keyboard.KeyboardUtil
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Route(path = ARouterMap.ADMISSION_TAKE_PHOTO)
 class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, ActivityAdmissionTakePhotoBinding>(), OnClickListener {
@@ -155,8 +170,13 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     MultipleSeatsPop(this@AdmissionTakePhotoActivity, "09", multipleSeat, object : MultipleSeatsPop.MultipleSeatsCallback {
                         override fun selecctSeats(seat: String) {
                             multipleSeat = seat
-                            binding.tvMultipleSeats.text = ""
-                            binding.tvParkingNo.text = parkingNo + "-" + AppUtil.fillZero(multipleSeat)
+                            if (multipleSeat.isNotEmpty()) {
+                                binding.tvMultipleSeats.text = ""
+                                binding.tvParkingNo.text = parkingNo + "-" + AppUtil.fillZero(multipleSeat)
+                            } else {
+                                binding.tvMultipleSeats.text = i18N(ja.insepector.base.R.string.一车多位)
+                                binding.tvParkingNo.text = parkingNo
+                            }
                         }
                     })
                 multipleSeatsPop?.showAsDropDown(v, (binding.rflMultipleSeats.width - SizeUtils.dp2px(92f)) / 2, SizeUtils.dp2px(3f))
@@ -183,7 +203,9 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     i18N(ja.insepector.base.R.string.否),
                     object : PromptDialog.PromptCallBack {
                         override fun leftClick() {
-
+                            startArouter(ARouterMap.DEBT_COLLECTION, data = Bundle().apply {
+                                putString(ARouterMap.DEBT_CAR_LICENSE, binding.pvPlate.getPvTxt())
+                            })
                         }
 
                         override fun rightClick() {
@@ -210,12 +232,12 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
             R.id.iv_plateDelete -> {
                 binding.rflTakePhoto.show()
-                binding.rflPlateImg.hide()
+                binding.rflPlateImg.gone()
             }
 
             R.id.iv_panoramaDelete -> {
                 binding.rflTakePhoto2.show()
-                binding.rflPanoramaImg.hide()
+                binding.rflPanoramaImg.gone()
             }
 
             R.id.riv_plate -> {
@@ -243,25 +265,83 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
     fun takePhoto() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val photoFile: File? = createImageFile()
+        val photoURI: Uri = FileProvider.getUriForFile(
+            this,
+            "ja.insepector.bxapp.fileprovider",
+            photoFile!!
+        )
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
         takePictureLauncher.launch(takePictureIntent)
     }
 
     val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-            if (takePhotoType == 0) {
-                GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
-                binding.rflTakePhoto.hide()
-                binding.rflPlateImg.show()
-            } else {
-                GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
-                binding.rflTakePhoto2.hide()
-                binding.rflPanoramaImg.show()
-            }
-            val file = ImageUtils.save2Album(imageBitmap, Bitmap.CompressFormat.JPEG)
-            val bytes = file?.readBytes()
-//            picBase64 = EncodeUtils.base64Encode2String(bytes)
+//        if (result.resultCode == Activity.RESULT_OK) {
+//            var imageBitmap = result.data?.extras?.get("data") as Bitmap
+//            imageBitmap = ImageUtils.addTextWatermark(
+//                imageBitmap,
+//                TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
+//                SizeUtils.dp2px(19f), Color.RED, SizeUtils.dp2px(11f).toFloat(), SizeUtils.dp2px(8f).toFloat()
+//            )
+//            imageBitmap = ImageUtils.addTextWatermark(
+//                imageBitmap,
+//                "JAZ02109",
+//                SizeUtils.dp2px(19f), Color.RED, SizeUtils.dp2px(11f).toFloat(), SizeUtils.dp2px(27f).toFloat()
+//            )
+//            if (takePhotoType == 0) {
+//                GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
+//                binding.rflTakePhoto.hide()
+//                binding.rflPlateImg.show()
+//            } else {
+//                GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
+//                binding.rflTakePhoto2.hide()
+//                binding.rflPanoramaImg.show()
+//            }
+//            val file = ImageUtils.save2Album(imageBitmap, Bitmap.CompressFormat.JPEG)
+//            val bytes = file?.readBytes()
+////            picBase64 = EncodeUtils.base64Encode2String(bytes)
+//        }
+        var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+        imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 12)
+        imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
+        imageBitmap = ImageUtils.addTextWatermark(
+            imageBitmap,
+            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
+            16, Color.RED, 6f, 3f
+        )
+        imageBitmap = ImageUtils.addTextWatermark(
+            imageBitmap,
+            "JAZ02109",
+            16, Color.RED, 6f, 19f
+        )
+        ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.JPEG)
+        if (takePhotoType == 0) {
+            GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
+            binding.rflTakePhoto.hide()
+            binding.rflPlateImg.show()
+        } else {
+            GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
+            binding.rflTakePhoto2.hide()
+            binding.rflPanoramaImg.show()
         }
+        FileUtils.notifySystemToScan(imageFile)
+        val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
+        val picBase64 = EncodeUtils.base64Encode2String(bytes)
+    }
+    var currentPhotoPath = ""
+    var imageFile: File? = null
+    private fun createImageFile(): File? {
+        // 创建图像文件名称
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        imageFile = File.createTempFile(
+            "JPEG_${timeStamp}_", /* 前缀 */
+            ".jpg", /* 后缀 */
+            storageDir /* 目录 */
+        )
+
+        currentPhotoPath = imageFile!!.absolutePath
+        return imageFile
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
