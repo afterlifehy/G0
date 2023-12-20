@@ -50,7 +50,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
     var pageSize = 10
     var startDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
     var endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
-    var streetNo = ""
+    var loginName = ""
     var token = ""
     var currentTransactionBean: TransactionBean? = null
 
@@ -106,9 +106,9 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
 
     override fun initData() {
         runBlocking {
-            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
         }
-        streetNo = RealmUtil.instance?.findCurrentStreet()!!.streetNo
         showProgressDialog(20000)
         query()
     }
@@ -123,7 +123,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
         }
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["streetNo"] = streetNo
+        jsonobject["loginName"] = loginName
         jsonobject["carLicense"] = searchContent
         jsonobject["startDate"] = startDate
         jsonobject["endDate"] = endDate
@@ -214,14 +214,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
         mViewModel.apply {
             transactionInquiryLiveData.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()
-//                val tempList = it.result
-                val tempList = ArrayList<TransactionBean>()
-                tempList.add(TransactionBean("沪FHF227","2023-06-25 11:07:25","1","2dsdsafdsad","100.00","JAZ-021-025","15.00","2023-06-25 11:07:25","dsadsadqwer"))
-                tempList.add(TransactionBean("沪FHF227","2023-06-25 11:07:25","0","2dsdsafdsad","100.00","JAZ-021-025","15.00","2023-06-25 11:07:25","dsadsadqwer"))
-                tempList.add(TransactionBean("沪FHF227","2023-06-25 11:07:25","1","2dsdsafdsad","100.00","JAZ-021-025","15.00","2023-06-25 11:07:25","dsadsadqwer"))
-                tempList.add(TransactionBean("沪FHF227","2023-06-25 11:07:25","1","2dsdsafdsad","100.00","JAZ-021-025","15.00","2023-06-25 11:07:25","dsadsadqwer"))
-                tempList.add(TransactionBean("沪FHF227","2023-06-25 11:07:25","0","2dsdsafdsad","100.00","JAZ-021-025","15.00","2023-06-25 11:07:25","dsadsadqwer"))
-                tempList.add(TransactionBean("沪FHF227","2023-06-25 11:07:25","1","2dsdsafdsad","100.00","JAZ-021-025","15.00","2023-06-25 11:07:25","dsadsadqwer"))
+                val tempList = it.result
                 if (pageIndex == 1) {
                     if (tempList.isEmpty()) {
                         transactionInquiryAdapter?.setNewInstance(null)

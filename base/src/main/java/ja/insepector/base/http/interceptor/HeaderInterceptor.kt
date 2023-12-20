@@ -46,7 +46,7 @@ class HeaderInterceptor : Interceptor {
         val addHeader = chain.request().newBuilder()
         val timeStamp = System.currentTimeMillis().toString()
         runBlocking {
-            val token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            val token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             addHeader.addHeader("Content-Type", "application/json")
                 .addHeader("timestamp", timeStamp)
                 .addHeader("token", token)

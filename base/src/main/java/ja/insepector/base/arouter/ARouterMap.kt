@@ -12,9 +12,9 @@ object ARouterMap {
     const val LOGIN_INFO = "loginInfo"
 
     const val PARKING_SPACE = "/inspector_app/parkingSpace"
+    const val ORDER_NO = "orderNo"
     const val CAR_LICENSE = "carLicense"
     const val PARKING_NO = "parkingNo"
-    const val CAR_COLOR = "carColor"
 
     const val PREVIEW_IMAGE = "/inspector_app/previewImg"
     const val IMG_INDEX = "imgIndex"

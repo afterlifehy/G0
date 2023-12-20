@@ -32,6 +32,7 @@ import ja.insepector.bxapp.databinding.ActivityParkingSpaceBinding
 import ja.insepector.bxapp.mvvm.viewmodel.ParkingSpaceViewModel
 import com.zrq.spanbuilder.TextStyle
 import ja.insepector.base.arouter.ARouterMap
+import ja.insepector.base.bean.ParkingSpaceBean
 import ja.insepector.base.dialog.DialogHelp
 import ja.insepector.base.ext.startArouter
 import ja.insepector.bxapp.dialog.ExitMethodDialog
@@ -49,9 +50,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     var orderNo = ""
     var carLicense = ""
-    var carColor = ""
     var parkingNo = ""
-    var token = ""
+    var parkingSpaceBean: ParkingSpaceBean? = null
 
     var picBase64 = ""
 
@@ -67,6 +67,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     }
 
     override fun initView() {
+        orderNo = intent.getStringExtra(ARouterMap.ORDER_NO).toString()
         carLicense = intent.getStringExtra(ARouterMap.CAR_LICENSE).toString()
         parkingNo = intent.getStringExtra(ARouterMap.PARKING_NO).toString()
         binding.layoutToolbar.tvTitle.text = parkingNo
@@ -101,17 +102,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         exitMethodList.add(i18N(ja.insepector.base.R.string.其他))
 
         showProgressDialog(20000)
-        runBlocking {
-            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
-            val param = HashMap<String, Any>()
-            val jsonobject = JSONObject()
-            jsonobject["token"] = token
-            jsonobject["orderNo"] = orderNo
-            jsonobject["carLicense"] = carLicense
-            jsonobject["carColor"] = carColor
-            param["attr"] = jsonobject
-            mViewModel.parkingSpaceFee(param)
-        }
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["orderNo"] = orderNo
+        param["attr"] = jsonobject
+        mViewModel.parkingSpace(param)
     }
 
     @SuppressLint("CheckResult")
@@ -213,42 +208,35 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         }
     }
 
-//    val selectImageLauncher = registerForActivityResult(
-//        ActivityResultContracts.GetContent()
-//    ) { uri ->
-//        uri?.let {
-//            val file = UriUtils.uri2File(it)
-//            val bytes = file?.readBytes()
-//            picBase64 = EncodeUtils.base64Encode2String(bytes)
-//        }
-//    }
-
     @SuppressLint("CheckResult")
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            parkingSpaceFeeLiveData.observe(this@ParkingSpaceActivity) {
+            parkingSpaceLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-//                parkingSpaceBean = it
-//                binding.tvPlate.text = it.carLicense
+                parkingSpaceBean = it.result
+                binding.tvPlate.text = parkingSpaceBean?.carLicense
 
-                val strings = arrayOf(i18N(ja.insepector.base.R.string.开始时间), "2023-06-30 10:12:24")
+                val strings = arrayOf(i18N(ja.insepector.base.R.string.开始时间), parkingSpaceBean?.startTime.toString())
                 binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors)
 
-                val strings2 = arrayOf(i18N(ja.insepector.base.R.string.预付金额), "15.00元")
+
+                val strings2 =
+                    arrayOf(i18N(ja.insepector.base.R.string.预付金额), AppUtil.keepNDecimals(parkingSpaceBean?.havePayMoney.toString(), 2))
                 binding.tvPrepayAmount.text = AppUtil.getSpan(strings2, sizes, colors)
 
-                val strings3 = arrayOf(i18N(ja.insepector.base.R.string.超时时长), "10小时20分钟04秒")
-                binding.tvTimeoutDuration.text = AppUtil.getSpan(strings3, sizes, colors)
+//                val strings3 = arrayOf(i18N(ja.insepector.base.R.string.超时时长), "10小时20分钟04秒")
 
-                val strings4 = arrayOf(i18N(ja.insepector.base.R.string.待缴费用), "15.00元")
-                binding.tvPendingFee.text = AppUtil.getSpan(strings4, sizes, colors2, styles)
+//                binding.tvTimeoutDuration.text = AppUtil.getSpan(strings3, sizes, colors)
 
-                binding.tvArrearsNum.text = "1笔"
+//                val strings4 = arrayOf(i18N(ja.insepector.base.R.string.待缴费用), "15.00元")
+//                binding.tvPendingFee.text = AppUtil.getSpan(strings4, sizes, colors2, styles)
 
-                binding.tvArrearsAmount.text = "15.00元"
+//                binding.tvArrearsNum.text = "1笔"
+//
+//                binding.tvArrearsAmount.text = "15.00元"
 
-//                tradeNo = it.tradeNo
+//                tradeNo = parkingSpaceBean?.tradeNo
 //                amountPending = it.amountPending
             }
             errMsg.observe(this@ParkingSpaceActivity) {

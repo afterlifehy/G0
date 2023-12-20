@@ -112,6 +112,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                         }
 
                     })
+
                 streetChooseListDialog?.show()
             }
 
@@ -152,7 +153,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 }
                 val streetList = loginInfo?.result as ArrayList<Street>
                 runBlocking {
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, loginInfo!!.token)
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, loginInfo!!.simId)
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, loginInfo!!.phone)
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, loginInfo!!.name)
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, loginInfo!!.loginName)

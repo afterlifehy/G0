@@ -152,7 +152,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                         showProgressDialog(20000)
                                         runBlocking {
                                             val token =
-                                                PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
+                                                PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.simId)
                                             val param = HashMap<String, Any>()
                                             val jsonobject = JSONObject()
                                             jsonobject["token"] = token
@@ -183,7 +183,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                 })
                 ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.签退成功))
                 runBlocking {
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")

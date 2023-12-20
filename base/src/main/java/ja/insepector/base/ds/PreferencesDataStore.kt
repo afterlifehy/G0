@@ -99,7 +99,7 @@ class PreferencesDataStore private constructor() : IDataStore {
 // 而外一个存储 DataStore的Key的类
 object PreferencesKeys {
     //    val WALLET_SIGN = booleanPreferencesKey("wallet_sign")
-    val token by stringPreferencesKey()
+    val simId by stringPreferencesKey()
 
     val phone by stringPreferencesKey()
 

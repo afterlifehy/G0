@@ -39,32 +39,38 @@ import ja.insepector.bxapp.util.UpdateUtil
 @Route(path = ARouterMap.LOGIN)
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
     var locationManager: LocationManager? = null
-    var lat = 0.00
-    var lon = 0.00
+    var lat = 121.445345
+    var lon = 31.238665
     var updateBean: UpdateBean? = null
-    var locationEnable = false
+    var locationEnable = 0
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
         var rxPermissions = RxPermissions(this@LoginActivity)
-        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
-            if (it) {
+        rxPermissions.request(
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
+        ).subscribe {
+            if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 val provider = LocationManager.NETWORK_PROVIDER
                 locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {
                     override fun onLocationChanged(location: Location) {
                         lat = location.latitude
                         lon = location.longitude
-                        locationEnable = true
+                        locationEnable = 1
                     }
 
                     override fun onProviderDisabled(provider: String) {
-                        locationEnable = false
+                        locationEnable = -1
                         ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.请打开位置信息))
                     }
 
                     override fun onProviderEnabled(provider: String) {
-                        locationEnable = true
+                        locationEnable = 1
                     }
                 })
             }
@@ -142,7 +148,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         val jsonobject = JSONObject()
         jsonobject["version"] = AppUtils.getAppVersionCode()
         param["attr"] = jsonobject
-        mViewModel.checkUpdate(param)
+//        TODO()
+//        mViewModel.checkUpdate(param)
     }
 
     @SuppressLint("CheckResult", "MissingPermission")
@@ -163,25 +170,25 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                                 override fun onLocationChanged(location: Location) {
                                     lat = location.latitude
                                     lon = location.longitude
-                                    locationEnable = true
+                                    locationEnable = 1
                                 }
 
                                 override fun onProviderDisabled(provider: String) {
-                                    locationEnable = false
+                                    locationEnable = -1
                                     ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.请打开位置信息))
                                 }
 
                                 override fun onProviderEnabled(provider: String) {
-                                    locationEnable = true
+                                    locationEnable = 1
                                 }
                             })
                         }
-                        if (locationEnable) {
+                        if (locationEnable != -1) {
                             showProgressDialog(20000)
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
                             jsonobject["loginName"] = binding.etAccount.text.toString()
-                            jsonobject["password"] = binding.etPw.text.toString()
+                            jsonobject["passWord"] = binding.etPw.text.toString()
                             jsonobject["longitude"] = lon
                             jsonobject["latitude"] = lat
                             param["attr"] = jsonobject

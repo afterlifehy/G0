@@ -147,7 +147,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             R.id.rfl_pay -> {
                 showProgressDialog(20000)
                 runBlocking {
-                    token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+                    token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
                     jsonobject["token"] = token

@@ -13,22 +13,21 @@ class TransactionInquiryViewModel : BaseViewModel() {
         OrderRepository()
     }
 
-    val transactionInquiryLiveData = MutableLiveData<Boolean>()
+    val transactionInquiryLiveData = MutableLiveData<TransactionResultBean>()
     val notificationInquiryLiveData = MutableLiveData<Any>()
     val payResultLiveData = MutableLiveData<Any>()
 
     fun transactionInquiry(param: Map<String, Any?>) {
-        transactionInquiryLiveData.value = true
-//        launch {
-//            val response = withContext(Dispatchers.IO) {
-//                mOrderRepository.transactionInquiry(param)
-//            }
-//            executeResponse(response, {
-//                transactionInquiryLiveData.value = response.attr
-//            }, {
-//                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-//            })
-//        }
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.transactionInquiry(param)
+            }
+            executeResponse(response, {
+                transactionInquiryLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
     }
 
     fun notificationInquiry(param: Map<String, Any?>) {

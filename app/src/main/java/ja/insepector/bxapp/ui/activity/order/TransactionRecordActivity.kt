@@ -57,7 +57,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
 
     override fun initData() {
         runBlocking {
-            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
         }
         query()
     }

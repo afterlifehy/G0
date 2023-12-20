@@ -43,9 +43,9 @@ import org.greenrobot.eventbus.ThreadMode
 class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityDebtCollectionBinding>(), OnClickListener {
     private lateinit var keyboardUtil: KeyboardUtil
     var debtCollectionAdapter: DebtCollectionAdapter? = null
-    var debtCollectionList: MutableList<Int> = ArrayList()
+    var debtCollectionList: MutableList<DebtCollectionBean> = ArrayList()
     var carLicense = ""
-    var token = ""
+    var simId = ""
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(refreshDebtOrderListEvent: RefreshDebtOrderListEvent) {
@@ -150,11 +150,11 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
         keyboardUtil.hideKeyboard()
         showProgressDialog(20000)
         runBlocking {
-            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             val param = HashMap<String, Any>()
             val jsonobject = JSONObject()
-            jsonobject["token"] = token
-            jsonobject["carLicense"] = carLicense
+            jsonobject["simId"] = simId
+            jsonobject["plateId"] = carLicense
             param["attr"] = jsonobject
             mViewModel.debtInquiry(param)
         }
@@ -166,17 +166,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             debtInquiryLiveData.observe(this@DebtCollectionActivity) {
                 dismissProgressDialog()
                 debtCollectionList.clear()
-                val tempList: MutableList<Int> = ArrayList()
-                tempList.add(1)
-                tempList.add(1)
-                tempList.add(1)
-                tempList.add(1)
-                tempList.add(1)
-                tempList.add(1)
-                tempList.add(1)
-//                TODO()
-//                debtCollectionList.addAll(it.result)
-                debtCollectionList.addAll(tempList)
+                debtCollectionList.addAll(it.result)
                 if (debtCollectionList.size > 0) {
                     binding.rvDebt.show()
                     binding.layoutNoData.root.gone()

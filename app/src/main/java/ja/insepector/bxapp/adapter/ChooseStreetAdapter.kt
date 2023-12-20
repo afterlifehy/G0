@@ -19,6 +19,7 @@ class ChooseStreetAdapter(data: MutableList<Street>? = null, var streetChoosedLi
         } else {
             holder.vb.cbStreet.isChecked = false
         }
+
         holder.vb.rlStreet.setOnClickListener {
             holder.vb.cbStreet.isChecked = !item.ischeck
             item.ischeck = holder.vb.cbStreet.isChecked

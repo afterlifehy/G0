@@ -9,5 +9,5 @@ data class LoginBean(
     val loginName: String,
     val phone: String,
     val result: List<Street>,
-    val token: String
+    val simId: String
 ):Parcelable

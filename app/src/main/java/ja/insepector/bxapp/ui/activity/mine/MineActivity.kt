@@ -188,7 +188,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                                 }
                             }
                             runBlocking {
-                                PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
+                                PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")

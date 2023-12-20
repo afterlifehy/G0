@@ -1,27 +1,23 @@
 package ja.insepector.bxapp.ui.activity.order
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.View.OnScrollChangeListener
 import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.TimeUtils
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.bean.OrderBean
-import ja.insepector.base.bean.Street
 import ja.insepector.base.dialog.DialogHelp
+import ja.insepector.base.ds.PreferencesDataStore
+import ja.insepector.base.ds.PreferencesKeys
 import ja.insepector.base.ext.gone
 import ja.insepector.base.ext.i18N
 import ja.insepector.base.ext.show
@@ -39,8 +35,7 @@ import ja.insepector.bxapp.adapter.OrderInquiryAdapter
 import ja.insepector.bxapp.databinding.ActivityOrderInquiryBinding
 import ja.insepector.bxapp.mvvm.viewmodel.OrderInquiryViewModel
 import ja.insepector.bxapp.pop.DatePop
-import ja.insepector.bxapp.ui.activity.login.LoginActivity
-import ja.insepector.bxapp.ui.activity.login.StreetChooseActivity
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.ORDER_INQUIRY)
 class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrderInquiryBinding>(), OnClickListener {
@@ -52,7 +47,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
     var pageSize = 10
     var startDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
     var endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
-    var street: Street? = null
+    var loginName = ""
 
     override fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -106,9 +101,11 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
     }
 
     override fun initData() {
-        street = RealmUtil.instance?.findCurrentStreet()
-        showProgressDialog(20000)
-        query()
+        runBlocking {
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            showProgressDialog(20000)
+            query()
+        }
     }
 
     private fun query() {
@@ -121,7 +118,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         }
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["streetNo"] = street?.streetNo
+        jsonobject["loginName"] = loginName
         jsonobject["carLicense"] = searchContent
         jsonobject["startDate"] = startDate
         jsonobject["endDate"] = endDate
