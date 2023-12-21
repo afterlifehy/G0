@@ -60,6 +60,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var currentMethod = ""
 
     var type = ""
+    var simId = ""
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(orderFinishEvent: OrderFinishEvent) {
@@ -101,10 +102,18 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         exitMethodList.add(i18N(ja.insepector.base.R.string.线上支付))
         exitMethodList.add(i18N(ja.insepector.base.R.string.其他))
 
+        runBlocking {
+            simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
+            parkingSpaceRequest()
+        }
+    }
+
+    fun parkingSpaceRequest() {
         showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["orderNo"] = orderNo
+        jsonobject["simId"] = simId
         param["attr"] = jsonobject
         mViewModel.parkingSpace(param)
     }
@@ -220,24 +229,21 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 val strings = arrayOf(i18N(ja.insepector.base.R.string.开始时间), parkingSpaceBean?.startTime.toString())
                 binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors)
 
-
                 val strings2 =
-                    arrayOf(i18N(ja.insepector.base.R.string.预付金额), AppUtil.keepNDecimals(parkingSpaceBean?.havePayMoney.toString(), 2))
+                    arrayOf(
+                        i18N(ja.insepector.base.R.string.预付金额),
+                        AppUtil.keepNDecimals(parkingSpaceBean?.havePayMoney.toString(), 2) + "元"
+                    )
                 binding.tvPrepayAmount.text = AppUtil.getSpan(strings2, sizes, colors)
 
-//                val strings3 = arrayOf(i18N(ja.insepector.base.R.string.超时时长), "10小时20分钟04秒")
+                val strings3 = arrayOf(i18N(ja.insepector.base.R.string.超时时长), parkingSpaceBean?.timeOut.toString())
+                binding.tvTimeoutDuration.text = AppUtil.getSpan(strings3, sizes, colors)
 
-//                binding.tvTimeoutDuration.text = AppUtil.getSpan(strings3, sizes, colors)
+                val strings4 = arrayOf(i18N(ja.insepector.base.R.string.待缴费用), "${parkingSpaceBean?.realtimeMoney}元")
+                binding.tvPendingFee.text = AppUtil.getSpan(strings4, sizes, colors2, styles)
 
-//                val strings4 = arrayOf(i18N(ja.insepector.base.R.string.待缴费用), "15.00元")
-//                binding.tvPendingFee.text = AppUtil.getSpan(strings4, sizes, colors2, styles)
-
-//                binding.tvArrearsNum.text = "1笔"
-//
-//                binding.tvArrearsAmount.text = "15.00元"
-
-//                tradeNo = parkingSpaceBean?.tradeNo
-//                amountPending = it.amountPending
+                binding.tvArrearsNum.text = "${parkingSpaceBean?.historyCount}笔"
+                binding.tvArrearsAmount.text = "${parkingSpaceBean?.historySum}元"
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()

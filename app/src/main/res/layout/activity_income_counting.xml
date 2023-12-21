@@ -60,6 +60,7 @@
                         android:id="@+id/tv_totalIncomeTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:drawableEnd="@mipmap/ic_question"
                         android:drawablePadding="@dimen/dp_11"
                         android:text="总收费"
@@ -67,6 +68,7 @@
                         android:textSize="@dimen/sp_19" />
 
                     <TextView
+                        android:id="@+id/tv_totalIncome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
@@ -88,7 +90,9 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:padding="@dimen/dp_13">
+                        android:paddingStart="@dimen/dp_13"
+                        android:paddingTop="@dimen/dp_13"
+                        android:paddingEnd="@dimen/dp_13">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -101,7 +105,6 @@
                             android:id="@+id/tv_orderPlacedNum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_5"
                             tools:text="40笔" />
                     </LinearLayout>
 
@@ -116,7 +119,9 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:orientation="vertical"
-                        android:padding="@dimen/dp_13">
+                        android:paddingStart="@dimen/dp_13"
+                        android:paddingTop="@dimen/dp_13"
+                        android:paddingEnd="@dimen/dp_13">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -129,7 +134,6 @@
                             android:id="@+id/tv_refusePayNum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_5"
                             tools:text="40笔" />
                     </LinearLayout>
                 </LinearLayout>
@@ -149,7 +153,9 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:padding="@dimen/dp_13">
+                        android:paddingStart="@dimen/dp_13"
+                        android:paddingTop="@dimen/dp_13"
+                        android:paddingEnd="@dimen/dp_13">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -162,7 +168,6 @@
                             android:id="@+id/tv_partPaidNum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_5"
                             tools:text="40笔" />
                     </LinearLayout>
 
@@ -177,7 +182,9 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:orientation="vertical"
-                        android:padding="@dimen/dp_13">
+                        android:paddingStart="@dimen/dp_13"
+                        android:paddingTop="@dimen/dp_13"
+                        android:paddingEnd="@dimen/dp_13">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -190,7 +197,6 @@
                             android:id="@+id/tv_recoverNum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_5"
                             tools:text="40笔" />
                     </LinearLayout>
                 </LinearLayout>
@@ -211,6 +217,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:text="@string/被追缴"
                         android:textColor="@color/color_ff666666"
                         android:textSize="@dimen/sp_19" />
@@ -219,7 +226,7 @@
                         android:id="@+id/tv_recoverAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
+                        android:layout_gravity="end|center_vertical"
                         tools:text="0.00元" />
                 </FrameLayout>
 
@@ -239,6 +246,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:text="@string/追缴他人"
                         android:textColor="@color/color_ff666666"
                         android:textSize="@dimen/sp_19" />
@@ -247,7 +255,7 @@
                         android:id="@+id/tv_chasingOthersAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
+                        android:layout_gravity="end|center_vertical"
                         tools:text="0.00元" />
                 </FrameLayout>
 
@@ -267,6 +275,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:text="@string/自主缴费"
                         android:textColor="@color/color_ff666666"
                         android:textSize="@dimen/sp_19" />
@@ -275,7 +284,7 @@
                         android:id="@+id/tv_payIndependentlyAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
+                        android:layout_gravity="end|center_vertical"
                         tools:text="0.00元" />
                 </FrameLayout>
             </com.aries.ui.view.radius.RadiusLinearLayout>
@@ -288,6 +297,7 @@
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_13"
                 android:orientation="vertical"
+                android:visibility="gone"
                 app:rv_backgroundColor="@color/white"
                 app:rv_radius="@dimen/dp_10">
 

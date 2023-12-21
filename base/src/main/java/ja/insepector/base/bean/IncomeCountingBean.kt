@@ -1,15 +1,24 @@
 package ja.insepector.base.bean
 
 data class IncomeCountingBean(
-    val payMoneyToday: String = "",
-    val orderTotalToday: Int = 0,
-    val unclearedTotal: Int = 0,
-    val payMoneyTotal: String = "",
-    val orderTotal: Int = 0,
     var loginName: String = "",
     var range: String = "",
-    var list1: ArrayList<Summary> = arrayListOf(),
-    var list2: ArrayList<Summary> = arrayListOf(),
+    val list1: List<TodayIncomeBean>,
+    val list2: List<RangeIncomeBean>
 )
 
-data class Summary(var number: Int, var amount: String, var streetName: String,var streetNo:String)
+data class TodayIncomeBean(
+    val onlineMoney: String = "",
+    val orderCount: Int = 0,
+    val oweCount: Int = 0,
+    val oweMoney: String = "",
+    val partPayCount: Int = 0,
+    val passMoney: String = "",
+    val payMoney: String = "",
+    val refusePayCount: Int = 0
+)
+
+data class RangeIncomeBean(
+    val orderCount: Int = 0,
+    val payMoney: String = ""
+)

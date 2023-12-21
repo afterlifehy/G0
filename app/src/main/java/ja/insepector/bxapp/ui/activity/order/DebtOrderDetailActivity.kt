@@ -62,32 +62,18 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), ja.insepector.base.R.color.white))
 
         debtCollectionBean = intent.getParcelableExtra(ARouterMap.DEBT_ORDER) as? DebtCollectionBean
-//         TODO()
-//        binding.tvPlate.text = debtCollectionBean!!.carLicense
-//        val strings1 = arrayOf("${AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2)}", "元")
-//        binding.tvArrearsAmount.text = AppUtil.getSpan(strings1, sizes, colors)
-//        val strings2 = arrayOf(i18N(ja.insepector.base.R.string.订单) + "：", debtCollectionBean!!.orderNo)
-//        binding.tvOrderNo.text = AppUtil.getSpan(strings2, sizes2, colors2)
-//        val strings3 = arrayOf(i18N(ja.insepector.base.R.string.泊位) + "：", debtCollectionBean!!.parkingNo)
-//        binding.tvBerth.text = AppUtil.getSpan(strings3, sizes2, colors2)
-//        val strings4 = arrayOf(i18N(ja.insepector.base.R.string.路段) + "：", debtCollectionBean!!.streetName)
-//        binding.tvStreet.text = AppUtil.getSpan(strings4, sizes2, colors2)
-//        val strings5 = arrayOf(i18N(ja.insepector.base.R.string.入场) + "：", debtCollectionBean!!.startTime)
-//        binding.tvStartTime.text = AppUtil.getSpan(strings5, sizes2, colors2)
-//        val strings6 = arrayOf(i18N(ja.insepector.base.R.string.出场) + "：", debtCollectionBean!!.endTime)
-//        binding.tvEndTime.text = AppUtil.getSpan(strings6, sizes2, colors2)
-        binding.tvPlate.text = "沪A36N81"
-        val strings1 = arrayOf("${AppUtil.keepNDecimal(1500 / 100.00, 2)}", "元")
-        binding.tvArrearsAmount.text = AppUtil.getSpan(strings1, sizes, colors, styles)
-        val strings2 = arrayOf(i18N(ja.insepector.base.R.string.订单) + "：", "20230625JAZ021008001078")
+        binding.tvPlate.text = debtCollectionBean!!.carLicense
+        val strings1 = arrayOf("${AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2)}", "元")
+        binding.tvArrearsAmount.text = AppUtil.getSpan(strings1, sizes, colors)
+        val strings2 = arrayOf(i18N(ja.insepector.base.R.string.订单) + "：", debtCollectionBean!!.orderNo)
         binding.tvOrderNo.text = AppUtil.getSpan(strings2, sizes2, colors2)
-        val strings3 = arrayOf(i18N(ja.insepector.base.R.string.泊位) + "：", "JAZ-021-008")
+        val strings3 = arrayOf(i18N(ja.insepector.base.R.string.泊位) + "：", debtCollectionBean!!.parkingNo)
         binding.tvBerth.text = AppUtil.getSpan(strings3, sizes2, colors2)
-        val strings4 = arrayOf(i18N(ja.insepector.base.R.string.路段) + "：", "昌平路(西康路-常德路)")
+        val strings4 = arrayOf(i18N(ja.insepector.base.R.string.路段) + "：", debtCollectionBean!!.streetName)
         binding.tvStreet.text = AppUtil.getSpan(strings4, sizes2, colors2)
-        val strings5 = arrayOf(i18N(ja.insepector.base.R.string.入场) + "：", "2023-06-25 10:31:26")
+        val strings5 = arrayOf(i18N(ja.insepector.base.R.string.入场) + "：", debtCollectionBean!!.startTime)
         binding.tvStartTime.text = AppUtil.getSpan(strings5, sizes2, colors2)
-        val strings6 = arrayOf(i18N(ja.insepector.base.R.string.出场) + "：", "2023-06-25 11:27:56")
+        val strings6 = arrayOf(i18N(ja.insepector.base.R.string.出场) + "：", debtCollectionBean!!.endTime)
         binding.tvEndTime.text = AppUtil.getSpan(strings6, sizes2, colors2)
 
         val lp = binding.llPic.layoutParams
@@ -177,7 +163,6 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         val jsonobject = JSONObject()
         jsonobject["token"] = token
         jsonobject["tradeNo"] = tradeNo
-//        20230831JAZ03850133112
         param["attr"] = jsonobject
         mViewModel.payResult(param)
     }

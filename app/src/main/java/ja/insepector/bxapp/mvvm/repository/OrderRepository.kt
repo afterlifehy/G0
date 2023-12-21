@@ -8,13 +8,6 @@ import ja.insepector.base.bean.TransactionResultBean
 
 class OrderRepository : BaseRepository() {
 
-//    /**
-//     * 视频图片
-//     */
-//    suspend fun videoPic(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<VideoPicBean> {
-//        return mServer.videoPic(param)
-//    }
-
     /**
      * 订单查询
      */

@@ -18,6 +18,12 @@ interface Api {
     suspend fun getParkingLotList(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<ParkingLotResultBean>
 
     /**
+     * 下单
+     */
+    @POST("S_G0_02")
+    suspend fun placeOrder(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
      * 订单查询
      */
     @POST("S_G0_11")
@@ -28,6 +34,18 @@ interface Api {
      */
     @POST("S_G0_12")
     suspend fun transactionInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TransactionResultBean>
+
+    /**
+     * 营收盘点
+     */
+    @POST("S_G0_13")
+    suspend fun incomeCounting(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<IncomeCountingBean>
+
+    /**
+     * 费率查询
+     */
+    @POST("S_G0_14")
+    suspend fun feeRate(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<FeeRateResultBean>
 
     /**
      * 版本查询
@@ -50,7 +68,7 @@ interface Api {
     /**
      * 欠费查询
      */
-    @POST("S_CP_0108")
+    @POST("S_G0_17")
     suspend fun debtInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<DebtCollectionResultBean>
 
 }

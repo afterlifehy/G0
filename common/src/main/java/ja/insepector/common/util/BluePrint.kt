@@ -3,9 +3,16 @@ package ja.insepector.common.util
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.Typeface
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
+import android.util.TypedValue
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.SizeUtils
+import com.blankj.utilcode.util.TimeUtils
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.bean.IncomeCountingBean
 import ja.insepector.base.bean.PrintInfoBean
@@ -124,7 +131,10 @@ class BluePrint() {
             }
             if (receipt) {
                 val incomeCountingBean = JSONObject.parseObject(printText, IncomeCountingBean::class.java)
-                var height = 300 + 300 * incomeCountingBean.list1.size
+                var height = 600
+                if (incomeCountingBean.list2 != null && incomeCountingBean.list2.size > 0) {
+                    height += 200
+                }
                 zpSDK!!.pageSetup(800, height)
                 zpSDK!!.DrawSpecialText(230, 10, PrinterInterface.Textfont.siyuanheiti, 30, "数据打印", 0, 1, 0) //3
                 zpSDK!!.DrawSpecialText(
@@ -139,41 +149,35 @@ class BluePrint() {
                 )
                 printDrawText("登录账号:", incomeCountingBean.loginName, ystart, 9)
                 ystart += 40
-                for (i in incomeCountingBean.list1) {
-                    zpSDK!!.DrawSpecialText(
-                        20,
-                        ystart,
-                        PrinterInterface.Textfont.siyuanheiti,
-                        27,
-                        i.streetName,
-                        0,
-                        0,
-                        0
-                    )
+                if (incomeCountingBean.list1 != null && incomeCountingBean.list1.size > 0) {
+                    val todayIncomeBean = incomeCountingBean.list1[0]
+                    printDrawText("今日时间:", TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd"), ystart, 9)
                     ystart += 40
-                    printDrawText("① 交易笔数:", i.number.toString() + " 笔", ystart, 12)
+                    printDrawText("总收费：", todayIncomeBean.payMoney + " 元", ystart, 9)
                     ystart += 40
-                    printDrawText("② 交易金额:", i.amount + " 元", ystart, 12)
+                    printDrawText("已下单：", todayIncomeBean.orderCount.toString() + " 笔", ystart, 9)
+                    ystart += 40
+                    printDrawText("拒付费：", todayIncomeBean.refusePayCount.toString() + " 笔", ystart, 9)
+                    ystart += 40
+                    printDrawText("部分付费：", todayIncomeBean.partPayCount.toString() + " 笔", ystart, 11)
+                    ystart += 40
+                    printDrawText("已追缴：", todayIncomeBean.oweCount.toString() + " 笔", ystart, 9)
+                    ystart += 40
+                    printDrawText("被追缴：", todayIncomeBean.passMoney + " 元", ystart, 9)
+                    ystart += 40
+                    printDrawText("追缴他人：", todayIncomeBean.oweMoney + " 元", ystart, 11)
+                    ystart += 40
+                    printDrawText("自主追缴：", todayIncomeBean.onlineMoney + " 元", ystart, 11)
                     ystart += 40
                 }
-                ystart += 40
-                printDrawText("统计时间:", incomeCountingBean.range, ystart, 8)
-                ystart += 40
-                for (i in incomeCountingBean.list2) {
-                    zpSDK!!.DrawSpecialText(
-                        20,
-                        ystart,
-                        PrinterInterface.Textfont.siyuanheiti,
-                        27,
-                        i.streetName,
-                        0,
-                        0,
-                        0
-                    )
+                if (incomeCountingBean.list2 != null && incomeCountingBean.list2.size > 0) {
                     ystart += 40
-                    printDrawText("① 交易笔数:", i.number.toString() + " 笔", ystart, 12)
+                    val rangeIncomeBean = incomeCountingBean.list2[0]
+                    printDrawText("统计时间：", incomeCountingBean.range, ystart, 9)
                     ystart += 40
-                    printDrawText("② 交易金额:", i.amount + " 元", ystart, 12)
+                    printDrawText("总收入：", rangeIncomeBean.payMoney + " 元", ystart, 9)
+                    ystart += 40
+                    printDrawText("已下单：", rangeIncomeBean.orderCount.toString() + " 笔", ystart, 9)
                     ystart += 40
                 }
                 zpSDK!!.DrawSpecialText(
@@ -194,7 +198,7 @@ class BluePrint() {
                 val now = Calendar.getInstance()
                 val today = now[Calendar.YEAR].toString() + "年" + (now[Calendar.MONTH] + 1) + "月" + now[Calendar.DAY_OF_MONTH] + "日"
                 val printInfo = JSONObject.parseObject(printText, PrintInfoBean::class.java)
-                zpSDK!!.pageSetup(800, 1700)
+                zpSDK!!.pageSetup(700, 1700)
                 //zpSDK.drawGraphic(0, 0, 0, 0, bmp);
                 zpSDK!!.DrawSpecialText(147, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市机动车道路停车费", 0, 0, 0) //3
                 zpSDK!!.DrawSpecialText(197, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 24, "电子票据告知书", 0, 0, 0) //3
@@ -358,4 +362,5 @@ class BluePrint() {
             0
         )
     }
+
 }

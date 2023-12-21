@@ -17,15 +17,15 @@ class IncomeCountingViewModel: BaseViewModel() {
     val incomeCountingLiveData = MutableLiveData<IncomeCountingBean>()
 
     fun incomeCounting(param: Map<String, Any?>) {
-//        launch {
-//            val response = withContext(Dispatchers.IO) {
-//                mIncomeCountingRepository.incomeCounting(param)
-//            }
-//            executeResponse(response, {
-//                incomeCountingLiveData.value = response.attr
-//            }, {
-//                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-//            })
-//        }
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mIncomeCountingRepository.incomeCounting(param)
+            }
+            executeResponse(response, {
+                incomeCountingLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
     }
 }

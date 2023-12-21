@@ -27,8 +27,10 @@ import ja.insepector.bxapp.databinding.ActivityIncomeCountingBinding
 import ja.insepector.bxapp.mvvm.viewmodel.IncomeCountingViewModel
 import ja.insepector.bxapp.pop.DatePop
 import com.tbruyelle.rxpermissions3.RxPermissions
+import com.zrq.spanbuilder.TextStyle
 import ja.insepector.base.ext.show
 import ja.insepector.bxapp.dialog.PromptDialog
+import ja.insepector.common.util.AppUtil
 import ja.insepector.common.util.GlideUtils
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
@@ -38,13 +40,13 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
     var datePop: DatePop? = null
     var startDate = ""
     var endDate = ""
-    var streetNos = ""
     var incomeCountingBean: IncomeCountingBean? = null
     var loginName = ""
     var searchRange = "0"
     var promptDialog: PromptDialog? = null
     var colors = intArrayOf(ja.insepector.base.R.color.color_ff04a091, ja.insepector.base.R.color.color_ff04a091)
     var sizes = intArrayOf(27, 19)
+    var styles = arrayOf(TextStyle.BOLD, TextStyle.NORMAL)
     var colors2 = intArrayOf(ja.insepector.base.R.color.color_ff282828, ja.insepector.base.R.color.color_ff282828)
     var sizes2 = intArrayOf(23, 19)
 
@@ -67,10 +69,6 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
         }
         endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
         startDate = endDate.substring(0, 8) + "01"
-        val streetList = RealmUtil.instance?.findCheckedStreetList()
-        if (streetList != null) {
-            streetNos = streetList.joinToString(separator = ",") { it.streetNo }
-        }
         getIncomeCounting()
     }
 
@@ -125,8 +123,6 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                 if (searchRange == "1") {
                     incomeCountingBean?.range = startDate + "~" + endDate
                 }
-//                incomeCountingBean?.list1 = todaySummaryList as ArrayList<Summary>
-//                incomeCountingBean?.list2 = monthSummaryList as ArrayList<Summary>
                 var str = "receipt,"
                 var rxPermissions = RxPermissions(this@IncomeCountingActivity)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -152,7 +148,6 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
         showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["streetNos"] = streetNos
         jsonobject["startDate"] = startDate
         jsonobject["endDate"] = endDate
         jsonobject["loginName"] = loginName
@@ -165,17 +160,38 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
         mViewModel.apply {
             incomeCountingLiveData.observe(this@IncomeCountingActivity) {
                 dismissProgressDialog()
-//                incomeCountingBean = it
-//                todaySummaryList.clear()
-//                todaySummaryList.addAll(incomeCountingBean!!.list1)
-//                todaySummaryAdapter?.setList(todaySummaryList)
-//                if (searchRange == "1") {
-//                    binding.rllMonth.show()
-//                    monthSummaryList.clear()
-//                    monthSummaryList.addAll(incomeCountingBean!!.list2)
-//                    monthSummaryAdapter?.setList(monthSummaryList)
-//                }
-//                searchRange = "1"
+                incomeCountingBean = it
+                if (incomeCountingBean?.list1 != null && incomeCountingBean?.list1!!.isNotEmpty()) {
+                    val todayIncomeBean = incomeCountingBean?.list1!![0]
+                    val strings = arrayOf(todayIncomeBean.payMoney, "元")
+                    binding.tvTotalIncome.text = AppUtil.getSpan(strings, sizes, colors, styles)
+                    val strings1 = arrayOf(todayIncomeBean.orderCount.toString(), "笔")
+                    binding.tvOrderPlacedNum.text = AppUtil.getSpan(strings1, sizes2, colors2)
+                    val strings2 = arrayOf(todayIncomeBean.refusePayCount.toString(), "笔")
+                    binding.tvRefusePayNum.text = AppUtil.getSpan(strings2, sizes2, colors2)
+                    val strings3 = arrayOf(todayIncomeBean.partPayCount.toString(), "笔")
+                    binding.tvPartPaidNum.text = AppUtil.getSpan(strings3, sizes2, colors2)
+                    val strings4 = arrayOf(todayIncomeBean.oweCount.toString(), "笔")
+                    binding.tvRecoverNum.text = AppUtil.getSpan(strings4, sizes2, colors2)
+                    val strings5 = arrayOf(todayIncomeBean.passMoney, "元")
+                    binding.tvRecoverAmount.text = AppUtil.getSpan(strings5, sizes2, colors2)
+                    val strings6 = arrayOf(todayIncomeBean.oweMoney, "元")
+                    binding.tvChasingOthersAmount.text = AppUtil.getSpan(strings6, sizes2, colors2)
+                    val strings7 = arrayOf(todayIncomeBean.onlineMoney, "元")
+                    binding.tvPayIndependentlyAmount.text = AppUtil.getSpan(strings7, sizes2, colors2)
+
+                }
+                if (searchRange == "1") {
+                    binding.rllMonth.show()
+                    if (incomeCountingBean?.list1 != null && incomeCountingBean?.list1!!.isNotEmpty()) {
+                        val rangeIncomeBean = incomeCountingBean?.list2!![0]
+                        val strings8 = arrayOf(rangeIncomeBean.payMoney, "元")
+                        binding.tvMonthTotalIncome.text = AppUtil.getSpan(strings8, sizes2, colors2)
+                        val strings9 = arrayOf(rangeIncomeBean.orderCount.toString(), "笔")
+                        binding.tvMonthOrderPlacedNum.text = AppUtil.getSpan(strings9, sizes2, colors2)
+                    }
+                }
+                searchRange = "1"
             }
             errMsg.observe(this@IncomeCountingActivity) {
                 dismissProgressDialog()

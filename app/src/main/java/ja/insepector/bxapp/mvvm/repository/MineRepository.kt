@@ -1,6 +1,7 @@
 package ja.insepector.bxapp.mvvm.repository
 
 import ja.insepector.base.base.mvvm.BaseRepository
+import ja.insepector.base.bean.FeeRateResultBean
 import ja.insepector.base.bean.HttpWrapper
 import ja.insepector.base.bean.UpdateBean
 
@@ -18,11 +19,11 @@ class MineRepository : BaseRepository() {
 //    suspend fun logout(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
 //        return mServer.logout(param)
 //    }
-//
-//    /**
-//     * 费率
-//     */
-//    suspend fun feeRate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<FeeRateResultBean> {
-//        return mServer.feeRate(param)
-//    }
+
+    /**
+     * 费率
+     */
+    suspend fun feeRate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<FeeRateResultBean> {
+        return mServer.feeRate(param)
+    }
 }

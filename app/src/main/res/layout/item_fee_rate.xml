@@ -68,13 +68,13 @@
             app:rv_topRightRadius="@dimen/dp_3">
 
             <com.aries.ui.view.radius.RadiusTextView
-                android:id="@+id/rtv_whiteDayRange"
+                android:id="@+id/rtv_dayTimeRange"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_43"
                 android:gravity="center"
-                android:text="08:00至22:00"
                 android:textColor="@color/color_ff1a1a1a"
-                android:textSize="@dimen/sp_19" />
+                android:textSize="@dimen/sp_19"
+                tools:text="08:00至22:00" />
 
             <View
                 android:layout_width="match_parent"
@@ -128,9 +128,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="15元"
                     android:textColor="@color/color_ff1a1a1a"
-                    android:textSize="@dimen/sp_19" />
+                    android:textSize="@dimen/sp_19"
+                    tools:text="15元" />
 
                 <View
                     android:layout_width="@dimen/dp_1"
@@ -138,16 +138,16 @@
                     android:background="@color/color_ffcccccc" />
 
                 <TextView
-                    android:id="@+id/tv_"
+                    android:id="@+id/tv_nextAmount"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:paddingStart="@dimen/dp_16"
                     android:paddingEnd="@dimen/dp_16"
-                    android:text="10元"
                     android:textColor="@color/color_ff1a1a1a"
-                    android:textSize="@dimen/sp_19" />
+                    android:textSize="@dimen/sp_19"
+                    tools:text="10元" />
             </LinearLayout>
 
             <View
@@ -156,12 +156,13 @@
                 android:background="@color/color_ffcccccc" />
 
             <TextView
+                android:id="@+id/tv_nightTimeRange"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_44"
                 android:gravity="center"
-                android:text="22:00至07:00，10元/次"
                 android:textColor="@color/color_ff1a1a1a"
-                android:textSize="@dimen/sp_19" />
+                android:textSize="@dimen/sp_19"
+                tools:text="22:00至07:00，10元/次" />
         </com.aries.ui.view.radius.RadiusLinearLayout>
     </com.aries.ui.view.radius.RadiusLinearLayout>
 </com.aries.ui.view.radius.RadiusLinearLayout>

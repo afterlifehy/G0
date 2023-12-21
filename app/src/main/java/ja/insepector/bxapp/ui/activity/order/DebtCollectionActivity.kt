@@ -137,10 +137,9 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             }
 
             R.id.rrl_debtCollection -> {
-//                TODO(debtCollectionBean)
-                val debtCollectionBean = v.tag as Int
+                val debtCollectionBean = v.tag as DebtCollectionBean
                 startArouter(ARouterMap.DEBT_ORDER_DETAIL, data = Bundle().apply {
-//                    putParcelable(ARouterMap.DEBT_ORDER, debtCollectionBean)
+                    putParcelable(ARouterMap.DEBT_ORDER, debtCollectionBean)
                 })
             }
         }

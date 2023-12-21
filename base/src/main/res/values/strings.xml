@@ -175,4 +175,5 @@
     <string name="总额">总额</string>
     <string name="交易记录">交易记录</string>
     <string name="交易记录信息">交易记录信息</string>
+    <string name="是否确认下单">是否确认下单</string>
 </resources>

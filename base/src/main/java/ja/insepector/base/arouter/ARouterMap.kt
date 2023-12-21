@@ -38,6 +38,7 @@ object ARouterMap {
     const val SCAN_PLATE = "/inspector_app/scanPlate"
 
     const val ADMISSION_TAKE_PHOTO = "/inspector_app/admissionTakePhoto"
+    const val ADMISSION_TAKE_PHOTO_PARKING_NO = "parkingNo"
 
     const val DATA_PRINT = "/inspector_app/dataPrint"
     const val DATA_PRINT_LOGIN_NAME = "loginName"

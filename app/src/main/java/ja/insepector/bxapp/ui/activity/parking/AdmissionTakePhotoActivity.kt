@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.FileUtils
@@ -30,11 +31,17 @@ import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.TimeUtils
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
+import ja.insepector.base.dialog.DialogHelp
+import ja.insepector.base.ds.PreferencesDataStore
+import ja.insepector.base.ds.PreferencesKeys
 import ja.insepector.base.ext.gone
 import ja.insepector.base.ext.hide
 import ja.insepector.base.ext.i18N
+import ja.insepector.base.ext.i18n
 import ja.insepector.base.ext.show
 import ja.insepector.base.ext.startArouter
+import ja.insepector.base.help.ActivityCacheManager
+import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.bxapp.R
 import ja.insepector.bxapp.adapter.CollectionPlateColorAdapter
@@ -42,11 +49,14 @@ import ja.insepector.bxapp.databinding.ActivityAdmissionTakePhotoBinding
 import ja.insepector.bxapp.dialog.PromptDialog
 import ja.insepector.bxapp.mvvm.viewmodel.AdmissionTakePhotoViewModel
 import ja.insepector.bxapp.pop.MultipleSeatsPop
+import ja.insepector.bxapp.ui.activity.login.LoginActivity
+import ja.insepector.common.realm.RealmUtil
 import ja.insepector.common.util.AppUtil
 import ja.insepector.common.util.Constant
 import ja.insepector.common.util.FileUtil
 import ja.insepector.common.util.GlideUtils
 import ja.insepector.common.view.keyboard.KeyboardUtil
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -59,7 +69,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var collectioPlateColorList: MutableList<String> = ArrayList()
     var checkedColor = ""
     val widthType = 2
-    var parkingNo = "JAZ02109"
+    var parkingNo = ""
 
     var multipleSeatsPop: MultipleSeatsPop? = null
     var multipleSeat = ""
@@ -67,12 +77,17 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var takePhotoType = 0
 
     var promptDialog: PromptDialog? = null
+    var simId = ""
+    var vehicleType = "1"
+    var extParkingNo = ""
+    var loginName = ""
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, ja.insepector.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.text = i18N(ja.insepector.base.R.string.入场拍照)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), ja.insepector.base.R.color.white))
 
+        parkingNo = intent.getStringExtra(ARouterMap.ADMISSION_TAKE_PHOTO_PARKING_NO).toString()
         collectioPlateColorList.add(Constant.BLUE)
         collectioPlateColorList.add(Constant.GREEN)
         collectioPlateColorList.add(Constant.YELLOW)
@@ -109,6 +124,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     }
 
     override fun initData() {
+        runBlocking {
+            simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -167,18 +186,24 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         when (v?.id) {
             R.id.rfl_multipleSeats -> {
                 multipleSeatsPop =
-                    MultipleSeatsPop(this@AdmissionTakePhotoActivity, "09", multipleSeat, object : MultipleSeatsPop.MultipleSeatsCallback {
-                        override fun selecctSeats(seat: String) {
-                            multipleSeat = seat
-                            if (multipleSeat.isNotEmpty()) {
-                                binding.tvMultipleSeats.text = ""
-                                binding.tvParkingNo.text = parkingNo + "-" + AppUtil.fillZero(multipleSeat)
-                            } else {
-                                binding.tvMultipleSeats.text = i18N(ja.insepector.base.R.string.一车多位)
-                                binding.tvParkingNo.text = parkingNo
+                    MultipleSeatsPop(
+                        this@AdmissionTakePhotoActivity,
+                        parkingNo.substring(parkingNo.length - 3, parkingNo.length),
+                        multipleSeat,
+                        object : MultipleSeatsPop.MultipleSeatsCallback {
+                            override fun selecctSeats(seat: String) {
+                                multipleSeat = seat
+                                if (multipleSeat.isNotEmpty()) {
+                                    binding.tvMultipleSeats.text = ""
+                                    binding.tvParkingNo.text = parkingNo + "-" + AppUtil.fillZero(multipleSeat)
+                                    extParkingNo = parkingNo.substring(0, parkingNo.length - 2) + AppUtil.fillZero(multipleSeat)
+                                } else {
+                                    binding.tvMultipleSeats.text = i18N(ja.insepector.base.R.string.一车多位)
+                                    binding.tvParkingNo.text = parkingNo
+                                    extParkingNo = ""
+                                }
                             }
-                        }
-                    })
+                        })
                 multipleSeatsPop?.showAsDropDown(v, (binding.rflMultipleSeats.width - SizeUtils.dp2px(92f)) / 2, SizeUtils.dp2px(3f))
             }
 
@@ -197,6 +222,82 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             }
 
             R.id.rfl_startBilling -> {
+                if (binding.pvPlate.getPvTxt().isEmpty()) {
+                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.请输入车牌号))
+                    return
+                }
+                if (binding.pvPlate.getPvTxt().length != 7 && binding.pvPlate.getPvTxt().length != 8) {
+                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.车牌长度只能是7位或8位))
+                    return
+                }
+                if (checkedColor.isEmpty()) {
+                    ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请选择车牌颜色))
+                    return
+                }
+                DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.是否确认下单))
+                    .setRightMsg(i18N(ja.insepector.base.R.string.确定))
+                    .setLeftMsg(i18N(ja.insepector.base.R.string.取消)).setCancelable(true)
+                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                        override fun onLeftClickLinsener(msg: String) {
+                        }
+
+                        override fun onRightClickLinsener(msg: String) {
+                            showProgressDialog(20000)
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["carLicense"] = binding.pvPlate.getPvTxt()
+                            jsonobject["parkingNo"] = parkingNo
+                            jsonobject["inputter"] = loginName
+                            jsonobject["plateColor"] = checkedColor
+                            jsonobject["vehicleType"] = vehicleType
+                            jsonobject["extParkingNo"] = extParkingNo
+                            jsonobject["simId"] = simId
+                            param["attr"] = jsonobject
+                            mViewModel.placeOrder(param)
+                        }
+
+                    }).build(this@AdmissionTakePhotoActivity).showDailog()
+
+            }
+
+            R.id.iv_plateDelete -> {
+                binding.rflTakePhoto.show()
+                binding.rflPlateImg.gone()
+            }
+
+            R.id.iv_panoramaDelete -> {
+                binding.rflTakePhoto2.show()
+                binding.rflPanoramaImg.gone()
+            }
+
+            R.id.riv_plate -> {
+                takePhotoType = 0
+                takePhoto()
+            }
+
+            R.id.riv_panorama -> {
+                takePhotoType = 1
+                takePhoto()
+            }
+
+            R.id.fl_color -> {
+                checkedColor = v.tag as String
+                collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
+                binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+            }
+
+            R.id.toolbar,
+            binding.root.id -> {
+
+            }
+        }
+    }
+
+    override fun startObserve() {
+        super.startObserve()
+        mViewModel.apply {
+            placeOrderLiveData.observe(this@AdmissionTakePhotoActivity) {
+                dismissProgressDialog()
                 promptDialog = PromptDialog(
                     i18N(ja.insepector.base.R.string.下单成功当前车辆有欠费记录是否追缴),
                     i18N(ja.insepector.base.R.string.是),
@@ -229,36 +330,9 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     })
                 promptDialog?.show()
             }
-
-            R.id.iv_plateDelete -> {
-                binding.rflTakePhoto.show()
-                binding.rflPlateImg.gone()
-            }
-
-            R.id.iv_panoramaDelete -> {
-                binding.rflTakePhoto2.show()
-                binding.rflPanoramaImg.gone()
-            }
-
-            R.id.riv_plate -> {
-                takePhotoType = 0
-                takePhoto()
-            }
-
-            R.id.riv_panorama -> {
-                takePhotoType = 1
-                takePhoto()
-            }
-
-            R.id.fl_color -> {
-                checkedColor = v.tag as String
-                collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
-                binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
-            }
-
-            R.id.toolbar,
-            binding.root.id -> {
-
+            errMsg.observe(this@AdmissionTakePhotoActivity) {
+                dismissProgressDialog()
+                ToastUtil.showMiddleToast(it.msg)
             }
         }
     }
@@ -374,6 +448,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 }
             }
         }
+    }
+
+    override fun providerVMClass(): Class<AdmissionTakePhotoViewModel>? {
+        return AdmissionTakePhotoViewModel::class.java
     }
 
     override fun getVbBindingView(): ViewBinding {

@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.fastjson.JSONObject
 import ja.insepector.base.BaseApplication
+import ja.insepector.base.bean.FeeRateBean
 import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseFragment
 import ja.insepector.bxapp.adapter.FeeRateAdapter
@@ -12,7 +13,7 @@ import ja.insepector.bxapp.mvvm.viewmodel.FeeRateFragmentViewModel
 
 class FeeRateFragment : VbBaseFragment<FeeRateFragmentViewModel, FragmentFeeRateBinding>() {
     var feeRateAdapter: FeeRateAdapter? = null
-    var feeRateList: MutableList<Int> = ArrayList()
+    var feeRateList: MutableList<FeeRateBean> = ArrayList()
     var streetNo = ""
     override fun initView() {
         streetNo = arguments?.getString("streetNo").toString()
@@ -40,9 +41,7 @@ class FeeRateFragment : VbBaseFragment<FeeRateFragmentViewModel, FragmentFeeRate
         mViewModel.apply {
             feeRateLiveData.observe(this@FeeRateFragment) {
                 dismissProgressDialog()
-                feeRateList.add(1)
-                feeRateList.add(2)
-                feeRateList.add(3)
+                feeRateList = it.result as MutableList<FeeRateBean>
                 feeRateAdapter?.setList(feeRateList)
             }
             errMsg.observe(this@FeeRateFragment) {

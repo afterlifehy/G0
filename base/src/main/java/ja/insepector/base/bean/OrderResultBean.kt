@@ -4,19 +4,25 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 data class OrderResultBean(
-    val result: List<OrderBean>
+    var result: List<OrderBean>
 )
 
 @Parcelize
 data class OrderBean(
-    val amount: String,
-    val carLicense: String,
-    val duration: String,
-    val endTime: String,
-    val hasPayed: String,
-    val orderNo: String,
-    val parkingNo: String,
-    val startTime: String,
-    val streetName: String,
-    val paidAmount:String
-) : Parcelable
+    var amount: String = "",
+    var carLicense: String = "",
+    var duration: String = "0",
+    var endTime: String = "",
+    var hasPayed: String = "",
+    var orderNo: String = "",
+    var parkingNo: String = "",
+    var startTime: String = "",
+    var streetName: String = "",
+    var paidAmount: String = ""
+) : Parcelable {
+    init {
+        if (duration.isNullOrEmpty()) {
+            duration = "0"
+        }
+    }
+}

@@ -158,14 +158,9 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
             R.id.rfl_parking -> {
                 val parkingLotBean = v.tag as ParkingLotBean
                 if (parkingLotBean.state == "01") {
-//                    ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL)
-//                        .withString(ARouterMap.ABNORMAL_STREET_NO, currentStreet!!.streetNo)
-//                        .withString(ARouterMap.ABNORMAL_PARKING_NO, parkingLotBean.parkingNo)
-//                        .withString(ARouterMap.ABNORMAL_ORDER_NO, "")
-//                        .withString(ARouterMap.ABNORMAL_CARLICENSE, "")
-//                        .withString(ARouterMap.ABNORMAL_CAR_COLOR, "")
-//                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
-                    startArouter(ARouterMap.ADMISSION_TAKE_PHOTO)
+                    startArouter(ARouterMap.ADMISSION_TAKE_PHOTO,data = Bundle().apply {
+                        putString(ARouterMap.ADMISSION_TAKE_PHOTO_PARKING_NO, parkingLotBean.parkingNo)
+                    })
                 } else {
                     startArouter(ARouterMap.PARKING_SPACE, data = Bundle().apply {
                         putString(ARouterMap.ORDER_NO, parkingLotBean.orderNo)

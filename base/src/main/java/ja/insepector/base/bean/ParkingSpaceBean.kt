@@ -5,9 +5,14 @@ data class ParkingSpaceResultBean(
 )
 
 data class ParkingSpaceBean(
-    val carLicense: String,
-    val havePayMoney: Int,
-    val parkingNo: String,
-    val startTime: String,
-    val streetNo: String
+    val carLicense: String = "",
+    val havePayMoney: String = "",
+    val historyCount: Int = 0,
+    val historySum: Int = 0,
+    val orderNo: String = "",
+    val parkingNo: String = "",
+    val realtimeMoney: String = "",
+    val startTime: String = "",
+    val streetNo: String = "",
+    var timeOut: String = ""
 )
