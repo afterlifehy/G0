@@ -15,7 +15,7 @@ class ParkingSpaceViewModel: BaseViewModel() {
     }
 
     val parkingSpaceLiveData = MutableLiveData<ParkingSpaceResultBean>()
-    val insidePayLiveData = MutableLiveData<Any>()
+    val endOrderLiveData = MutableLiveData<Any>()
     val payResultLiveData = MutableLiveData<Any>()
 
     fun parkingSpace(param: Map<String, Any?>) {
@@ -31,17 +31,17 @@ class ParkingSpaceViewModel: BaseViewModel() {
         }
     }
 
-    fun insidePay(param: Map<String, Any?>) {
-//        launch {
-//            val response = withContext(Dispatchers.IO) {
-//                mParkingRepository.insidePay(param)
-//            }
-//            executeResponse(response, {
-//                insidePayLiveData.value = response.attr
-//            }, {
-//                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-//            })
-//        }
+    fun endOrder(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.endOrder(param)
+            }
+            executeResponse(response, {
+                endOrderLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
     }
 
     fun payResult(param: Map<String, Any?>) {

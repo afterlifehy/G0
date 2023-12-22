@@ -21,8 +21,12 @@ object ARouterMap {
     const val IMG_LIST = "imgList"
 
     const val PIC = "/inspector_app/pic"
+    const val PIC_ORDER_NO = "orderNo"
 
     const val PREPAID = "/inspector_app/prepaid"
+    const val PREPAID_MIN_AMOUNT = "minAmount"
+    const val PREPAID_CARLICENSE = "carLicense"
+    const val PREPAID_PARKING_NO = "parkingNo"
 
     const val ORDER_INFO = "/inspector_app/orderInfo"
 

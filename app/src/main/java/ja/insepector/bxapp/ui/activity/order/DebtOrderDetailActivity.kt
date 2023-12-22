@@ -91,12 +91,12 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     }
 
     override fun initData() {
-        picList.add("https://n.sinaimg.cn/sinacn10112/384/w2048h1536/20190218/bd7a-htacqww5359098.jpg")
-        picList.add("https://p4.itc.cn/q_70/images03/20200723/76f7fd2511a048abbb2e58939b1f9bde.jpeg")
-        picList.add("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fsafe-img.xhscdn.com%2Fbw1%2F8ccb3755-b76e-49f1-85ab-60f6c6b161ae%3FimageView2%2F2%2Fw%2F1080%2Fformat%2Fjpg&refer=http%3A%2F%2Fsafe-img.xhscdn.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1704444015&t=45651f5b799fd231a323879ff7abca31")
-        GlideUtils.instance?.loadImage(binding.rivPic1, picList[0], ja.insepector.common.R.mipmap.ic_placeholder)
-        GlideUtils.instance?.loadImage(binding.rivPic2, picList[1], ja.insepector.common.R.mipmap.ic_placeholder)
-        GlideUtils.instance?.loadImage(binding.rivPic3, picList[2], ja.insepector.common.R.mipmap.ic_placeholder)
+        showProgressDialog(20000)
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["orderNo"] = debtCollectionBean?.orderNo
+        param["attr"] = jsonobject
+        mViewModel.picInquiry(param)
     }
 
     override fun onClick(v: View?) {
@@ -181,6 +181,15 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
+            picInquiryLiveData.observe(this@DebtOrderDetailActivity) {
+                dismissProgressDialog()
+                picList.add(it.inPicture11)
+                picList.add(it.inPicture10)
+                picList.add(it.inPicture20)
+                GlideUtils.instance?.loadImage(binding.rivPic1, picList[0], ja.insepector.common.R.mipmap.ic_placeholder)
+                GlideUtils.instance?.loadImage(binding.rivPic2, picList[1], ja.insepector.common.R.mipmap.ic_placeholder)
+                GlideUtils.instance?.loadImage(binding.rivPic3, picList[2], ja.insepector.common.R.mipmap.ic_placeholder)
+            }
             debtPayLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 tradeNo = "12345678"

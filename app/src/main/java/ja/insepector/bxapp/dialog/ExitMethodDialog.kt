@@ -6,14 +6,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.ScreenUtils
 import ja.insepector.base.BaseApplication
+import ja.insepector.base.bean.ExitMethodBean
 import ja.insepector.base.dialog.VBBaseLibDialog
 import ja.insepector.base.help.ActivityCacheManager
 import ja.insepector.bxapp.adapter.ExitMethodAdapter
 import ja.insepector.bxapp.databinding.DialogExitMethodBinding
 
 class ExitMethodDialog(
-    val methodList: MutableList<String>,
-    var currentMethod: String,
+    val methodList: MutableList<ExitMethodBean>,
+    var currentMethod: ExitMethodBean?,
     val callBack: ExitMethodCallBack
 ) :
     VBBaseLibDialog<DialogExitMethodBinding>(ActivityCacheManager.instance().getCurrentActivity()!!) {
@@ -32,7 +33,7 @@ class ExitMethodDialog(
                 methodList,
                 currentMethod,
                 object : ExitMethodAdapter.ChooseExitMethodAdapterCallBack {
-                    override fun chooseExitMethod(method: String) {
+                    override fun chooseExitMethod(method: ExitMethodBean) {
                         callBack.chooseExitMethod(method)
                         dismiss()
                     }
@@ -65,6 +66,6 @@ class ExitMethodDialog(
     }
 
     interface ExitMethodCallBack {
-        fun chooseExitMethod(method: String)
+        fun chooseExitMethod(method: ExitMethodBean)
     }
 }

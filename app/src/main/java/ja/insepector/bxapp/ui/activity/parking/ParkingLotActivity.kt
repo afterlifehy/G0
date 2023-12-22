@@ -6,7 +6,6 @@ import android.os.Looper
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.PopupWindow
-import android.widget.RelativeLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -16,8 +15,6 @@ import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.bean.ParkingLotBean
 import ja.insepector.base.bean.Street
-import ja.insepector.base.ext.i18N
-import ja.insepector.base.ext.startAct
 import ja.insepector.base.ext.startArouter
 import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseActivity
@@ -28,7 +25,8 @@ import ja.insepector.bxapp.adapter.ParkingLotAdapter
 import ja.insepector.bxapp.databinding.ActivityParkingLotBinding
 import ja.insepector.bxapp.mvvm.viewmodel.ParkingLotViewModel
 import ja.insepector.bxapp.pop.StreetPop
-import ja.insepector.common.event.OrderFinishEvent
+import ja.insepector.common.event.EndOrderEvent
+import ja.insepector.common.event.RefreshParkingLotEvent
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -43,8 +41,8 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     var streetList: MutableList<Street> = ArrayList()
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(orderFinishEvent: OrderFinishEvent) {
-        //TODO()
+    fun onEvent(refreshParkingLotEvent: RefreshParkingLotEvent) {
+        getParkingLotList()
     }
 
     override fun initView() {
@@ -121,6 +119,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                 currentStreet = RealmUtil.instance?.findCurrentStreet()
                 streetPop = StreetPop(this@ParkingLotActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
                     override fun selectStreet(street: Street) {
+                        currentStreet = street
                         val old = RealmUtil.instance?.findCurrentStreet()
                         RealmUtil.instance?.updateCurrentStreet(street, old)
                         if (street.streetName.indexOf("(") < 0) {
@@ -158,7 +157,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
             R.id.rfl_parking -> {
                 val parkingLotBean = v.tag as ParkingLotBean
                 if (parkingLotBean.state == "01") {
-                    startArouter(ARouterMap.ADMISSION_TAKE_PHOTO,data = Bundle().apply {
+                    startArouter(ARouterMap.ADMISSION_TAKE_PHOTO, data = Bundle().apply {
                         putString(ARouterMap.ADMISSION_TAKE_PHOTO_PARKING_NO, parkingLotBean.parkingNo)
                     })
                 } else {

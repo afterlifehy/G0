@@ -32,14 +32,18 @@ import ja.insepector.bxapp.databinding.ActivityParkingSpaceBinding
 import ja.insepector.bxapp.mvvm.viewmodel.ParkingSpaceViewModel
 import com.zrq.spanbuilder.TextStyle
 import ja.insepector.base.arouter.ARouterMap
+import ja.insepector.base.bean.ExitMethodBean
 import ja.insepector.base.bean.ParkingSpaceBean
 import ja.insepector.base.dialog.DialogHelp
 import ja.insepector.base.ext.startArouter
 import ja.insepector.bxapp.dialog.ExitMethodDialog
-import ja.insepector.common.event.OrderFinishEvent
+import ja.insepector.common.event.EndOrderEvent
+import ja.insepector.common.event.RefreshParkingLotEvent
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.math.BigDecimal
 
 @Route(path = ARouterMap.PARKING_SPACE)
 class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParkingSpaceBinding>(), OnClickListener {
@@ -56,14 +60,14 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var picBase64 = ""
 
     var exitMethodDialog: ExitMethodDialog? = null
-    var exitMethodList: MutableList<String> = ArrayList()
-    var currentMethod = ""
+    var exitMethodList: MutableList<ExitMethodBean> = ArrayList()
+    var currentMethod: ExitMethodBean? = null
 
     var type = ""
     var simId = ""
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(orderFinishEvent: OrderFinishEvent) {
+    fun onEvent(endOrderEvent: EndOrderEvent) {
         onBackPressedSupport()
     }
 
@@ -95,12 +99,12 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     }
 
     override fun initData() {
-        exitMethodList.add(i18N(ja.insepector.base.R.string.收费员不在场欠费驶离))
-        exitMethodList.add(i18N(ja.insepector.base.R.string.正常缴费驶离))
-        exitMethodList.add(i18N(ja.insepector.base.R.string.当面拒绝驶离))
-        exitMethodList.add(i18N(ja.insepector.base.R.string.强制关单))
-        exitMethodList.add(i18N(ja.insepector.base.R.string.线上支付))
-        exitMethodList.add(i18N(ja.insepector.base.R.string.其他))
+        exitMethodList.add(ExitMethodBean("2", i18N(ja.insepector.base.R.string.收费员不在场欠费驶离)))
+        exitMethodList.add(ExitMethodBean("1", i18N(ja.insepector.base.R.string.正常缴费驶离)))
+        exitMethodList.add(ExitMethodBean("3", i18N(ja.insepector.base.R.string.当面拒绝驶离)))
+        exitMethodList.add(ExitMethodBean("4", i18N(ja.insepector.base.R.string.强制关单)))
+        exitMethodList.add(ExitMethodBean("5", i18N(ja.insepector.base.R.string.线上支付)))
+        exitMethodList.add(ExitMethodBean("10", i18N(ja.insepector.base.R.string.其他)))
 
         runBlocking {
             simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
@@ -126,21 +130,25 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.iv_right -> {
-                startArouter(ARouterMap.PIC)
+                startArouter(ARouterMap.PIC, data = Bundle().apply {
+                    putString(ARouterMap.PIC_ORDER_NO, orderNo)
+                })
             }
 
             R.id.rrl_arrears -> {
-                startArouter(ARouterMap.DEBT_COLLECTION, data = Bundle().apply {
-                    putString(ARouterMap.DEBT_CAR_LICENSE, carLicense)
-                })
+                if (parkingSpaceBean?.historyCount != 0) {
+                    startArouter(ARouterMap.DEBT_COLLECTION, data = Bundle().apply {
+                        putString(ARouterMap.DEBT_CAR_LICENSE, carLicense)
+                    })
+                }
             }
 
             R.id.rrl_exitMethod -> {
                 if (exitMethodDialog == null) {
                     exitMethodDialog = ExitMethodDialog(exitMethodList, currentMethod, object : ExitMethodDialog.ExitMethodCallBack {
-                        override fun chooseExitMethod(method: String) {
+                        override fun chooseExitMethod(method: ExitMethodBean) {
                             currentMethod = method
-                            binding.tvExitMethod.text = currentMethod
+                            binding.tvExitMethod.text = currentMethod?.name
                         }
                     })
                 }
@@ -178,27 +186,52 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_renewal -> {
-                startArouter(ARouterMap.PREPAID)
+                startArouter(ARouterMap.PREPAID, data = Bundle().apply {
+                    if (parkingSpaceBean != null) {
+                        if (BigDecimal(parkingSpaceBean!!.havePayMoney).toDouble() > 0.0) {
+                            putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 0.5)
+                            putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
+                            putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+                        } else {
+                            putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+                            putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
+                            putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+                        }
+                    } else {
+                        putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+                        putString(ARouterMap.PREPAID_CARLICENSE, "")
+                        putString(ARouterMap.PREPAID_PARKING_NO, "")
+                    }
+                })
             }
 
             R.id.rfl_finish -> {
-                type = AppUtil.fillZero((exitMethodList.indexOf(binding.tvExitMethod.text.toString()) + 1).toString())
-                if (type == "02") {
-                    startArouter(ARouterMap.ORDER_INFO)
-                } else {
-                    DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.是否确定结束订单))
-                        .setLeftMsg(i18N(ja.insepector.base.R.string.取消))
-                        .setRightMsg(i18N(ja.insepector.base.R.string.确定)).setCancelable(true)
-                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                            override fun onLeftClickLinsener(msg: String) {
-                            }
-
-                            override fun onRightClickLinsener(msg: String) {
-                                onBackPressedSupport()
-                            }
-
-                        }).build(this@ParkingSpaceActivity).showDailog()
+                if (currentMethod == null) {
+                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.请选择离场方式))
+                    return
                 }
+                type = currentMethod!!.id
+                DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.是否确定结束订单))
+                    .setLeftMsg(i18N(ja.insepector.base.R.string.取消))
+                    .setRightMsg(i18N(ja.insepector.base.R.string.确定)).setCancelable(true)
+                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                        override fun onLeftClickLinsener(msg: String) {
+                        }
+
+                        override fun onRightClickLinsener(msg: String) {
+                            showProgressDialog(20000)
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["carLicense"] = carLicense
+                            jsonobject["orderNo"] = orderNo
+                            jsonobject["parkingNo"] = parkingNo
+                            jsonobject["leftType"] = type
+                            jsonobject["simId"] = simId
+                            param["attr"] = jsonobject
+                            mViewModel.endOrder(param)
+                        }
+
+                    }).build(this@ParkingSpaceActivity).showDailog()
             }
         }
     }
@@ -244,6 +277,16 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
                 binding.tvArrearsNum.text = "${parkingSpaceBean?.historyCount}笔"
                 binding.tvArrearsAmount.text = "${parkingSpaceBean?.historySum}元"
+            }
+            endOrderLiveData.observe(this@ParkingSpaceActivity) {
+                dismissProgressDialog()
+                if (type == "1") {
+                    startArouter(ARouterMap.ORDER_INFO)
+                    finish()
+                } else {
+                    EventBus.getDefault().post(RefreshParkingLotEvent())
+                    onBackPressedSupport()
+                }
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()

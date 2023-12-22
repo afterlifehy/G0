@@ -34,6 +34,12 @@ class ParkingRepository : BaseRepository() {
         return mServer.placeOrder(param)
     }
 
+    /**
+     * 结单
+     */
+    suspend fun endOrder(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.endOrder(param)
+    }
 //    /**
 //     *  场内支付
 //     */

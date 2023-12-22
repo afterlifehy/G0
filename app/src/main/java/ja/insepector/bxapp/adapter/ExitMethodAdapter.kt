@@ -5,15 +5,20 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import ja.insepector.base.adapter.BaseBindingAdapter
 import ja.insepector.base.adapter.VBViewHolder
+import ja.insepector.base.bean.ExitMethodBean
 import ja.insepector.bxapp.databinding.ItemParkingChooseStreetBinding
 
-class ExitMethodAdapter(data: MutableList<String>? = null, var currentMethod: String, val callback: ChooseExitMethodAdapterCallBack) :
-    BaseBindingAdapter<String, ItemParkingChooseStreetBinding>(data) {
+class ExitMethodAdapter(
+    data: MutableList<ExitMethodBean>? = null,
+    var currentMethod: ExitMethodBean?,
+    val callback: ChooseExitMethodAdapterCallBack
+) :
+    BaseBindingAdapter<ExitMethodBean, ItemParkingChooseStreetBinding>(data) {
     var lastClassificationCB: CheckBox? = null
     var currentClassificationCB: CheckBox? = null
-    override fun convert(holder: VBViewHolder<ItemParkingChooseStreetBinding>, item: String) {
-        holder.vb.tvStreet.text = item
-        if (currentMethod == item) {
+    override fun convert(holder: VBViewHolder<ItemParkingChooseStreetBinding>, item: ExitMethodBean) {
+        holder.vb.tvStreet.text = item.name
+        if (currentMethod != null && currentMethod!!.id == item.id) {
             holder.vb.cbStreet.isChecked = true
             currentClassificationCB = holder.vb.cbStreet
         }
@@ -23,7 +28,7 @@ class ExitMethodAdapter(data: MutableList<String>? = null, var currentMethod: St
             currentClassificationCB = holder.vb.cbStreet
             currentClassificationCB?.isChecked = true
             currentMethod = item
-            callback.chooseExitMethod(currentMethod)
+            callback.chooseExitMethod(currentMethod!!)
         }
         holder.vb.cbStreet.setOnClickListener {
             lastClassificationCB = currentClassificationCB
@@ -31,7 +36,7 @@ class ExitMethodAdapter(data: MutableList<String>? = null, var currentMethod: St
             currentClassificationCB = holder.vb.cbStreet
             currentClassificationCB?.isChecked = true
             currentMethod = item
-            callback.chooseExitMethod(currentMethod)
+            callback.chooseExitMethod(currentMethod!!)
         }
     }
 
@@ -40,6 +45,6 @@ class ExitMethodAdapter(data: MutableList<String>? = null, var currentMethod: St
     }
 
     interface ChooseExitMethodAdapterCallBack {
-        fun chooseExitMethod(method: String)
+        fun chooseExitMethod(method: ExitMethodBean)
     }
 }

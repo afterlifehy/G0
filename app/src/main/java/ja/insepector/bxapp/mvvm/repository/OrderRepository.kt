@@ -2,8 +2,11 @@ package ja.insepector.bxapp.mvvm.repository
 
 import ja.insepector.base.base.mvvm.BaseRepository
 import ja.insepector.base.bean.DebtCollectionResultBean
+import ja.insepector.base.bean.EndOrderInfoBean
 import ja.insepector.base.bean.HttpWrapper
 import ja.insepector.base.bean.OrderResultBean
+import ja.insepector.base.bean.PicInquiryBean
+import ja.insepector.base.bean.PrePayFeeInquiryBean
 import ja.insepector.base.bean.TransactionResultBean
 
 class OrderRepository : BaseRepository() {
@@ -29,4 +32,24 @@ class OrderRepository : BaseRepository() {
         return mServer.debtInquiry(param)
     }
 
+    /**
+     * 图片查询
+     */
+    suspend fun picInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PicInquiryBean> {
+        return mServer.picInquiry(param)
+    }
+
+    /**
+     * 预支付查询
+     */
+    suspend fun prePayFeeInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PrePayFeeInquiryBean> {
+        return mServer.prePayFeeInquiry(param)
+    }
+
+    /**
+     * 离场订单查询
+     */
+    suspend fun endOrderInfo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<EndOrderInfoBean> {
+        return mServer.endOrderInfo(param)
+    }
 }

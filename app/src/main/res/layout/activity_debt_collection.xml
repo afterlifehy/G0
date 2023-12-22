@@ -74,7 +74,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dp_10"
                 android:layout_toStartOf="@+id/iv_camera"
-                android:background="@color/color_ff04a091" />
+                android:background="@color/color_ff04a091"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/iv_camera"

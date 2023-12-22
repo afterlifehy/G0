@@ -23,7 +23,7 @@ class PicAdapter(data: MutableList<String>? = null, val onClickListener: OnClick
         lp.bottomMargin = SizeUtils.dp2px(20f)
         holder.vb.rivPic.layoutParams = lp
 
-        GlideUtils.instance?.loadImage(holder.vb.rivPic, item, ja.insepector.common.R.mipmap.ic_placeholder)
+        GlideUtils.instance?.loadImage(holder.vb.rivPic, item, ja.insepector.common.R.mipmap.ic_placeholder_2)
         holder.vb.rivPic.tag = item
         holder.vb.rivPic.setOnClickListener(onClickListener)
     }

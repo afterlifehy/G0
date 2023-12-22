@@ -47,7 +47,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
     var locationManager: LocationManager? = null
     var lat = 0.00
     var lon = 0.00
-    var locationEnable = false
+    var locationEnable = 0
     var loginName = ""
 
     @SuppressLint("MissingPermission", "CheckResult")
@@ -77,16 +77,16 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     override fun onLocationChanged(location: Location) {
                         lat = location.latitude
                         lon = location.longitude
-                        locationEnable = true
+                        locationEnable = 1
                     }
 
                     override fun onProviderDisabled(provider: String) {
-                        locationEnable = false
+                        locationEnable = -1
                         ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.请打开位置信息))
                     }
 
                     override fun onProviderEnabled(provider: String) {
-                        locationEnable = true
+                        locationEnable = 1
                     }
 
                 })
@@ -135,27 +135,30 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                             override fun onLocationChanged(location: Location) {
                                                 lat = location.latitude
                                                 lon = location.longitude
-                                                locationEnable = true
+                                                locationEnable = 1
                                             }
 
                                             override fun onProviderDisabled(provider: String) {
-                                                locationEnable = false
+                                                locationEnable = -1
                                                 ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.请打开位置信息))
                                             }
 
                                             override fun onProviderEnabled(provider: String) {
-                                                locationEnable = true
+                                                locationEnable = 1
                                             }
                                         })
                                     }
-                                    if (locationEnable) {
+                                    if (locationEnable != -1) {
                                         showProgressDialog(20000)
                                         runBlocking {
-                                            val token =
+                                            val simId =
                                                 PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.simId)
+                                            val loginName =
+                                                PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.loginName)
                                             val param = HashMap<String, Any>()
                                             val jsonobject = JSONObject()
-                                            jsonobject["token"] = token
+                                            jsonobject["simId"] = simId
+                                            jsonobject["loginName"] = loginName
                                             jsonobject["longitude"] = lon
                                             jsonobject["latitude"] = lat
                                             param["attr"] = jsonobject

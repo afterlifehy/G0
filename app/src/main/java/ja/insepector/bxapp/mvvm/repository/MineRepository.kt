@@ -9,10 +9,10 @@ class MineRepository : BaseRepository() {
     /**
      * 版本更新查询
      */
-//    suspend fun checkUpdate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<UpdateBean> {
-//        return mServer.checkUpdate(param)
-//    }
-//
+    suspend fun checkUpdate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<UpdateBean> {
+        return mServer.checkUpdate(param)
+    }
+
 //    /**
 //     * 签退
 //     */

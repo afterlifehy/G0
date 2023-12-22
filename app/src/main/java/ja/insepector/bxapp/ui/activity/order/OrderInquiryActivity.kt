@@ -1,5 +1,6 @@
 package ja.insepector.bxapp.ui.activity.order
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.TimeUtils
 import ja.insepector.base.BaseApplication
@@ -87,6 +89,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
         binding.rflUpload.setOnClickListener(this)
+        binding.ivCamera.setOnClickListener(this)
         binding.srlOrder.setOnRefreshListener {
             pageIndex = 1
             binding.srlOrder.finishRefresh(5000)
@@ -166,6 +169,10 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                 })
             }
 
+            R.id.iv_camera -> {
+                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@OrderInquiryActivity, 1)
+            }
+
             R.id.rfl_upload -> {
                 DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.是否立即上传))
                     .setLeftMsg(i18N(ja.insepector.base.R.string.取消))
@@ -217,6 +224,24 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             errMsg.observe(this@OrderInquiryActivity) {
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 1) {
+                val plate = data?.getStringExtra("plate")
+                if (!plate.isNullOrEmpty()) {
+                    val plateId = if (plate.contains("新能源")) {
+                        plate.substring(plate.length - 8, plate.length)
+                    } else {
+                        plate.substring(plate.length.minus(7) ?: 0, plate.length)
+                    }
+                    binding.etSearch.setText(plateId)
+                    binding.etSearch.setSelection(plateId.length)
+                }
             }
         }
     }

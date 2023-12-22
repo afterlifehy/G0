@@ -102,10 +102,11 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         binding.rvPlateColor.adapter = collectionPlateColorAdapter
 
         binding.tvParkingNo.text = parkingNo
-        binding.tvStreetName.text = "昌平路(西康路-常德路)"
-        initKeyboard()
+        val street = RealmUtil.instance?.findCurrentStreet()
+        binding.tvStreetName.text = street?.streetName
         binding.pvPlate.setPlateBgAndTxtColor(Constant.BLUE)
 
+        initKeyboard()
     }
 
     override fun initListener() {
@@ -184,6 +185,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             keyboardUtil.hideKeyboard()
         }
         when (v?.id) {
+            R.id.fl_back -> {
+                onBackPressedSupport()
+            }
+
             R.id.rfl_multipleSeats -> {
                 multipleSeatsPop =
                     MultipleSeatsPop(
@@ -320,7 +325,11 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                                     }
 
                                     override fun rightClick() {
-                                        startArouter(ARouterMap.PREPAID)
+                                        startArouter(ARouterMap.PREPAID, data = Bundle().apply {
+                                            putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+                                            putString(ARouterMap.PREPAID_CARLICENSE, binding.pvPlate.getPvTxt())
+                                            putString(ARouterMap.PREPAID_PARKING_NO, parkingNo)
+                                        })
                                     }
 
                                 })

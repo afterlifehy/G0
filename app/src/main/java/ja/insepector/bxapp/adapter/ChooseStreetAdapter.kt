@@ -8,6 +8,7 @@ import ja.insepector.base.adapter.BaseBindingAdapter
 import ja.insepector.base.adapter.VBViewHolder
 import ja.insepector.bxapp.databinding.ItemChooseStreetBinding
 import ja.insepector.base.bean.Street
+import ja.insepector.base.util.ToastUtil
 
 class ChooseStreetAdapter(data: MutableList<Street>? = null, var streetChoosedList: MutableList<Street>) :
     BaseBindingAdapter<Street, ItemChooseStreetBinding>(data) {
@@ -24,15 +25,27 @@ class ChooseStreetAdapter(data: MutableList<Street>? = null, var streetChoosedLi
             holder.vb.cbStreet.isChecked = !item.ischeck
             item.ischeck = holder.vb.cbStreet.isChecked
             if (holder.vb.cbStreet.isChecked) {
-                streetChoosedList.add(item)
+                if (streetChoosedList.size == 5) {
+                    holder.vb.cbStreet.isChecked = false
+                    ToastUtil.showMiddleToast("最多选择5条路段")
+                } else {
+                    streetChoosedList.add(item)
+                }
             } else {
                 streetChoosedList.remove(item)
             }
         }
         holder.vb.cbStreet.setOnClickListener {
             if (holder.vb.cbStreet.isChecked) {
-                streetChoosedList.add(item)
+                item.ischeck = true
+                if (streetChoosedList.size == 5) {
+                    holder.vb.cbStreet.isChecked = false
+                    ToastUtil.showMiddleToast("最多选择5条路段")
+                } else {
+                    streetChoosedList.add(item)
+                }
             } else {
+                item.ischeck = false
                 streetChoosedList.remove(item)
             }
         }
