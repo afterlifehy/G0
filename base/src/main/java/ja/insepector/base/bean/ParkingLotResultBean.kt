@@ -1,15 +1,15 @@
 package ja.insepector.base.bean
 
 data class ParkingLotResultBean(
-    val result: List<ParkingLotBean>
+    var result: List<ParkingLotBean>
 )
 
 data class ParkingLotBean(
-    val carColor: String,
-    val carLicense: String,
-    val cleared: String,
-    val orderNo: String,
-    val parkingNo: String,
-    val state: String,
-    val deadLine:Long
+    var carColor: String,
+    var carLicense: String,
+    var cleared: String,
+    var orderNo: String,
+    var parkingNo: String,
+    var state: String,
+    var deadLine:Long
 )

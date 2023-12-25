@@ -7,7 +7,7 @@ class AbnormalRepository : BaseRepository() {
     /**
      * 异常上报
      */
-//    suspend fun abnormalReport(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<AbnormalReportResultBean> {
-//        return mServer.abnormalReport(param)
-//    }
+    suspend fun abnormalReport(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.abnormalReport(param)
+    }
 }

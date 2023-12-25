@@ -27,8 +27,10 @@ object ARouterMap {
     const val PREPAID_MIN_AMOUNT = "minAmount"
     const val PREPAID_CARLICENSE = "carLicense"
     const val PREPAID_PARKING_NO = "parkingNo"
+    const val PREPAID_ORDER_NO = "orderNo"
 
     const val ORDER_INFO = "/inspector_app/orderInfo"
+    const val ORDER_INFO_ORDER_NO = "orderNo"
 
     const val ABNORMAL_REPORT = "/inspector_app/abnormalReport"
     const val ABNORMAL_STREET_NO = "streetNo"

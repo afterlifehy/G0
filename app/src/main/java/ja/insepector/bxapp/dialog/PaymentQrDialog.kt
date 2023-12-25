@@ -5,15 +5,20 @@ import android.view.WindowManager
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.SizeUtils
 import ja.insepector.base.dialog.VBBaseLibDialog
+import ja.insepector.base.ext.i18N
+import ja.insepector.base.ext.i18n
 import ja.insepector.base.help.ActivityCacheManager
 import ja.insepector.common.util.CodeUtils
 import ja.insepector.common.util.GlideUtils
 import ja.insepector.bxapp.databinding.DialogPaymentQrBinding
+import ja.insepector.common.util.AppUtil
 
-class PaymentQrDialog(var qr: String) : VBBaseLibDialog<DialogPaymentQrBinding>(
+class PaymentQrDialog(var qr: String, var amount: Int) : VBBaseLibDialog<DialogPaymentQrBinding>(
     ActivityCacheManager.instance().getCurrentActivity()!!,
     ja.insepector.base.R.style.CommonBottomDialogStyle
 ) {
+    val sizes = intArrayOf(19, 30, 19)
+    val colors = intArrayOf(ja.insepector.bxapp.R.color.white, ja.insepector.bxapp.R.color.white, ja.insepector.bxapp.R.color.white)
 
     init {
         initView()
@@ -23,7 +28,8 @@ class PaymentQrDialog(var qr: String) : VBBaseLibDialog<DialogPaymentQrBinding>(
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         val qrBitmap = CodeUtils.createImage(qr, SizeUtils.dp2px(153f), SizeUtils.dp2px(153f), null)
         GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
-
+        val strings = arrayOf(i18N(ja.insepector.base.R.string.支付), amount.toString(), i18n(ja.insepector.base.R.string.元))
+        binding.tvPayAmount.text = AppUtil.getSpan(strings, sizes, colors)
         binding.ivClose.setOnClickListener {
             dismiss()
         }

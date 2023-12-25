@@ -1,10 +1,10 @@
 package ja.insepector.base.bean
 
 data class EndOrderInfoBean(
-    val carLicense: String = "",
-    val hasPayed: String = "",
-    val havePayMoney: String = "",
-    val orderMoney: String = "",
-    val parkingHours: Int = 0,
-    val realtimeMoney: String = ""
+    var carLicense: String = "",
+    var hasPayed: String = "",
+    var havePayMoney: String = "",
+    var orderMoney: String = "",
+    var parkingHours: Int = 0,
+    var realtimeMoney: String = ""
 )

@@ -174,6 +174,11 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             }
 
             R.id.rfl_upload -> {
+                val orderList = orderInquiryAdapter?.getUploadOrderList()
+                if (orderList?.size == 0) {
+                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.请选择需要上传的订单))
+                    return
+                }
                 DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.是否立即上传))
                     .setLeftMsg(i18N(ja.insepector.base.R.string.取消))
                     .setRightMsg(i18N(ja.insepector.base.R.string.确定)).setCancelable(true)
@@ -182,7 +187,12 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                         }
 
                         override fun onRightClickLinsener(msg: String) {
-                            val orderList = orderInquiryAdapter?.getUploadOrderList()
+                            showProgressDialog(20000)
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["orderNoList"] = orderList?.joinToString(separator = ",") { it.orderNo }
+                            param["attr"] = jsonobject
+                            mViewModel.debtUpload(param)
                         }
 
                     }).build(ActivityCacheManager.instance().getCurrentActivity()).showDailog()
@@ -220,6 +230,10 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                         binding.srlOrder.finishLoadMore(300)
                     }
                 }
+            }
+            debtUploadLiveData.observe(this@OrderInquiryActivity) {
+                dismissProgressDialog()
+                orderInquiryAdapter?.clearUploadOrderList()
             }
             errMsg.observe(this@OrderInquiryActivity) {
                 dismissProgressDialog()

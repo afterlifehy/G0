@@ -243,9 +243,9 @@ object AppUtil {
     }
 
     fun dayHourMin(parkingTime: Int): String {
-        val day = parkingTime / (3600 * 24)
-        val hour = parkingTime / 3600 - day * 24
-        val minute = parkingTime / 60 - day * 24 * 60 - hour * 60
+        val day = parkingTime / (60 * 24)
+        val hour = parkingTime / 60 - day * 24
+        val minute = parkingTime - day * 24 * 60 - hour * 60
         if (day == 0 && hour == 0) {
             return "${minute}分钟"
         } else if (day == 0) {

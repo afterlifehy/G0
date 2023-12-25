@@ -7,6 +7,7 @@ import ja.insepector.base.bean.HttpWrapper
 import ja.insepector.base.bean.OrderResultBean
 import ja.insepector.base.bean.PicInquiryBean
 import ja.insepector.base.bean.PrePayFeeInquiryBean
+import ja.insepector.base.bean.TicketPrintBean
 import ja.insepector.base.bean.TransactionResultBean
 
 class OrderRepository : BaseRepository() {
@@ -51,5 +52,19 @@ class OrderRepository : BaseRepository() {
      */
     suspend fun endOrderInfo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<EndOrderInfoBean> {
         return mServer.endOrderInfo(param)
+    }
+
+    /**
+     * 欠费上传
+     */
+    suspend fun debtUpload(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.debtUpload(param)
+    }
+
+    /**
+     * 票据打印
+     */
+    suspend fun ticketPrint(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean> {
+        return mServer.ticketPrint(param)
     }
 }

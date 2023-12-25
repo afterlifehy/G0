@@ -18,16 +18,13 @@ import com.blankj.utilcode.util.SizeUtils
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.bean.DebtCollectionBean
-import ja.insepector.base.bean.PrintInfoBean
 import ja.insepector.base.ds.PreferencesDataStore
 import ja.insepector.base.ds.PreferencesKeys
 import ja.insepector.base.ext.i18N
-import ja.insepector.base.ext.i18n
 import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.common.event.RefreshDebtOrderListEvent
 import ja.insepector.common.util.AppUtil
-import ja.insepector.common.util.BluePrint
 import ja.insepector.common.util.GlideUtils
 import ja.insepector.bxapp.R
 import ja.insepector.bxapp.databinding.ActivityDebtOrderDetailBinding
@@ -194,7 +191,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 dismissProgressDialog()
                 tradeNo = "12345678"
                 qr = "www.baidu.com"
-                paymentQrDialog = PaymentQrDialog(qr)
+                paymentQrDialog = PaymentQrDialog(qr,0)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                     override fun onDismiss(p0: DialogInterface?) {

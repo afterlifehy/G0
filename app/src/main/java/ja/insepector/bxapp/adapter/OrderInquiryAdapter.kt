@@ -32,7 +32,7 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
     val styles = arrayOf(TextStyle.NORMAL, TextStyle.BOLD, TextStyle.NORMAL)
     val colors2 = intArrayOf(ja.insepector.base.R.color.color_ff666666, ja.insepector.base.R.color.color_ff1a1a1a)
     val sizes2 = intArrayOf(19, 19)
-    var orderList: MutableList<String> = ArrayList()
+    var orderList: MutableList<OrderBean> = ArrayList()
 
 
     override fun convert(holder: VBViewHolder<ItemOrderBinding>, item: OrderBean) {
@@ -62,13 +62,14 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
         holder.vb.tvEndTime.text = AppUtil.getSpan(strings3, sizes2, colors2)
         holder.vb.tvNo.text = item.parkingNo
 
+        holder.vb.cbOrder.isChecked = false
         holder.vb.cbOrder.tag = item
         holder.vb.cbOrder.setOnCheckedChangeListener(object : OnCheckedChangeListener {
             override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
                 if (p1) {
-                    orderList.add(item.orderNo)
+                    orderList.add(item)
                 } else {
-                    orderList.remove(item.orderNo)
+                    orderList.remove(item)
                 }
             }
         })
@@ -81,7 +82,14 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
         return ItemOrderBinding.inflate(inflater)
     }
 
-    fun getUploadOrderList(): MutableList<String> {
+    fun getUploadOrderList(): MutableList<OrderBean> {
         return orderList
+    }
+
+    fun clearUploadOrderList() {
+        for (i in orderList) {
+            notifyItemChanged(data.indexOf(i))
+        }
+        orderList.clear()
     }
 }

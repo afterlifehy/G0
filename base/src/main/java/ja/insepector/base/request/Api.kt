@@ -21,7 +21,7 @@ interface Api {
      * 下单
      */
     @POST("S_G0_02")
-    suspend fun placeOrder(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+    suspend fun placeOrder(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PlaceOederResultBean>
 
     /**
      * 结单
@@ -34,6 +34,18 @@ interface Api {
      */
     @POST("S_G0_04")
     suspend fun prePayFeeInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PrePayFeeInquiryBean>
+
+    /**
+     * 支付结果查询
+     */
+    @POST("S_G0_05")
+    suspend fun payResultInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费上传
+     */
+    @POST("S_G0_06")
+    suspend fun debtUpload(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 
     /**
      * 签退
@@ -74,19 +86,7 @@ interface Api {
      * 泊位订单查询
      */
     @POST("S_G0_16")
-    suspend fun parkingSpace(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<ParkingSpaceResultBean>
-
-    /**
-     * 泊位订单查询
-     */
-    @POST("S_G0_18")
-    suspend fun picInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PicInquiryBean>
-
-    /**
-     * 考勤排班
-     */
-    @POST("S_VO2_20")
-    suspend fun checkOnWork(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+    suspend fun parkingSpace(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<ParkingSpaceBean>
 
     /**
      * 欠费查询
@@ -95,9 +95,38 @@ interface Api {
     suspend fun debtInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<DebtCollectionResultBean>
 
     /**
+     * 泊位订单查询
+     */
+    @POST("S_G0_18")
+    suspend fun picInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PicInquiryBean>
+
+    /**
+     * 票据查询
+     */
+    @POST("S_G0_19")
+    suspend fun ticketPrint(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean>
+
+    /**
      * 离场订单查询
      */
     @POST("S_G0_20")
     suspend fun endOrderInfo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<EndOrderInfoBean>
 
+    /**
+     * 考勤排班
+     */
+    @POST("S_VO2_20")
+    suspend fun checkOnWork(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 异常上报
+     */
+    @POST("S_AB_801")
+    suspend fun abnormalReport(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 图片上传
+     */
+    @POST("S_CP_12")
+    suspend fun picUpload(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 }

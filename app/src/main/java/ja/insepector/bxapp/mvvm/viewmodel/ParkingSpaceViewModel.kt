@@ -4,19 +4,20 @@ import androidx.lifecycle.MutableLiveData
 import ja.insepector.base.base.mvvm.BaseViewModel
 import ja.insepector.base.base.mvvm.ErrorMessage
 import ja.insepector.base.bean.ParkingSpaceBean
-import ja.insepector.base.bean.ParkingSpaceResultBean
+import ja.insepector.base.bean.TicketPrintBean
 import ja.insepector.bxapp.mvvm.repository.ParkingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ParkingSpaceViewModel: BaseViewModel() {
+class ParkingSpaceViewModel : BaseViewModel() {
     val mParkingRepository by lazy {
         ParkingRepository()
     }
 
-    val parkingSpaceLiveData = MutableLiveData<ParkingSpaceResultBean>()
+    val parkingSpaceLiveData = MutableLiveData<ParkingSpaceBean>()
     val endOrderLiveData = MutableLiveData<Any>()
-    val payResultLiveData = MutableLiveData<Any>()
+    val picUploadLiveData = MutableLiveData<Any>()
+    val ticketPrintLiveData = MutableLiveData<TicketPrintBean>()
 
     fun parkingSpace(param: Map<String, Any?>) {
         launch {
@@ -44,16 +45,29 @@ class ParkingSpaceViewModel: BaseViewModel() {
         }
     }
 
-    fun payResult(param: Map<String, Any?>) {
-//        launch {
-//            val response = withContext(Dispatchers.IO) {
-//                mParkingRepository.payResult(param)
-//            }
-//            executeResponse(response, {
-//                payResultLiveData.value = response.attr
-//            }, {
-//                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-//            })
-//        }
+    fun picUpload(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.picUpload(param)
+            }
+            executeResponse(response, {
+                picUploadLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun ticketPrint(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.ticketPrint(param)
+            }
+            executeResponse(response, {
+                ticketPrintLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
     }
 }

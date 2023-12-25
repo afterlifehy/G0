@@ -1,8 +1,8 @@
 package ja.insepector.base.bean
 
 data class UpdateBean(
-    val force: String,
-    val state: String,
-    val url: String,
-    val version: String
+    var force: String,
+    var state: String,
+    var url: String,
+    var version: String
 )

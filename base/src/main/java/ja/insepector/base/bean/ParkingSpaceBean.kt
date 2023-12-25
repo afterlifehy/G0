@@ -1,18 +1,14 @@
 package ja.insepector.base.bean
 
-data class ParkingSpaceResultBean(
-    val result: ParkingSpaceBean
-)
-
 data class ParkingSpaceBean(
-    val carLicense: String = "",
-    val havePayMoney: String = "",
-    val historyCount: Int = 0,
-    val historySum: Int = 0,
-    val orderNo: String = "",
-    val parkingNo: String = "",
-    val realtimeMoney: String = "",
-    val startTime: String = "",
-    val streetNo: String = "",
+    var carLicense: String = "",
+    var havePayMoney: String = "",
+    var historyCount: Int = 0,
+    var historySum: Int = 0,
+    var orderNo: String = "",
+    var parkingNo: String = "",
+    var realtimeMoney: String = "",
+    var startTime: String = "",
+    var streetNo: String = "",
     var timeOut: String = ""
 )

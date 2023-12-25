@@ -1,16 +1,16 @@
 package ja.insepector.base.bean
 
 class PrintInfoBean(
-    val roadId: String,
-    val plateId: String,
-    val payMoney: String,
-    val orderId: String,
-    val phone: String,
-    val startTime: String,
-    val leftTime: String,
-    val remark: String,
-    val company: String,
-    val oweCount: Int
+    var roadId: String,
+    var plateId: String,
+    var payMoney: String,
+    var orderId: String,
+    var phone: String,
+    var startTime: String,
+    var leftTime: String,
+    var remark: String,
+    var company: String,
+    var oweCount: Int
 ) {
     override fun toString(): String = "$orderId,$plateId,$roadId,$startTime,$leftTime,$payMoney,$oweCount,$phone,$remark,$company"
 }

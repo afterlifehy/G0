@@ -5,6 +5,7 @@ import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.fastjson.JSONObject
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.bean.EndOrderInfoBean
@@ -24,11 +25,14 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
     var paymentQrDialog: PaymentQrDialog? = null
     var qr = ""
     var endOrderBean: EndOrderInfoBean? = null
+    var orderNo = ""
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18N(ja.insepector.base.R.string.订单信息)
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, ja.insepector.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), ja.insepector.base.R.color.white))
+
+        orderNo = intent.getStringExtra(ARouterMap.ORDER_INFO_ORDER_NO).toString()
     }
 
     override fun initListener() {
@@ -39,6 +43,11 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
     }
 
     override fun initData() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["orderNo"] = orderNo
+        param["attr"] = jsonobject
+        mViewModel.endOrderInfo(param)
     }
 
     override fun onClick(v: View?) {
@@ -58,7 +67,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
             }
 
             R.id.rfl_scanPay -> {
-                paymentQrDialog = PaymentQrDialog(qr)
+                paymentQrDialog = PaymentQrDialog(qr, 0)
                 paymentQrDialog?.show()
             }
         }

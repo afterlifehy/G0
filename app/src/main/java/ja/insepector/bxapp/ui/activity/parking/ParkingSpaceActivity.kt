@@ -5,18 +5,26 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.EncodeUtils
+import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.ImageUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.ds.PreferencesDataStore
@@ -34,16 +42,26 @@ import com.zrq.spanbuilder.TextStyle
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.bean.ExitMethodBean
 import ja.insepector.base.bean.ParkingSpaceBean
+import ja.insepector.base.bean.PrintInfoBean
+import ja.insepector.base.bean.TicketPrintBean
+import ja.insepector.base.bean.TransactionBean
 import ja.insepector.base.dialog.DialogHelp
+import ja.insepector.base.ext.hide
 import ja.insepector.base.ext.startArouter
 import ja.insepector.bxapp.dialog.ExitMethodDialog
 import ja.insepector.common.event.EndOrderEvent
 import ja.insepector.common.event.RefreshParkingLotEvent
+import ja.insepector.common.util.BluePrint
+import ja.insepector.common.util.FileUtil
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Route(path = ARouterMap.PARKING_SPACE)
 class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParkingSpaceBinding>(), OnClickListener {
@@ -58,6 +76,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var parkingSpaceBean: ParkingSpaceBean? = null
 
     var picBase64 = ""
+    var photoType = 20
 
     var exitMethodDialog: ExitMethodDialog? = null
     var exitMethodList: MutableList<ExitMethodBean> = ArrayList()
@@ -65,6 +84,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     var type = ""
     var simId = ""
+    var tradeNo = ""
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(endOrderEvent: EndOrderEvent) {
@@ -173,16 +193,22 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-//                            startPrint(payResultBean)
+                            ticketPrintRequest()
                         }
                     }
                 } else {
-//                    startPrint(it)
+                    ticketPrintRequest()
                 }
             }
 
             R.id.rfl_report -> {
-                startArouter(ARouterMap.ABNORMAL_REPORT)
+                startArouter(ARouterMap.ABNORMAL_REPORT, data = Bundle().apply {
+                    putString(ARouterMap.ABNORMAL_PARKING_NO, parkingSpaceBean?.parkingNo)
+                    putString(ARouterMap.ABNORMAL_ORDER_NO, orderNo)
+                    putString(ARouterMap.ABNORMAL_CARLICENSE, parkingSpaceBean?.carLicense)
+//                    putString(ARouterMap.ABNORMAL_CAR_COLOR, parkingSpaceBean?.carColor.toString())
+//                    TODO(carColor)
+                })
             }
 
             R.id.rfl_renewal -> {
@@ -192,15 +218,18 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                             putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 0.5)
                             putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
                             putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+                            putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
                         } else {
                             putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
                             putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
                             putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+                            putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
                         }
                     } else {
                         putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
                         putString(ARouterMap.PREPAID_CARLICENSE, "")
                         putString(ARouterMap.PREPAID_PARKING_NO, "")
+                        putString(ARouterMap.PREPAID_ORDER_NO, "")
                     }
                 })
             }
@@ -238,15 +267,93 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     fun takePhoto() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val photoFile: File? = createImageFile()
+        val photoURI: Uri = FileProvider.getUriForFile(
+            this,
+            "ja.insepector.bxapp.fileprovider",
+            photoFile!!
+        )
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
         takePictureLauncher.launch(takePictureIntent)
     }
 
     val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-            val file = ImageUtils.save2Album(imageBitmap, Bitmap.CompressFormat.JPEG)
-            val bytes = file?.readBytes()
+            var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+            imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 12)
+            imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
+            imageBitmap = ImageUtils.addTextWatermark(
+                imageBitmap,
+                TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
+                16, Color.RED, 6f, 3f
+            )
+            imageBitmap = ImageUtils.addTextWatermark(
+                imageBitmap,
+                parkingNo,
+                16, Color.RED, 6f, 19f
+            )
+            ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.JPEG)
+            FileUtils.notifySystemToScan(imageFile)
+            val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
             picBase64 = EncodeUtils.base64Encode2String(bytes)
+            uploadImg(parkingSpaceBean!!.orderNo, picBase64)
+        }
+    }
+
+    var currentPhotoPath = ""
+    var imageFile: File? = null
+    private fun createImageFile(): File? {
+        // 创建图像文件名称
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        imageFile = File.createTempFile(
+            "JPG_${timeStamp}_", /* 前缀 */
+            ".jpg", /* 后缀 */
+            storageDir /* 目录 */
+        )
+
+        currentPhotoPath = imageFile!!.absolutePath
+        return imageFile
+    }
+
+    fun uploadImg(orderNo: String, photo: String) {
+        showProgressDialog(20000)
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["businessId"] = orderNo
+        jsonobject["photoType"] = photoType
+        jsonobject["photoFormat"] = "jpg"
+        jsonobject["photo"] = photo
+        param["attr"] = jsonobject
+        mViewModel.picUpload(param)
+    }
+
+    fun ticketPrintRequest() {
+        if(tradeNo.isNotEmpty()){
+            showProgressDialog(20000)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["tradeNo"] = tradeNo
+            jsonobject["simId"] = simId
+            param["attr"] = jsonobject
+            mViewModel.ticketPrint(param)
+        }else{
+//            val payMoney = ""
+//            val printInfo = PrintInfoBean(
+//                roadId = parkingSpaceBean.,
+//                plateId = parkingSpaceBean!!.carLicense,
+//                payMoney = "",
+//                orderId = orderNo,
+//                phone = ,
+//                startTime = parkingSpaceBean!!.startTime,
+//                leftTime = "",
+//                remark = ,
+//                company = it.businessCname,
+//                oweCount = 0
+//            )
+//            Thread {
+//                BluePrint.instance?.zkblueprint(printInfo.toString())
+//            }.start()
         }
     }
 
@@ -256,7 +363,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         mViewModel.apply {
             parkingSpaceLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                parkingSpaceBean = it.result
+                parkingSpaceBean = it
                 binding.tvPlate.text = parkingSpaceBean?.carLicense
 
                 val strings = arrayOf(i18N(ja.insepector.base.R.string.开始时间), parkingSpaceBean?.startTime.toString())
@@ -281,12 +388,20 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             endOrderLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
                 if (type == "1") {
-                    startArouter(ARouterMap.ORDER_INFO)
+                    startArouter(ARouterMap.ORDER_INFO, data = Bundle().apply {
+                        putString(ARouterMap.ORDER_INFO_ORDER_NO, orderNo)
+                    })
                     finish()
                 } else {
                     EventBus.getDefault().post(RefreshParkingLotEvent())
                     onBackPressedSupport()
                 }
+            }
+            picUploadLiveData.observe(this@ParkingSpaceActivity) {
+
+            }
+            ticketPrintLiveData.observe(this@ParkingSpaceActivity){
+                startPrint(it)
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
@@ -295,24 +410,24 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         }
     }
 
-//    fun startPrint(it: PayResultBean) {
-//        val payMoney = it.payMoney
-//        val printInfo = PrintInfoBean(
-//            roadId = it.roadName,
-//            plateId = it.carLicense,
-//            payMoney = String.format("%.2f", payMoney.toFloat()),
-//            orderId = orderNo,
-//            phone = it.phone,
-//            startTime = it.startTime,
-//            leftTime = it.endTime,
-//            remark = it.remark,
-//            company = it.businessCname,
-//            oweCount = 0
-//        )
-//        Thread {
-//            BluePrint.instance?.zkblueprint(printInfo.toString())
-//        }.start()
-//    }
+    fun startPrint(it: TicketPrintBean) {
+        val payMoney = it.payMoney
+        val printInfo = PrintInfoBean(
+            roadId = it.roadName,
+            plateId = it.carLicense,
+            payMoney = String.format("%.2f", payMoney.toFloat()),
+            orderId = orderNo,
+            phone = it.phone,
+            startTime = it.startTime,
+            leftTime = it.endTime,
+            remark = it.remark,
+            company = it.businessCname,
+            oweCount = 0
+        )
+        Thread {
+            BluePrint.instance?.zkblueprint(printInfo.toString())
+        }.start()
+    }
 
     override fun getVbBindingView(): ViewBinding {
         return ActivityParkingSpaceBinding.inflate(layoutInflater)

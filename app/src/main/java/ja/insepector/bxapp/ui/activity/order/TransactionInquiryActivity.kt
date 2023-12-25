@@ -34,9 +34,12 @@ import ja.insepector.common.view.keyboard.MyTextWatcher
 import ja.insepector.bxapp.R
 import ja.insepector.bxapp.pop.DatePop
 import com.tbruyelle.rxpermissions3.RxPermissions
+import ja.insepector.base.bean.PrintInfoBean
+import ja.insepector.base.ext.i18n
 import ja.insepector.bxapp.adapter.TransactionInquiryAdapter
 import ja.insepector.bxapp.databinding.ActivityTransactionInquiryBinding
 import ja.insepector.bxapp.mvvm.viewmodel.TransactionInquiryViewModel
+import ja.insepector.common.util.BluePrint
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.TRANSACTION_INQUIRY)
@@ -51,7 +54,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
     var startDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
     var endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
     var loginName = ""
-    var token = ""
+    var simId = ""
     var currentTransactionBean: TransactionBean? = null
 
     override fun initView() {
@@ -106,7 +109,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
 
     override fun initData() {
         runBlocking {
-            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
+            simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
         }
         showProgressDialog(20000)
@@ -174,9 +177,9 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
                             jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
-                            jsonobject["token"] = token
+                            jsonobject["simId"] = simId
                             param["attr"] = jsonobject
-                            mViewModel.notificationInquiry(param)
+                            mViewModel.ticketPrint(param)
                         }
                     }
                 } else {
@@ -185,9 +188,9 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
                     jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
-                    jsonobject["token"] = token
+                    jsonobject["simId"] = simId
                     param["attr"] = jsonobject
-                    mViewModel.notificationInquiry(param)
+                    mViewModel.ticketPrint(param)
                 }
 
             }
@@ -197,7 +200,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
                 jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
-                jsonobject["token"] = token
+                jsonobject["simId"] = simId
                 param["attr"] = jsonobject
                 mViewModel.payResult(param)
             }
@@ -240,25 +243,25 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                     }
                 }
             }
-            notificationInquiryLiveData.observe(this@TransactionInquiryActivity) {
+            ticketPrintLiveData.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()
-//                ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.开始打印))
-//                val payMoney = it.payMoney
-//                val printInfo = PrintInfoBean(
-//                    roadId = it.roadName,
-//                    plateId = it.carLicense,
-//                    payMoney = String.format("%.2f", payMoney.toFloat()),
-//                    orderId = currentTransactionBean!!.orderNo,
-//                    phone = it.phone,
-//                    startTime = it.startTime,
-//                    leftTime = it.endTime,
-//                    remark = it.remark,
-//                    company = it.businessCname,
-//                    oweCount = it.oweCount
-//                )
-//                Thread {
-//                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
-//                }.start()
+                ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.开始打印))
+                val payMoney = it.payMoney
+                val printInfo = PrintInfoBean(
+                    roadId = it.roadName,
+                    plateId = it.carLicense,
+                    payMoney = String.format("%.2f", payMoney.toFloat()),
+                    orderId = currentTransactionBean!!.orderNo,
+                    phone = it.phone,
+                    startTime = it.startTime,
+                    leftTime = it.endTime,
+                    remark = it.remark,
+                    company = it.businessCname,
+                    oweCount = it.oweCount
+                )
+                Thread {
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+                }.start()
             }
             payResultLiveData.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()

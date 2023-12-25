@@ -4,9 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import ja.insepector.base.base.mvvm.BaseViewModel
 import ja.insepector.base.base.mvvm.ErrorMessage
 import ja.insepector.base.bean.EndOrderInfoBean
-import ja.insepector.base.bean.ParkingSpaceResultBean
 import ja.insepector.bxapp.mvvm.repository.OrderRepository
-import ja.insepector.bxapp.mvvm.repository.ParkingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

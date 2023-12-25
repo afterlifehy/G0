@@ -15,6 +15,7 @@ class OrderDetailViewModel: BaseViewModel() {
     }
 
     val picInquiryLiveData = MutableLiveData<PicInquiryBean>()
+    val debtUploadLiveData = MutableLiveData<Any>()
 
     fun picInquiry(param: Map<String, Any?>) {
         launch {
@@ -23,6 +24,19 @@ class OrderDetailViewModel: BaseViewModel() {
             }
             executeResponse(response, {
                 picInquiryLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun debtUpload(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.debtUpload(param)
+            }
+            executeResponse(response, {
+                debtUploadLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })

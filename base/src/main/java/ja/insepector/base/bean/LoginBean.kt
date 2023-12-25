@@ -5,9 +5,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class LoginBean(
-    val name: String,
-    val loginName: String,
-    val phone: String,
-    val result: List<Street>,
-    val simId: String
+    var name: String,
+    var loginName: String,
+    var phone: String,
+    var result: List<Street>,
+    var simId: String
 ):Parcelable

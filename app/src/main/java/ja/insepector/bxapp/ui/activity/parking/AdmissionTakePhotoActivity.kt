@@ -50,6 +50,7 @@ import ja.insepector.bxapp.dialog.PromptDialog
 import ja.insepector.bxapp.mvvm.viewmodel.AdmissionTakePhotoViewModel
 import ja.insepector.bxapp.pop.MultipleSeatsPop
 import ja.insepector.bxapp.ui.activity.login.LoginActivity
+import ja.insepector.common.event.RefreshParkingLotEvent
 import ja.insepector.common.realm.RealmUtil
 import ja.insepector.common.util.AppUtil
 import ja.insepector.common.util.Constant
@@ -57,6 +58,7 @@ import ja.insepector.common.util.FileUtil
 import ja.insepector.common.util.GlideUtils
 import ja.insepector.common.view.keyboard.KeyboardUtil
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -74,7 +76,9 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var multipleSeatsPop: MultipleSeatsPop? = null
     var multipleSeat = ""
 
-    var takePhotoType = 0
+    var photoType = 10
+    var plateBase64 = ""
+    var panoramaBase64 = ""
 
     var promptDialog: PromptDialog? = null
     var simId = ""
@@ -217,12 +221,12 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             }
 
             R.id.rfl_takePhoto -> {
-                takePhotoType = 0
+                photoType = 10
                 takePhoto()
             }
 
             R.id.rfl_takePhoto2 -> {
-                takePhotoType = 1
+                photoType = 11
                 takePhoto()
             }
 
@@ -276,12 +280,12 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             }
 
             R.id.riv_plate -> {
-                takePhotoType = 0
+                photoType = 10
                 takePhoto()
             }
 
             R.id.riv_panorama -> {
-                takePhotoType = 1
+                photoType = 11
                 takePhoto()
             }
 
@@ -303,45 +307,55 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         mViewModel.apply {
             placeOrderLiveData.observe(this@AdmissionTakePhotoActivity) {
                 dismissProgressDialog()
+                uploadImg(it.orderNo, plateBase64)
+                uploadImg(it.orderNo, panoramaBase64)
+//                promptDialog = PromptDialog(
+//                    i18N(ja.insepector.base.R.string.下单成功当前车辆有欠费记录是否追缴),
+//                    i18N(ja.insepector.base.R.string.是),
+//                    i18N(ja.insepector.base.R.string.否),
+//                    object : PromptDialog.PromptCallBack {
+//                        override fun leftClick() {
+//                            startArouter(ARouterMap.DEBT_COLLECTION, data = Bundle().apply {
+//                                putString(ARouterMap.DEBT_CAR_LICENSE, binding.pvPlate.getPvTxt())
+//                            })
+//                        }
+//
+//                        override fun rightClick() {
                 promptDialog = PromptDialog(
-                    i18N(ja.insepector.base.R.string.下单成功当前车辆有欠费记录是否追缴),
-                    i18N(ja.insepector.base.R.string.是),
-                    i18N(ja.insepector.base.R.string.否),
+                    i18N(ja.insepector.base.R.string.下单成功是否预支付),
+                    i18N(ja.insepector.base.R.string.取消),
+                    i18N(ja.insepector.base.R.string.确定),
                     object : PromptDialog.PromptCallBack {
                         override fun leftClick() {
-                            startArouter(ARouterMap.DEBT_COLLECTION, data = Bundle().apply {
-                                putString(ARouterMap.DEBT_CAR_LICENSE, binding.pvPlate.getPvTxt())
-                            })
+                            EventBus.getDefault().post(RefreshParkingLotEvent())
+                            onBackPressedSupport()
                         }
 
                         override fun rightClick() {
-                            promptDialog = PromptDialog(
-                                i18N(ja.insepector.base.R.string.下单成功是否预支付),
-                                i18N(ja.insepector.base.R.string.取消),
-                                i18N(ja.insepector.base.R.string.确定),
-                                object : PromptDialog.PromptCallBack {
-                                    override fun leftClick() {
-                                        onBackPressedSupport()
-                                    }
-
-                                    override fun rightClick() {
-                                        startArouter(ARouterMap.PREPAID, data = Bundle().apply {
-                                            putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
-                                            putString(ARouterMap.PREPAID_CARLICENSE, binding.pvPlate.getPvTxt())
-                                            putString(ARouterMap.PREPAID_PARKING_NO, parkingNo)
-                                        })
-                                    }
-
-                                })
-                            promptDialog?.show()
+                            EventBus.getDefault().post(RefreshParkingLotEvent())
+                            startArouter(ARouterMap.PREPAID, data = Bundle().apply {
+                                putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+                                putString(ARouterMap.PREPAID_CARLICENSE, binding.pvPlate.getPvTxt())
+                                putString(ARouterMap.PREPAID_PARKING_NO, parkingNo)
+                                putString(ARouterMap.PREPAID_ORDER_NO, it.orderNo)
+                            })
+                            finish()
                         }
 
                     })
                 promptDialog?.show()
+//                        }
+
+//                    })
+//                promptDialog?.show()
             }
             errMsg.observe(this@AdmissionTakePhotoActivity) {
-                dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                try {
+                    dismissProgressDialog()
+                    ToastUtil.showMiddleToast(it.msg)
+                } catch (_: Exception) {
+
+                }
             }
         }
     }
@@ -359,58 +373,40 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     }
 
     val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-//        if (result.resultCode == Activity.RESULT_OK) {
-//            var imageBitmap = result.data?.extras?.get("data") as Bitmap
-//            imageBitmap = ImageUtils.addTextWatermark(
-//                imageBitmap,
-//                TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
-//                SizeUtils.dp2px(19f), Color.RED, SizeUtils.dp2px(11f).toFloat(), SizeUtils.dp2px(8f).toFloat()
-//            )
-//            imageBitmap = ImageUtils.addTextWatermark(
-//                imageBitmap,
-//                "JAZ02109",
-//                SizeUtils.dp2px(19f), Color.RED, SizeUtils.dp2px(11f).toFloat(), SizeUtils.dp2px(27f).toFloat()
-//            )
-//            if (takePhotoType == 0) {
-//                GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
-//                binding.rflTakePhoto.hide()
-//                binding.rflPlateImg.show()
-//            } else {
-//                GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
-//                binding.rflTakePhoto2.hide()
-//                binding.rflPanoramaImg.show()
-//            }
-//            val file = ImageUtils.save2Album(imageBitmap, Bitmap.CompressFormat.JPEG)
-//            val bytes = file?.readBytes()
-////            picBase64 = EncodeUtils.base64Encode2String(bytes)
-//        }
-        var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
-        imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 12)
-        imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
-        imageBitmap = ImageUtils.addTextWatermark(
-            imageBitmap,
-            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
-            16, Color.RED, 6f, 3f
-        )
-        imageBitmap = ImageUtils.addTextWatermark(
-            imageBitmap,
-            "JAZ02109",
-            16, Color.RED, 6f, 19f
-        )
-        ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.JPEG)
-        if (takePhotoType == 0) {
-            GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
-            binding.rflTakePhoto.hide()
-            binding.rflPlateImg.show()
-        } else {
-            GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
-            binding.rflTakePhoto2.hide()
-            binding.rflPanoramaImg.show()
+        if (result.resultCode == Activity.RESULT_OK) {
+            var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+            imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 12)
+            imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
+            imageBitmap = ImageUtils.addTextWatermark(
+                imageBitmap,
+                TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
+                16, Color.RED, 6f, 3f
+            )
+            imageBitmap = ImageUtils.addTextWatermark(
+                imageBitmap,
+                parkingNo,
+                16, Color.RED, 6f, 19f
+            )
+            ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.JPEG)
+            if (photoType == 10) {
+                GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
+                binding.rflTakePhoto.hide()
+                binding.rflPlateImg.show()
+            } else {
+                GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
+                binding.rflTakePhoto2.hide()
+                binding.rflPanoramaImg.show()
+            }
+            FileUtils.notifySystemToScan(imageFile)
+            val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
+            if (photoType == 10) {
+                plateBase64 = EncodeUtils.base64Encode2String(bytes)
+            } else {
+                panoramaBase64 = EncodeUtils.base64Encode2String(bytes)
+            }
         }
-        FileUtils.notifySystemToScan(imageFile)
-        val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
-        val picBase64 = EncodeUtils.base64Encode2String(bytes)
     }
+
     var currentPhotoPath = ""
     var imageFile: File? = null
     private fun createImageFile(): File? {
@@ -418,13 +414,25 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         imageFile = File.createTempFile(
-            "JPEG_${timeStamp}_", /* 前缀 */
+            "JPG_${timeStamp}_", /* 前缀 */
             ".jpg", /* 后缀 */
             storageDir /* 目录 */
         )
 
         currentPhotoPath = imageFile!!.absolutePath
         return imageFile
+    }
+
+    fun uploadImg(orderNo: String, photo: String) {
+        showProgressDialog(20000)
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["businessId"] = orderNo
+        jsonobject["photoType"] = photoType
+        jsonobject["photoFormat"] = "jpg"
+        jsonobject["photo"] = photo
+        param["attr"] = jsonobject
+        mViewModel.picUpload(param)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

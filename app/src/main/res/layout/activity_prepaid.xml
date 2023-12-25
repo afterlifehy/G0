@@ -133,25 +133,6 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@color/color_ffcccccc" />
 
-            <com.aries.ui.view.radius.RadiusFrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_66">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/金额"
-                    android:textColor="@color/color_ff666666"
-                    android:textSize="@dimen/sp_19" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|end"
-                    tools:text="15.00元" />
-            </com.aries.ui.view.radius.RadiusFrameLayout>
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"

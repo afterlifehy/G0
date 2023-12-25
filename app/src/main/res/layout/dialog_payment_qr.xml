@@ -89,10 +89,17 @@
             app:rv_bottomLeftRadius="@dimen/dp_7"
             app:rv_bottomRightRadius="@dimen/dp_7">
 
+            <TextView
+                android:id="@+id/tv_payAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
+
             <com.aries.ui.view.radius.RadiusFrameLayout
                 android:layout_width="@dimen/dp_184"
                 android:layout_height="@dimen/dp_184"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_20"
                 app:rv_backgroundColor="@color/white"
                 app:rv_radius="@dimen/dp_7">
 

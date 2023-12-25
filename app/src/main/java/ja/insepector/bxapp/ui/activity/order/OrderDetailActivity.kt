@@ -165,7 +165,12 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                         }
 
                         override fun onRightClickLinsener(msg: String) {
-
+                            showProgressDialog(20000)
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["orderNoList"] = order?.orderNo
+                            param["attr"] = jsonobject
+                            mViewModel.debtUpload(param)
                         }
 
                     }).build(ActivityCacheManager.instance().getCurrentActivity()).showDailog()
@@ -205,6 +210,10 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                 GlideUtils.instance?.loadImage(binding.rivPic1, picList[0], ja.insepector.common.R.mipmap.ic_placeholder)
                 GlideUtils.instance?.loadImage(binding.rivPic2, picList[1], ja.insepector.common.R.mipmap.ic_placeholder)
                 GlideUtils.instance?.loadImage(binding.rivPic3, picList[2], ja.insepector.common.R.mipmap.ic_placeholder)
+            }
+            debtUploadLiveData.observe(this@OrderDetailActivity) {
+                dismissProgressDialog()
+                ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.上传成功))
             }
             errMsg.observe(this@OrderDetailActivity) {
                 dismissProgressDialog()
