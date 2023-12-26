@@ -26,34 +26,41 @@ import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.ImageUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
-import ja.insepector.base.BaseApplication
-import ja.insepector.base.ds.PreferencesDataStore
-import ja.insepector.base.ds.PreferencesKeys
-import ja.insepector.base.ext.i18N
-import ja.insepector.base.ext.show
-import ja.insepector.base.util.ToastUtil
-import ja.insepector.base.viewbase.VbBaseActivity
-import ja.insepector.common.util.AppUtil
-import ja.insepector.common.util.GlideUtils
-import ja.insepector.bxapp.R
-import ja.insepector.bxapp.databinding.ActivityParkingSpaceBinding
-import ja.insepector.bxapp.mvvm.viewmodel.ParkingSpaceViewModel
 import com.zrq.spanbuilder.TextStyle
+import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.bean.ExitMethodBean
 import ja.insepector.base.bean.ParkingSpaceBean
 import ja.insepector.base.bean.PrintInfoBean
 import ja.insepector.base.bean.TicketPrintBean
-import ja.insepector.base.bean.TransactionBean
 import ja.insepector.base.dialog.DialogHelp
-import ja.insepector.base.ext.hide
+import ja.insepector.base.ds.PreferencesDataStore
+import ja.insepector.base.ds.PreferencesKeys
+import ja.insepector.base.ext.i18N
+import ja.insepector.base.ext.show
 import ja.insepector.base.ext.startArouter
+import ja.insepector.base.util.ToastUtil
+import ja.insepector.base.viewbase.VbBaseActivity
+import ja.insepector.bxapp.R
+import ja.insepector.bxapp.databinding.ActivityParkingSpaceBinding
 import ja.insepector.bxapp.dialog.ExitMethodDialog
+import ja.insepector.bxapp.mvvm.viewmodel.ParkingSpaceViewModel
 import ja.insepector.common.event.EndOrderEvent
 import ja.insepector.common.event.RefreshParkingLotEvent
+import ja.insepector.common.event.RefreshParkingSpaceEvent
+import ja.insepector.common.util.AppUtil
 import ja.insepector.common.util.BluePrint
 import ja.insepector.common.util.FileUtil
+import ja.insepector.common.util.GlideUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -84,11 +91,15 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     var type = ""
     var simId = ""
-    var tradeNo = ""
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(endOrderEvent: EndOrderEvent) {
         onBackPressedSupport()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(refreshParkingSpaceEvent: RefreshParkingSpaceEvent) {
+        parkingSpaceRequest()
     }
 
     override fun initView() {
@@ -103,7 +114,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), ja.insepector.base.R.color.white))
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, ja.insepector.common.R.mipmap.ic_pic)
         binding.layoutToolbar.ivRight.show()
-
     }
 
     override fun initListener() {
@@ -206,8 +216,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     putString(ARouterMap.ABNORMAL_PARKING_NO, parkingSpaceBean?.parkingNo)
                     putString(ARouterMap.ABNORMAL_ORDER_NO, orderNo)
                     putString(ARouterMap.ABNORMAL_CARLICENSE, parkingSpaceBean?.carLicense)
-//                    putString(ARouterMap.ABNORMAL_CAR_COLOR, parkingSpaceBean?.carColor.toString())
-//                    TODO(carColor)
                 })
             }
 
@@ -329,32 +337,13 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     }
 
     fun ticketPrintRequest() {
-        if(tradeNo.isNotEmpty()){
-            showProgressDialog(20000)
-            val param = HashMap<String, Any>()
-            val jsonobject = JSONObject()
-            jsonobject["tradeNo"] = tradeNo
-            jsonobject["simId"] = simId
-            param["attr"] = jsonobject
-            mViewModel.ticketPrint(param)
-        }else{
-//            val payMoney = ""
-//            val printInfo = PrintInfoBean(
-//                roadId = parkingSpaceBean.,
-//                plateId = parkingSpaceBean!!.carLicense,
-//                payMoney = "",
-//                orderId = orderNo,
-//                phone = ,
-//                startTime = parkingSpaceBean!!.startTime,
-//                leftTime = "",
-//                remark = ,
-//                company = it.businessCname,
-//                oweCount = 0
-//            )
-//            Thread {
-//                BluePrint.instance?.zkblueprint(printInfo.toString())
-//            }.start()
-        }
+        showProgressDialog(20000)
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["orderNo"] = orderNo
+        jsonobject["simId"] = simId
+        param["attr"] = jsonobject
+        mViewModel.inquiryTransactionByOrderNo(param)
     }
 
     @SuppressLint("CheckResult")
@@ -400,8 +389,13 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             picUploadLiveData.observe(this@ParkingSpaceActivity) {
 
             }
-            ticketPrintLiveData.observe(this@ParkingSpaceActivity){
-                startPrint(it)
+            inquiryTransactionByOrderNoLiveData.observe(this@ParkingSpaceActivity) {
+                dismissProgressDialog()
+                if (it.result != null && it.result.size > 0) {
+                    performPrintTasks(it.result) {
+
+                    }
+                }
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
@@ -410,7 +404,26 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         }
     }
 
-    fun startPrint(it: TicketPrintBean) {
+    fun performPrintTasks(printDataList: List<TicketPrintBean>, onComplete: () -> Unit) {
+        val iterator = printDataList.iterator()
+
+        fun printNext() {
+            if (iterator.hasNext()) {
+                val printData = iterator.next()
+                startPrint(printData) {
+                    // 打印完成后继续下一个打印
+                    printNext()
+                }
+            } else {
+                // 所有打印任务完成时调用 onComplete 回调
+                onComplete()
+            }
+        }
+        // 开始第一个打印任务
+        printNext()
+    }
+
+    fun startPrint(it: TicketPrintBean, onComplete: () -> Unit) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,
@@ -425,8 +438,14 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             oweCount = 0
         )
         Thread {
-            BluePrint.instance?.zkblueprint(printInfo.toString())
+            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
         }.start()
+        GlobalScope.launch {
+            delay(2000)
+            // 执行打印完成后的回调
+            onComplete()
+        }
+
     }
 
     override fun getVbBindingView(): ViewBinding {

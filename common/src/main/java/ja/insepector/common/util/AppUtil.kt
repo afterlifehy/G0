@@ -111,7 +111,7 @@ object AppUtil {
     fun keepNDecimals(value: String, N: Int): String {
         val number = value.toDoubleOrNull()
         return if (number != null) {
-            String.format("%.2f", number)
+            String.format("%.${N}f", number)
         } else {
             "Invalid Input"
         }

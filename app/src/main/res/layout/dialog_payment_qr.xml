@@ -107,7 +107,8 @@
                     android:id="@+id/riv_qr"
                     android:layout_width="@dimen/dp_153"
                     android:layout_height="@dimen/dp_153"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY" />
             </com.aries.ui.view.radius.RadiusFrameLayout>
 
             <TextView

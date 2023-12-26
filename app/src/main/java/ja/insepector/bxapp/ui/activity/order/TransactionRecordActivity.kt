@@ -29,12 +29,14 @@ import ja.insepector.bxapp.adapter.TransactionRecordAdapter
 import ja.insepector.bxapp.databinding.ActivityTransactionRecordBinding
 import ja.insepector.bxapp.mvvm.viewmodel.TransactionRecordViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
+import ja.insepector.base.bean.TicketPrintBean
+import ja.insepector.base.bean.TicketPrintResultBean
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.TRANSACTION_RECORD)
 class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, ActivityTransactionRecordBinding>(), OnClickListener {
     var transactionRecordAdapter: TransactionRecordAdapter? = null
-    var transactionRecordList: MutableList<TransactionBean> = ArrayList()
+    var transactionRecordList: MutableList<TicketPrintBean> = ArrayList()
     var orderNo = ""
     var token = ""
 
@@ -69,7 +71,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
         jsonobject["orderNo"] = orderNo
 //        20230904JAZ038001P7A32A
         param["attr"] = jsonobject
-        mViewModel.transactionInquiryByOrder(param)
+        mViewModel.inquiryTransactionByOrderNo(param)
     }
 
     @SuppressLint("CheckResult")
@@ -80,40 +82,45 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
             }
 
             R.id.fl_notification -> {
+                val ticketPrintBean = v.tag as TicketPrintBean
                 var rxPermissions = RxPermissions(this@TransactionRecordActivity)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-                            showProgressDialog(20000)
-                            val transactionBean = v.tag as TransactionBean
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-//                            jsonobject["tradeNo"] = "20230825JAZ03850048412"
-                            jsonobject["tradeNo"] = transactionBean.tradeNo
-                            jsonobject["token"] = token
-                            param["attr"] = jsonobject
-                            mViewModel.notificationInquiry(param)
+                            print(ticketPrintBean)
                         }
                     }
                 } else {
-                    showProgressDialog(20000)
-                    val transactionBean = v.tag as TransactionBean
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["tradeNo"] = transactionBean.tradeNo
-//                    jsonobject["tradeNo"] = "20230825JAZ03850048412"
-                    jsonobject["token"] = token
-                    param["attr"] = jsonobject
-                    mViewModel.notificationInquiry(param)
+                    print(ticketPrintBean)
                 }
             }
         }
     }
 
+    fun print(it: TicketPrintBean) {
+        ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.开始打印))
+        val payMoney = it.payMoney
+        val printInfo = PrintInfoBean(
+            roadId = it.roadName,
+            plateId = it.carLicense,
+            payMoney = String.format("%.2f", payMoney.toFloat()),
+            orderId = orderNo,
+            phone = it.phone,
+            startTime = it.startTime,
+            leftTime = it.endTime,
+            remark = it.remark,
+            company = it.businessCname,
+            oweCount = it.oweCount
+        )
+        Thread {
+            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+        }.start()
+    }
+
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            transactionInquiryByOrderLiveData.observe(this@TransactionRecordActivity) {
+            inquiryTransactionByOrderNoLiveData.observe(this@TransactionRecordActivity) {
                 transactionRecordList.clear()
                 transactionRecordList.addAll(it.result)
                 if (transactionRecordList.size > 0) {
@@ -125,26 +132,6 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
                     binding.layoutNoData.root.show()
                 }
                 dismissProgressDialog()
-            }
-            notificationInquiryLiveData.observe(this@TransactionRecordActivity) {
-                dismissProgressDialog()
-//                ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.开始打印))
-//                val payMoney = it.payMoney
-//                val printInfo = PrintInfoBean(
-//                    roadId = it.roadName,
-//                    plateId = it.carLicense,
-//                    payMoney = String.format("%.2f", payMoney.toFloat()),
-//                    orderId = orderNo,
-//                    phone = it.phone,
-//                    startTime = it.startTime,
-//                    leftTime = it.endTime,
-//                    remark = it.remark,
-//                    company = it.businessCname,
-//                    oweCount = it.oweCount
-//                )
-//                Thread {
-//                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
-//                }.start()
             }
             errMsg.observe(this@TransactionRecordActivity) {
                 dismissProgressDialog()

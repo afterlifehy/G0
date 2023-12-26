@@ -24,16 +24,14 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_6"
-            android:layout_marginEnd="@dimen/dp_6"
             android:layout_marginBottom="@dimen/dp_10">
 
             <com.aries.ui.view.radius.RadiusFrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp_7"
-                android:layout_marginEnd="@dimen/dp_7"
+                android:layout_marginStart="@dimen/dp_13"
+                android:layout_marginEnd="@dimen/dp_13"
                 app:rv_backgroundColor="@color/white"
                 app:rv_radius="@dimen/dp_10" />
 

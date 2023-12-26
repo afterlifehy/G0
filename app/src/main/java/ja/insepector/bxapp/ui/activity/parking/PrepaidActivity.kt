@@ -1,29 +1,41 @@
 package ja.insepector.bxapp.ui.activity.parking
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.DialogInterface
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
+import com.tbruyelle.rxpermissions3.RxPermissions
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
+import ja.insepector.base.bean.PayResultBean
+import ja.insepector.base.bean.PrintInfoBean
 import ja.insepector.base.ds.PreferencesDataStore
 import ja.insepector.base.ds.PreferencesKeys
 import ja.insepector.base.ext.i18N
+import ja.insepector.base.ext.i18n
 import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.bxapp.R
 import ja.insepector.bxapp.databinding.ActivityPrepaidBinding
 import ja.insepector.bxapp.dialog.PaymentQrDialog
 import ja.insepector.bxapp.mvvm.viewmodel.PrepaidViewModel
+import ja.insepector.common.event.RefreshParkingSpaceEvent
+import ja.insepector.common.util.AppUtil
+import ja.insepector.common.util.BluePrint
 import ja.insepector.common.util.GlideUtils
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.PREPAID)
 class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>(), OnClickListener {
-    val sizes = intArrayOf(24, 19)
-    val colors = intArrayOf(ja.insepector.base.R.color.color_ff04a091, ja.insepector.base.R.color.color_ff04a091)
     var timeDuration = 1.0
     var paymentQrDialog: PaymentQrDialog? = null
     var qr = "www.baidu.com"
@@ -35,6 +47,10 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
 
     var simId = ""
     var loginName = ""
+
+    var count = 0
+    var handler = Handler(Looper.getMainLooper())
+    var tradeNo = ""
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18N(ja.insepector.base.R.string.预支付)
@@ -87,13 +103,13 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_scanPay -> {
-//                TODO(时长)
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
                 jsonobject["parkingNo"] = parkingNo
                 jsonobject["orderNo"] = orderNo
                 jsonobject["loginName"] = loginName
                 jsonobject["simId"] = simId
+                jsonobject["parkingHours"] = timeDuration.toString()
                 jsonobject["orderType"] = "1"
                 param["attr"] = jsonobject
                 mViewModel.prePayFeeInquiry(param)
@@ -101,19 +117,86 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         }
     }
 
+    @SuppressLint("CheckResult")
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
             prePayFeeInquiryLiveData.observe(this@PrepaidActivity) {
-                paymentQrDialog = PaymentQrDialog(qr, it.realtimeMoney)
-                paymentQrDialog?.show()
                 dismissProgressDialog()
+                tradeNo = it.tradeNo
+                paymentQrDialog = PaymentQrDialog(it.qrCode, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
+                paymentQrDialog?.show()
+                paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
+                count = 0
+                handler.post(runnable)
+            }
+            payResultInquiryLiveData.observe(this@PrepaidActivity) {
+                dismissProgressDialog()
+                if (it != null) {
+                    handler.removeCallbacks(runnable)
+                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.支付成功))
+                    if (paymentQrDialog != null) {
+                        paymentQrDialog?.dismiss()
+                    }
+                    val payResultBean = it
+                    var rxPermissions = RxPermissions(this@PrepaidActivity)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                            if (it) {
+                                startPrint(payResultBean)
+                            }
+                        }
+                    } else {
+                        startPrint(payResultBean)
+                    }
+                    EventBus.getDefault().post(RefreshParkingSpaceEvent())
+                    onBackPressedSupport()
+                }
             }
             errMsg.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
         }
+    }
+
+    val runnable = object : Runnable {
+        override fun run() {
+            if (count < 60) {
+                checkPayResult()
+                count++
+                handler.postDelayed(this, 3000)
+            }
+        }
+    }
+
+    fun checkPayResult() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["simId"] = simId
+        jsonobject["tradeNo"] = tradeNo
+        param["attr"] = jsonobject
+        mViewModel.payResultInquiry(param)
+    }
+
+    fun startPrint(it: PayResultBean) {
+        val payMoney = it.payMoney
+        val printInfo = PrintInfoBean(
+            roadId = it.roadName,
+            plateId = it.carLicense,
+            payMoney = String.format("%.2f", payMoney.toFloat()),
+            orderId = orderNo,
+            phone = it.phone,
+            startTime = it.startTime,
+            leftTime = it.endTime,
+            remark = it.remark,
+            company = it.businessCname,
+            oweCount = it.oweCount
+        )
+        ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.开始打印))
+        Thread {
+            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+        }.start()
     }
 
     override fun providerVMClass(): Class<PrepaidViewModel> {
@@ -132,5 +215,19 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
 
     override fun marginStatusBarView(): View {
         return binding.layoutToolbar.ablToolbar
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (handler != null) {
+            handler.removeCallbacks(runnable)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (handler != null) {
+            handler.removeCallbacks(runnable)
+        }
     }
 }

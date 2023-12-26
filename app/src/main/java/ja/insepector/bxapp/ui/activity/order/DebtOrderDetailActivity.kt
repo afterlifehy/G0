@@ -191,7 +191,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 dismissProgressDialog()
                 tradeNo = "12345678"
                 qr = "www.baidu.com"
-                paymentQrDialog = PaymentQrDialog(qr,0)
+                paymentQrDialog = PaymentQrDialog(qr,"0")
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                     override fun onDismiss(p0: DialogInterface?) {

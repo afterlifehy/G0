@@ -5,6 +5,7 @@ import ja.insepector.base.base.mvvm.BaseViewModel
 import ja.insepector.base.base.mvvm.ErrorMessage
 import ja.insepector.base.bean.ParkingSpaceBean
 import ja.insepector.base.bean.TicketPrintBean
+import ja.insepector.base.bean.TicketPrintResultBean
 import ja.insepector.bxapp.mvvm.repository.ParkingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,7 +18,7 @@ class ParkingSpaceViewModel : BaseViewModel() {
     val parkingSpaceLiveData = MutableLiveData<ParkingSpaceBean>()
     val endOrderLiveData = MutableLiveData<Any>()
     val picUploadLiveData = MutableLiveData<Any>()
-    val ticketPrintLiveData = MutableLiveData<TicketPrintBean>()
+    val inquiryTransactionByOrderNoLiveData = MutableLiveData<TicketPrintResultBean>()
 
     fun parkingSpace(param: Map<String, Any?>) {
         launch {
@@ -58,13 +59,13 @@ class ParkingSpaceViewModel : BaseViewModel() {
         }
     }
 
-    fun ticketPrint(param: Map<String, Any?>) {
+    fun inquiryTransactionByOrderNo(param: Map<String, Any?>) {
         launch {
             val response = withContext(Dispatchers.IO) {
-                mParkingRepository.ticketPrint(param)
+                mParkingRepository.inquiryTransactionByOrderNo(param)
             }
             executeResponse(response, {
-                ticketPrintLiveData.value = response.attr
+                inquiryTransactionByOrderNoLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })

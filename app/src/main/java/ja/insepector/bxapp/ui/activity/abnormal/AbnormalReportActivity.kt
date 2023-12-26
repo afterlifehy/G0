@@ -55,7 +55,6 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
     var currentStreet: Street? = null
 
     var parkingNo = ""
-    var streetNo = ""
     var orderNo = ""
     var carColor = ""
     var carLicense = ""
@@ -66,13 +65,10 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, ja.insepector.common.R.mipmap.ic_help)
         binding.layoutToolbar.ivRight.show()
 
-        if (intent.getStringExtra(ARouterMap.ABNORMAL_STREET_NO) != null) {
-            streetNo = intent.getStringExtra(ARouterMap.ABNORMAL_STREET_NO)!!
+        if (intent.getStringExtra(ARouterMap.ABNORMAL_CARLICENSE) != null) {
             parkingNo = intent.getStringExtra(ARouterMap.ABNORMAL_PARKING_NO)!!
             orderNo = intent.getStringExtra(ARouterMap.ABNORMAL_ORDER_NO)!!
-            binding.retParkingNo.setText(parkingNo.replaceFirst(streetNo + "-", ""))
             carLicense = intent.getStringExtra(ARouterMap.ABNORMAL_CARLICENSE)!!
-            carColor = intent.getStringExtra(ARouterMap.ABNORMAL_CAR_COLOR)!!
         }
 
         collectioPlateColorList.add(Constant.BLUE)
@@ -104,15 +100,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
 
     override fun initData() {
         RealmUtil.instance?.findCheckedStreetList()?.let { streetList.addAll(it) }
-        if (streetNo.isNotEmpty()) {
-            for (i in streetList) {
-                if (i.streetNo == streetNo) {
-                    currentStreet = i
-                }
-            }
-        } else {
-            currentStreet = RealmUtil.instance?.findCurrentStreet()
-        }
+        currentStreet = RealmUtil.instance?.findCurrentStreet()
         if (streetList.size == 1) {
             binding.cbLotName.hide()
             binding.rflLotName.setOnClickListener(null)
@@ -122,6 +110,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         }
         binding.tvLotName.text = currentStreet?.streetName
         binding.rtvStreetNo.text = currentStreet?.streetNo
+        binding.retParkingNo.setText(parkingNo.replaceFirst(currentStreet?.streetNo + "-", ""))
 
         classificationList.add(i18n(ja.insepector.base.R.string.无法关单))
         classificationList.add(i18n(ja.insepector.base.R.string.订单丢失))
@@ -144,7 +133,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             (v as EditText).requestFocus()
             keyboardUtil.changeKeyboard(true)
             val clickPosition = v.getOffsetForPosition(p1!!.x, p1.y)
-            keyboardUtil.setEditText(v,clickPosition)
+            keyboardUtil.setEditText(v, clickPosition)
             keyboardUtil.showKeyboard(show = {
                 val location = IntArray(2)
                 v.getLocationOnScreen(location)
@@ -238,17 +227,14 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
-                    jsonobject["loginName"] = loginName
-                    jsonobject["streetNo"] = currentStreet?.streetNo
                     jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
-
-                    jsonobject["type"] = type
+                    jsonobject["state"] = type
                     jsonobject["remark"] = binding.retRemarks.text.toString()
                     if (type == "03") {
-                        jsonobject["carLicense"] = binding.etPlate.text.toString()
+                        jsonobject["carLicenseNew"] = binding.etPlate.text.toString()
                         jsonobject["carColor"] = checkedColor
                     } else {
-                        jsonobject["carLicense"] = carLicense
+                        jsonobject["carLicenseNew"] = carLicense
                         jsonobject["carColor"] = carColor
                     }
                     jsonobject["orderNo"] = orderNo
@@ -355,9 +341,9 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.上报成功))
                 if (type == "02") {
-                    EventBus.getDefault().post(RefreshParkingSpaceEvent(carLicense, carColor))
+                    EventBus.getDefault().post(RefreshParkingSpaceEvent())
                 } else {
-                    EventBus.getDefault().post(RefreshParkingSpaceEvent(binding.etPlate.text.toString(), checkedColor))
+                    EventBus.getDefault().post(RefreshParkingSpaceEvent())
                 }
                 onBackPressedSupport()
             }

@@ -3,7 +3,8 @@ package ja.insepector.bxapp.mvvm.viewmodel
 import androidx.lifecycle.MutableLiveData
 import ja.insepector.base.base.mvvm.BaseViewModel
 import ja.insepector.base.base.mvvm.ErrorMessage
-import ja.insepector.base.bean.PrePayFeeInquiryBean
+import ja.insepector.base.bean.PayResultBean
+import ja.insepector.base.bean.PayQRBean
 import ja.insepector.bxapp.mvvm.repository.OrderRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,7 +14,8 @@ class PrepaidViewModel: BaseViewModel() {
         OrderRepository()
     }
 
-    val prePayFeeInquiryLiveData = MutableLiveData<PrePayFeeInquiryBean>()
+    val prePayFeeInquiryLiveData = MutableLiveData<PayQRBean>()
+    val payResultInquiryLiveData = MutableLiveData<PayResultBean>()
 
     fun prePayFeeInquiry(param: Map<String, Any?>) {
         launch {
@@ -22,6 +24,19 @@ class PrepaidViewModel: BaseViewModel() {
             }
             executeResponse(response, {
                 prePayFeeInquiryLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun payResultInquiry(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.payResultInquiry(param)
+            }
+            executeResponse(response, {
+                payResultInquiryLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })

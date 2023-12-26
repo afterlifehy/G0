@@ -202,7 +202,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                 jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
                 jsonobject["simId"] = simId
                 param["attr"] = jsonobject
-                mViewModel.payResult(param)
+                mViewModel.payResultInquiry(param)
             }
 
             R.id.toolbar,
@@ -263,12 +263,14 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                     BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
                 }.start()
             }
-            payResultLiveData.observe(this@TransactionInquiryActivity) {
+            payResultInquiryLiveData.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.支付成功))
-                currentTransactionBean?.hasPayed = "1"
-                currentTransactionBean?.payedAmount = currentTransactionBean!!.oweMoney
-                transactionInquiryAdapter?.notifyItemChanged(transactionInquiryList.indexOf(currentTransactionBean))
+                if(it != null){
+                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.支付成功))
+                    currentTransactionBean?.hasPayed = "1"
+                    currentTransactionBean?.payedAmount = currentTransactionBean!!.oweMoney
+                    transactionInquiryAdapter?.notifyItemChanged(transactionInquiryList.indexOf(currentTransactionBean))
+                }
             }
             errMsg.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()

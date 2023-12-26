@@ -1,14 +1,18 @@
 package ja.insepector.base.bean
 
 data class TicketPrintBean(
-    val businessCname: String = "",
-    val carLicense: String = "",
-    val endTime: String = "",
-    val oweCount: Int = 0,
-    val payMoney: String = "",
-    val phone: String = "",
-    val remark: String = "",
-    val roadName: String = "",
-    val startTime: String = "",
-    val tradeNo: String = ""
+    var businessCname: String = "",
+    var carLicense: String = "",
+    var endTime: String = "",
+    var oweCount: Int = 0,
+    var payMoney: String = "",
+    var phone: String = "",
+    var remark: String = "",
+    var roadName: String = "",
+    var startTime: String = "",
+    var tradeNo: String = ""
+)
+
+data class TicketPrintResultBean(
+    var result: ArrayList<TicketPrintBean>
 )

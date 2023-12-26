@@ -6,6 +6,7 @@ import ja.insepector.base.bean.ParkingLotResultBean
 import ja.insepector.base.bean.ParkingSpaceBean
 import ja.insepector.base.bean.PlaceOederResultBean
 import ja.insepector.base.bean.TicketPrintBean
+import ja.insepector.base.bean.TicketPrintResultBean
 
 //import ja.insepector.base.bean.ParkingLotResultBean
 //import ja.insepector.base.bean.ParkingSpaceBean
@@ -56,6 +57,12 @@ class ParkingRepository : BaseRepository() {
         return mServer.ticketPrint(param)
     }
 
+    /**
+     *  根据订单查交易
+     */
+    suspend fun inquiryTransactionByOrderNo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintResultBean> {
+        return mServer.inquiryTransactionByOrderNo(param)
+    }
 //    /**
 //     *  支付结果
 //     */

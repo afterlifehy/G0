@@ -5,9 +5,11 @@ import ja.insepector.base.bean.DebtCollectionResultBean
 import ja.insepector.base.bean.EndOrderInfoBean
 import ja.insepector.base.bean.HttpWrapper
 import ja.insepector.base.bean.OrderResultBean
+import ja.insepector.base.bean.PayResultBean
 import ja.insepector.base.bean.PicInquiryBean
-import ja.insepector.base.bean.PrePayFeeInquiryBean
+import ja.insepector.base.bean.PayQRBean
 import ja.insepector.base.bean.TicketPrintBean
+import ja.insepector.base.bean.TicketPrintResultBean
 import ja.insepector.base.bean.TransactionResultBean
 
 class OrderRepository : BaseRepository() {
@@ -43,7 +45,7 @@ class OrderRepository : BaseRepository() {
     /**
      * 预支付查询
      */
-    suspend fun prePayFeeInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PrePayFeeInquiryBean> {
+    suspend fun prePayFeeInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean> {
         return mServer.prePayFeeInquiry(param)
     }
 
@@ -66,5 +68,26 @@ class OrderRepository : BaseRepository() {
      */
     suspend fun ticketPrint(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean> {
         return mServer.ticketPrint(param)
+    }
+
+    /**
+     * 查询支付结果
+     */
+    suspend fun payResultInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
+        return mServer.payResultInquiry(param)
+    }
+
+    /**
+     *  根据订单查交易
+     */
+    suspend fun inquiryTransactionByOrderNo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintResultBean> {
+        return mServer.inquiryTransactionByOrderNo(param)
+    }
+
+    /**
+     *  离场支付二维码
+     */
+    suspend fun endOrderQR(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean> {
+        return mServer.endOrderQR(param)
     }
 }

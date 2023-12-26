@@ -6,9 +6,12 @@ import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
+import com.zrq.spanbuilder.TextStyle
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.bean.EndOrderInfoBean
+import ja.insepector.base.ds.PreferencesDataStore
+import ja.insepector.base.ds.PreferencesKeys
 import ja.insepector.base.ext.i18N
 import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseActivity
@@ -17,7 +20,9 @@ import ja.insepector.bxapp.databinding.ActivityOrderInfoBinding
 import ja.insepector.bxapp.dialog.PaymentQrDialog
 import ja.insepector.bxapp.mvvm.viewmodel.OrderInfoViewModel
 import ja.insepector.common.event.EndOrderEvent
+import ja.insepector.common.util.AppUtil
 import ja.insepector.common.util.GlideUtils
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.ORDER_INFO)
@@ -26,6 +31,14 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
     var qr = ""
     var endOrderBean: EndOrderInfoBean? = null
     var orderNo = ""
+
+    val colors = intArrayOf(ja.insepector.base.R.color.white, ja.insepector.base.R.color.white)
+    val sizes = intArrayOf(24, 19)
+    val styles = arrayOf(TextStyle.BOLD, TextStyle.NORMAL)
+
+    var simId = ""
+    var loginName = ""
+    var totalAmount = ""
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18N(ja.insepector.base.R.string.订单信息)
@@ -43,6 +56,10 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
     }
 
     override fun initData() {
+        runBlocking {
+            simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+        }
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["orderNo"] = orderNo
@@ -67,8 +84,15 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
             }
 
             R.id.rfl_scanPay -> {
-                paymentQrDialog = PaymentQrDialog(qr, 0)
-                paymentQrDialog?.show()
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["orderNo"] = orderNo
+                jsonobject["totalAmount"] = totalAmount
+                jsonobject["loginName"] = loginName
+                jsonobject["simId"] = simId
+                jsonobject["orderType"] = "2"
+                param["attr"] = jsonobject
+                mViewModel.endOrderQR(param)
             }
         }
     }
@@ -79,10 +103,16 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
             endOrderInfoLiveData.observe(this@OrderInfoActivity) {
                 dismissProgressDialog()
                 endOrderBean = it
+                totalAmount = endOrderBean?.realtimeMoney.toString()
                 binding.tvCarLicense.text = endOrderBean?.carLicense
-                binding.tvOrderAmount.text = endOrderBean?.orderMoney
+                val strings = arrayOf(endOrderBean?.orderMoney.toString(), "元")
+                binding.tvOrderAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)
                 binding.tvPaidAmount.text = endOrderBean?.havePayMoney
                 binding.rtvPayableAmount.text = endOrderBean?.realtimeMoney
+            }
+            endOrderQRLiveData.observe(this@OrderInfoActivity){
+                paymentQrDialog = PaymentQrDialog(qr, "0")
+                paymentQrDialog?.show()
             }
             errMsg.observe(this@OrderInfoActivity) {
                 dismissProgressDialog()

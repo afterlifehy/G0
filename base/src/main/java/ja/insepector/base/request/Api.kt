@@ -33,13 +33,13 @@ interface Api {
      * 预支付数据查询
      */
     @POST("S_G0_04")
-    suspend fun prePayFeeInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PrePayFeeInquiryBean>
+    suspend fun prePayFeeInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
 
     /**
      * 支付结果查询
      */
     @POST("S_G0_05")
-    suspend fun payResultInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+    suspend fun payResultInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean>
 
     /**
      * 欠费上传
@@ -52,6 +52,7 @@ interface Api {
      */
     @POST("S_G0_07")
     suspend fun logout(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
     /**
      * 订单查询
      */
@@ -119,6 +120,13 @@ interface Api {
     suspend fun checkOnWork(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 
     /**
+     * 根据orderNo查交易
+     */
+    @POST("S_G0_21")
+    suspend fun inquiryTransactionByOrderNo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintResultBean>
+
+
+    /**
      * 异常上报
      */
     @POST("S_AB_801")
@@ -129,4 +137,10 @@ interface Api {
      */
     @POST("S_CP_12")
     suspend fun picUpload(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 离场支付二维码
+     */
+    @POST("S_OR_0112")
+    suspend fun endOrderQR(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
 }
