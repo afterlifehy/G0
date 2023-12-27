@@ -47,7 +47,11 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
             )
             holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsBlue, styles)
         } else {
-            holder.vb.cbOrder.show()
+            if (item.isPrinted == "0") {
+                holder.vb.cbOrder.show()
+            } else {
+                holder.vb.cbOrder.gone()
+            }
             val strings = arrayOf(
                 i18n(ja.insepector.base.R.string.欠),
                 AppUtil.keepNDecimals(BigDecimalManager.subtractionDoubleToString(item.amount.toDouble(), item.paidAmount.toDouble()), 2),
@@ -87,9 +91,6 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
     }
 
     fun clearUploadOrderList() {
-        for (i in orderList) {
-            notifyItemChanged(data.indexOf(i))
-        }
         orderList.clear()
     }
 }

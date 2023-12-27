@@ -2,6 +2,7 @@ package ja.insepector.bxapp.mvvm.repository
 
 import ja.insepector.base.base.mvvm.BaseRepository
 import ja.insepector.base.bean.DebtCollectionResultBean
+import ja.insepector.base.bean.DebtUploadBean
 import ja.insepector.base.bean.EndOrderInfoBean
 import ja.insepector.base.bean.HttpWrapper
 import ja.insepector.base.bean.OrderResultBean
@@ -59,7 +60,7 @@ class OrderRepository : BaseRepository() {
     /**
      * 欠费上传
      */
-    suspend fun debtUpload(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+    suspend fun debtUpload(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<DebtUploadBean> {
         return mServer.debtUpload(param)
     }
 
@@ -89,5 +90,12 @@ class OrderRepository : BaseRepository() {
      */
     suspend fun endOrderQR(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean> {
         return mServer.endOrderQR(param)
+    }
+
+    /**
+     *  追缴二维码
+     */
+    suspend fun debtPayQr(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean> {
+        return mServer.debtPayQr(param)
     }
 }

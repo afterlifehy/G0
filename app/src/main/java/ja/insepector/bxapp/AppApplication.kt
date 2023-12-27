@@ -3,6 +3,8 @@ package ja.insepector.bxapp
 import android.app.Application
 import android.content.Context
 import android.net.http.HttpResponseCache
+import com.umeng.analytics.MobclickAgent
+import com.umeng.commonsdk.UMConfigure
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.http.interceptor.*
 import ja.insepector.base.network.NetWorkMonitorManager
@@ -34,6 +36,10 @@ class AppApplication : BaseApplication() {
             //初始化网络状态监听
 //            regNetWorkState(this)
         }.start()
+        UMConfigure.init(this, "658bdedda7208a5af191151b", "android", UMConfigure.DEVICE_TYPE_PHONE, null)
+        // 选用AUTO页面采集模式
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.LEGACY_MANUAL)
+        UMConfigure.setProcessEvent(true)
     }
 
 

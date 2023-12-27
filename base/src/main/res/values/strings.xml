@@ -180,4 +180,7 @@
     <string name="支付">支付:</string>
     <string name="请选择需要上传的订单">请选择需要上传的订单</string>
     <string name="上传成功">上传成功</string>
+    <string name="上传失败">上传失败</string>
+    <string name="请上传车牌照">请上传车牌照</string>
+    <string name="请上传全景照">请上传全景照</string>
 </resources>

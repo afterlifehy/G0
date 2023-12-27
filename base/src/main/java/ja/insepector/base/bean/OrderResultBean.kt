@@ -18,7 +18,8 @@ data class OrderBean(
     var parkingNo: String = "",
     var startTime: String = "",
     var streetName: String = "",
-    var paidAmount: String = ""
+    var paidAmount: String = "",
+    var isPrinted: String = "0"
 ) : Parcelable {
     init {
         if (duration.isNullOrEmpty()) {

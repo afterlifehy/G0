@@ -5,6 +5,7 @@ import ja.insepector.base.base.mvvm.BaseViewModel
 import ja.insepector.base.base.mvvm.ErrorMessage
 import ja.insepector.base.bean.EndOrderInfoBean
 import ja.insepector.base.bean.PayQRBean
+import ja.insepector.base.bean.PayResultBean
 import ja.insepector.bxapp.mvvm.repository.OrderRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,6 +18,7 @@ class OrderInfoViewModel : BaseViewModel() {
 
     val endOrderInfoLiveData = MutableLiveData<EndOrderInfoBean>()
     val endOrderQRLiveData = MutableLiveData<PayQRBean>()
+    val payResultInquiryLiveData = MutableLiveData<PayResultBean>()
 
     fun endOrderInfo(param: Map<String, Any?>) {
         launch {
@@ -38,6 +40,19 @@ class OrderInfoViewModel : BaseViewModel() {
             }
             executeResponse(response, {
                 endOrderQRLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun payResultInquiry(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.payResultInquiry(param)
+            }
+            executeResponse(response, {
+                payResultInquiryLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })

@@ -52,15 +52,10 @@ import ja.insepector.common.util.AppUtil
 import ja.insepector.common.util.BluePrint
 import ja.insepector.common.util.FileUtil
 import ja.insepector.common.util.GlideUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -304,7 +299,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             FileUtils.notifySystemToScan(imageFile)
             val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
             picBase64 = EncodeUtils.base64Encode2String(bytes)
-            uploadImg(parkingSpaceBean!!.orderNo, picBase64)
+            uploadImg(parkingSpaceBean!!.orderNo, picBase64, imageFile!!.name)
         }
     }
 
@@ -324,14 +319,16 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         return imageFile
     }
 
-    fun uploadImg(orderNo: String, photo: String) {
+    fun uploadImg(orderNo: String, photo: String, name: String) {
         showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["businessId"] = orderNo
+        jsonobject["photoName"] = name
         jsonobject["photoType"] = photoType
         jsonobject["photoFormat"] = "jpg"
         jsonobject["photo"] = photo
+        jsonobject["simId"] = simId
         param["attr"] = jsonobject
         mViewModel.picUpload(param)
     }
@@ -387,7 +384,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 }
             }
             picUploadLiveData.observe(this@ParkingSpaceActivity) {
-
             }
             inquiryTransactionByOrderNoLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()

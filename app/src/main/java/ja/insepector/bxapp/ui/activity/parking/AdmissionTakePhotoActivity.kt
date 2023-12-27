@@ -79,6 +79,8 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var photoType = 10
     var plateBase64 = ""
     var panoramaBase64 = ""
+    var plateFileName = ""
+    var panoramaFileName = ""
 
     var promptDialog: PromptDialog? = null
     var simId = ""
@@ -243,6 +245,14 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请选择车牌颜色))
                     return
                 }
+                if (plateBase64.isEmpty()) {
+                    ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请上传车牌照))
+                    return
+                }
+                if (panoramaBase64.isEmpty()) {
+                    ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请上传全景照))
+                    return
+                }
                 DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.是否确认下单))
                     .setRightMsg(i18N(ja.insepector.base.R.string.确定))
                     .setLeftMsg(i18N(ja.insepector.base.R.string.取消)).setCancelable(true)
@@ -266,17 +276,20 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                         }
 
                     }).build(this@AdmissionTakePhotoActivity).showDailog()
-
             }
 
             R.id.iv_plateDelete -> {
                 binding.rflTakePhoto.show()
                 binding.rflPlateImg.gone()
+                plateBase64 = ""
+                plateFileName = ""
             }
 
             R.id.iv_panoramaDelete -> {
                 binding.rflTakePhoto2.show()
                 binding.rflPanoramaImg.gone()
+                panoramaBase64 = ""
+                panoramaFileName = ""
             }
 
             R.id.riv_plate -> {
@@ -307,8 +320,8 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         mViewModel.apply {
             placeOrderLiveData.observe(this@AdmissionTakePhotoActivity) {
                 dismissProgressDialog()
-                uploadImg(it.orderNo, plateBase64)
-                uploadImg(it.orderNo, panoramaBase64)
+                uploadImg(it.orderNo, plateBase64, plateFileName)
+                uploadImg(it.orderNo, panoramaBase64, panoramaFileName)
 //                promptDialog = PromptDialog(
 //                    i18N(ja.insepector.base.R.string.下单成功当前车辆有欠费记录是否追缴),
 //                    i18N(ja.insepector.base.R.string.是),
@@ -401,8 +414,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
             if (photoType == 10) {
                 plateBase64 = EncodeUtils.base64Encode2String(bytes)
+                plateFileName = imageFile!!.name
             } else {
                 panoramaBase64 = EncodeUtils.base64Encode2String(bytes)
+                panoramaFileName = imageFile!!.name
             }
         }
     }
@@ -423,14 +438,15 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         return imageFile
     }
 
-    fun uploadImg(orderNo: String, photo: String) {
-        showProgressDialog(20000)
+    fun uploadImg(orderNo: String, photo: String, name: String) {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["businessId"] = orderNo
+        jsonobject["photoName"] = name
         jsonobject["photoType"] = photoType
         jsonobject["photoFormat"] = "jpg"
         jsonobject["photo"] = photo
+        jsonobject["simId"] = simId
         param["attr"] = jsonobject
         mViewModel.picUpload(param)
     }

@@ -3,6 +3,7 @@ package ja.insepector.bxapp.mvvm.viewmodel
 import androidx.lifecycle.MutableLiveData
 import ja.insepector.base.base.mvvm.BaseViewModel
 import ja.insepector.base.base.mvvm.ErrorMessage
+import ja.insepector.base.bean.DebtUploadBean
 import ja.insepector.base.bean.OrderBean
 import ja.insepector.base.bean.OrderResultBean
 import ja.insepector.bxapp.mvvm.repository.OrderRepository
@@ -15,7 +16,7 @@ class OrderInquiryViewModel : BaseViewModel() {
     }
 
     val orderInquiryLiveData = MutableLiveData<OrderResultBean>()
-    val debtUploadLiveData = MutableLiveData<Any>()
+    val debtUploadLiveData = MutableLiveData<DebtUploadBean>()
 
     fun orderInquiry(param: Map<String, Any?>) {
         launch {

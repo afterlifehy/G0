@@ -32,7 +32,11 @@ import ja.insepector.bxapp.dialog.PaymentQrDialog
 import ja.insepector.bxapp.mvvm.viewmodel.DebtOrderDetailViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
+import ja.insepector.base.bean.PayResultBean
+import ja.insepector.base.bean.PrintInfoBean
+import ja.insepector.base.ext.i18n
 import ja.insepector.base.ext.startArouter
+import ja.insepector.common.util.BluePrint
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 
@@ -44,10 +48,10 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     val colors2 = intArrayOf(ja.insepector.base.R.color.color_ff666666, ja.insepector.base.R.color.color_ff1a1a1a)
     val sizes2 = intArrayOf(19, 19)
     var paymentQrDialog: PaymentQrDialog? = null
-    var qr = ""
     var tradeNo = ""
     var debtCollectionBean: DebtCollectionBean? = null
-    var token = ""
+    var simId = ""
+    var loginName = ""
     var count = 0
     var handler = Handler(Looper.getMainLooper())
     var picList: MutableList<String> = ArrayList()
@@ -130,26 +134,25 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             R.id.rfl_pay -> {
                 showProgressDialog(20000)
                 runBlocking {
-                    token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
+                    simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
+                    loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
-                    jsonobject["token"] = token
-//                    TODO()
-//                    jsonobject["oweOrderId"] = debtCollectionBean!!.oweOrderId
-//                    jsonobject["oweMoney"] = debtCollectionBean!!.oweMoney
-//                    jsonobject["orderNo"] = debtCollectionBean!!.orderNo
-//                    jsonobject["startTime"] = debtCollectionBean!!.startTime
-//                    jsonobject["endTime"] = debtCollectionBean!!.endTime
-//                    jsonobject["streetName"] = debtCollectionBean!!.streetName
-//                    jsonobject["streetNo"] = debtCollectionBean!!.streetNo
-//                    jsonobject["districtId"] = debtCollectionBean!!.districtId
-//                    jsonobject["carLicense"] = debtCollectionBean!!.carLicense
-//                    jsonobject["parkingNo"] = debtCollectionBean!!.parkingNo
-//                    jsonobject["parkingTime"] = debtCollectionBean!!.parkingTime
-//                    jsonobject["companyName"] = debtCollectionBean!!.companyName
-//                    jsonobject["companyPhone"] = debtCollectionBean!!.companyPhone
+                    jsonobject["loginName"] = loginName
+                    jsonobject["carLicense"] = debtCollectionBean?.carLicense
+                    jsonobject["districtId"] = debtCollectionBean?.districtId
+                    jsonobject["businessId"] = debtCollectionBean?.orderNo
+                    jsonobject["simId"] = simId
+                    jsonobject["channel"] = "pos"
+                    jsonobject["parkingTime"] = debtCollectionBean?.parkingTime
+                    jsonobject["arrivedTime"] = debtCollectionBean?.startTime
+                    jsonobject["leftTime"] = debtCollectionBean?.endTime
+                    jsonobject["roadName"] = debtCollectionBean?.streetName
+                    jsonobject["dueMoney"] = debtCollectionBean?.dueMoney
+                    jsonobject["oweMoney"] = debtCollectionBean?.oweMoney
+                    jsonobject["paidMoney"] = debtCollectionBean?.paidMoney
                     param["attr"] = jsonobject
-                    mViewModel.debtPay(param)
+                    mViewModel.debtPayQr(param)
                 }
             }
         }
@@ -158,10 +161,10 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     fun checkPayResult() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["token"] = token
+        jsonobject["simId"] = simId
         jsonobject["tradeNo"] = tradeNo
         param["attr"] = jsonobject
-        mViewModel.payResult(param)
+        mViewModel.payResultInquiry(param)
     }
 
     val runnable = object : Runnable {
@@ -187,22 +190,16 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 GlideUtils.instance?.loadImage(binding.rivPic2, picList[1], ja.insepector.common.R.mipmap.ic_placeholder)
                 GlideUtils.instance?.loadImage(binding.rivPic3, picList[2], ja.insepector.common.R.mipmap.ic_placeholder)
             }
-            debtPayLiveData.observe(this@DebtOrderDetailActivity) {
+            debtPayQrLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
-                tradeNo = "12345678"
-                qr = "www.baidu.com"
-                paymentQrDialog = PaymentQrDialog(qr,"0")
+                tradeNo = it.tradeNo
+                paymentQrDialog = PaymentQrDialog(it.qrCode, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
                 paymentQrDialog?.show()
-                paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
-                    override fun onDismiss(p0: DialogInterface?) {
-                        handler.removeCallbacks(runnable)
-                    }
-                })
+                paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
                 count = 0
-                //TODO(post)
                 handler.postDelayed(runnable, 2000)
             }
-            payResultLiveData.observe(this@DebtOrderDetailActivity) {
+            payResultInquiryLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
                 ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.支付成功))
@@ -214,12 +211,11 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-//                      TODO()
-//                            startPrint(payResultBean)
+                            startPrint(payResultBean)
                         }
                     }
                 } else {
-//                    startPrint(it)
+                    startPrint(it)
                 }
                 EventBus.getDefault().post(RefreshDebtOrderListEvent())
                 onBackPressedSupport()
@@ -231,25 +227,25 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         }
     }
 
-//    fun startPrint(it: PayResultBean) {
-//        val payMoney = it.payMoney
-//        val printInfo = PrintInfoBean(
-//            roadId = it.roadName,
-//            plateId = it.carLicense,
-//            payMoney = String.format("%.2f", payMoney.toFloat()),
-//            orderId = debtCollectionBean!!.orderNo,
-//            phone = it.phone,
-//            startTime = it.startTime,
-//            leftTime = it.endTime,
-//            remark = it.remark,
-//            company = it.businessCname,
-//            oweCount = it.oweCount
-//        )
-//        ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.开始打印))
-//        Thread {
-//            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
-//        }.start()
-//    }
+    fun startPrint(it: PayResultBean) {
+        val payMoney = it.payMoney
+        val printInfo = PrintInfoBean(
+            roadId = it.roadName,
+            plateId = it.carLicense,
+            payMoney = String.format("%.2f", payMoney.toFloat()),
+            orderId = debtCollectionBean!!.orderNo,
+            phone = it.phone,
+            startTime = it.startTime,
+            leftTime = it.endTime,
+            remark = it.remark,
+            company = it.businessCname,
+            oweCount = it.oweCount
+        )
+        ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.开始打印))
+        Thread {
+            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+        }.start()
+    }
 
     override fun getVbBindingView(): ViewBinding {
         return ActivityDebtOrderDetailBinding.inflate(layoutInflater)
@@ -269,8 +265,17 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         return DebtOrderDetailViewModel::class.java
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (handler != null) {
+            handler.removeCallbacks(runnable)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks(runnable)
+        if (handler != null) {
+            handler.removeCallbacks(runnable)
+        }
     }
 }

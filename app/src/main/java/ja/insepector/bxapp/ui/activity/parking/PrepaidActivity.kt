@@ -128,7 +128,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
                 count = 0
-                handler.post(runnable)
+                handler.postDelayed(runnable, 2000)
             }
             payResultInquiryLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()

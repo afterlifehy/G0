@@ -219,7 +219,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                         return
                     }
                 }
-                if (type == "02" && checkedColor.isEmpty()) {
+                if (type == "03" && checkedColor.isEmpty()) {
                     ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请选择车牌颜色))
                     return
                 }
@@ -340,11 +340,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             abnormalReportLiveData.observe(this@AbnormalReportActivity) {
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.上报成功))
-                if (type == "02") {
-                    EventBus.getDefault().post(RefreshParkingSpaceEvent())
-                } else {
-                    EventBus.getDefault().post(RefreshParkingSpaceEvent())
-                }
+                EventBus.getDefault().post(RefreshParkingSpaceEvent())
                 onBackPressedSupport()
             }
             errMsg.observe(this@AbnormalReportActivity) {

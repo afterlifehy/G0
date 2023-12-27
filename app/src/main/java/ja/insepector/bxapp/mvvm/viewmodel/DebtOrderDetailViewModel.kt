@@ -3,6 +3,8 @@ package ja.insepector.bxapp.mvvm.viewmodel
 import androidx.lifecycle.MutableLiveData
 import ja.insepector.base.base.mvvm.BaseViewModel
 import ja.insepector.base.base.mvvm.ErrorMessage
+import ja.insepector.base.bean.PayQRBean
+import ja.insepector.base.bean.PayResultBean
 import ja.insepector.base.bean.PicInquiryBean
 import ja.insepector.bxapp.mvvm.repository.OrderRepository
 import kotlinx.coroutines.Dispatchers
@@ -13,8 +15,8 @@ class DebtOrderDetailViewModel : BaseViewModel() {
         OrderRepository()
     }
 
-    val debtPayLiveData = MutableLiveData<Any>()
-    val payResultLiveData = MutableLiveData<Any>()
+    val debtPayQrLiveData = MutableLiveData<PayQRBean>()
+    val payResultInquiryLiveData = MutableLiveData<PayResultBean>()
     val picInquiryLiveData = MutableLiveData<PicInquiryBean>()
 
     fun picInquiry(param: Map<String, Any?>) {
@@ -30,31 +32,29 @@ class DebtOrderDetailViewModel : BaseViewModel() {
         }
     }
 
-    fun debtPay(param: Map<String, Any?>) {
-        debtPayLiveData.value = true
-//        launch {
-//            val response = withContext(Dispatchers.IO) {
-//                mOrderRepository.debtPay(param)
-//            }
-//            executeResponse(response, {
-//                debtPayLiveData.value = response.attr
-//            }, {
-//                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-//            })
-//        }
+    fun debtPayQr(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.debtPayQr(param)
+            }
+            executeResponse(response, {
+                debtPayQrLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
     }
 
-    fun payResult(param: Map<String, Any?>) {
-        payResultLiveData.value = true
-//        launch {
-//            val response = withContext(Dispatchers.IO) {
-//                mOrderRepository.payResult(param)
-//            }
-//            executeResponse(response, {
-//                payResultLiveData.value = response.attr
-//            }, {
-//                traverseErrorMsg(ErrorMessage(msg = "", code = response.status))
-//            })
-//        }
+    fun payResultInquiry(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.payResultInquiry(param)
+            }
+            executeResponse(response, {
+                payResultInquiryLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = "", code = response.status))
+            })
+        }
     }
 }

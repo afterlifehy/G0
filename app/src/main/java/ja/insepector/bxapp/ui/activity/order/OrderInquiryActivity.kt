@@ -233,7 +233,11 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             }
             debtUploadLiveData.observe(this@OrderInquiryActivity) {
                 dismissProgressDialog()
+                ToastUtil.showMiddleToast("上传成功")
                 orderInquiryAdapter?.clearUploadOrderList()
+                pageIndex = 1
+                orderList.clear()
+                query()
             }
             errMsg.observe(this@OrderInquiryActivity) {
                 dismissProgressDialog()
@@ -278,6 +282,9 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         return binding.layoutToolbar.ablToolbar
     }
 
+    override fun isRegEventBus(): Boolean {
+        return super.isRegEventBus()
+    }
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (keyboardUtil.isShow()) {

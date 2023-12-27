@@ -45,13 +45,19 @@ interface Api {
      * 欠费上传
      */
     @POST("S_G0_06")
-    suspend fun debtUpload(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+    suspend fun debtUpload(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<DebtUploadBean>
 
     /**
      * 签退
      */
     @POST("S_G0_07")
     suspend fun logout(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 图片上传
+     */
+    @POST("S_G0_08")
+    suspend fun picUpload(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 
     /**
      * 订单查询
@@ -133,14 +139,14 @@ interface Api {
     suspend fun abnormalReport(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 
     /**
-     * 图片上传
-     */
-    @POST("S_CP_12")
-    suspend fun picUpload(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
-
-    /**
      * 离场支付二维码
      */
     @POST("S_OR_0112")
     suspend fun endOrderQR(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
+
+    /**
+     * 追缴二维码
+     */
+    @POST("S_OR4_0113")
+    suspend fun debtPayQr(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
 }

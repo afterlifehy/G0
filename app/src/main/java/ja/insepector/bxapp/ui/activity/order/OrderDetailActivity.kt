@@ -29,6 +29,8 @@ import ja.insepector.base.ext.gone
 import ja.insepector.base.ext.startArouter
 import ja.insepector.base.help.ActivityCacheManager
 import ja.insepector.base.util.ToastUtil
+import ja.insepector.common.event.RefreshOrderListEvent
+import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.ORDER_DETAIL)
 class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDetailBinding>(), OnClickListener {
@@ -101,8 +103,25 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                 )
             )
             binding.rtvTransactionRecord.setOnClickListener(null)
+            binding.rtvTransactionRecord.delegate.init()
+            if (order?.isPrinted == "0") {
+                binding.rtvUpload.delegate.setBackgroundColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(), ja.insepector.base.R.color.color_ff04a091
+                    )
+                )
+                binding.rtvUpload.setOnClickListener(this)
+                binding.rtvUpload.delegate.init()
+            } else {
+                binding.rtvUpload.delegate.setBackgroundColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(), ja.insepector.base.R.color.color_ffc5dddb
+                    )
+                )
+                binding.rtvUpload.setOnClickListener(null)
+                binding.rtvUpload.delegate.init()
+            }
         }
-        binding.rtvTransactionRecord.delegate.init()
 
         val strings1 = arrayOf(i18N(ja.insepector.base.R.string.订单) + "：", order?.orderNo.toString())
         binding.tvOrderNo.text = AppUtil.getSpan(strings1, sizes2, colors2)
@@ -124,7 +143,6 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.rtvDebtCollection.setOnClickListener(this)
-        binding.rtvUpload.setOnClickListener(this)
         binding.rivPic1.setOnClickListener(this)
         binding.rivPic1.setOnClickListener(this)
         binding.rivPic3.setOnClickListener(this)
@@ -213,7 +231,12 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             }
             debtUploadLiveData.observe(this@OrderDetailActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.上传成功))
+                if (it.result) {
+                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.上传成功))
+                    EventBus.getDefault().post(RefreshOrderListEvent())
+                } else {
+                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.上传失败))
+                }
             }
             errMsg.observe(this@OrderDetailActivity) {
                 dismissProgressDialog()
