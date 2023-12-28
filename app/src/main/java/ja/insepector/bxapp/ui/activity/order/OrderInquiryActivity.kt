@@ -233,11 +233,17 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             }
             debtUploadLiveData.observe(this@OrderInquiryActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast("上传成功")
-                orderInquiryAdapter?.clearUploadOrderList()
-                pageIndex = 1
-                orderList.clear()
-                query()
+                if (it.result) {
+                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.上传成功))
+                    orderInquiryAdapter?.clearUploadOrderList()
+                    pageIndex = 1
+                    orderList.clear()
+                    query()
+                } else {
+                    orderInquiryAdapter?.clearUploadOrderList()
+                    orderInquiryAdapter?.notifyDataSetChanged()
+                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.上传失败))
+                }
             }
             errMsg.observe(this@OrderInquiryActivity) {
                 dismissProgressDialog()
@@ -285,6 +291,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
     override fun isRegEventBus(): Boolean {
         return super.isRegEventBus()
     }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (keyboardUtil.isShow()) {

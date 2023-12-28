@@ -144,7 +144,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.rtvDebtCollection.setOnClickListener(this)
         binding.rivPic1.setOnClickListener(this)
-        binding.rivPic1.setOnClickListener(this)
+        binding.rivPic2.setOnClickListener(this)
         binding.rivPic3.setOnClickListener(this)
     }
 
@@ -234,6 +234,13 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                 if (it.result) {
                     ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.上传成功))
                     EventBus.getDefault().post(RefreshOrderListEvent())
+                    binding.rtvUpload.delegate.setBackgroundColor(
+                        ContextCompat.getColor(
+                            BaseApplication.instance(), ja.insepector.base.R.color.color_ffc5dddb
+                        )
+                    )
+                    binding.rtvUpload.setOnClickListener(null)
+                    binding.rtvUpload.delegate.init()
                 } else {
                     ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.上传失败))
                 }

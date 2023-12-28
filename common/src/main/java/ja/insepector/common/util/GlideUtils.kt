@@ -54,6 +54,7 @@ class GlideUtils private constructor() {
             .error(placeholder)
             .placeholder(placeholder)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
         Glide.with(BaseApplication.instance()).load(url).apply(options).into(iv)
     }
 
@@ -83,7 +84,13 @@ class GlideUtils private constructor() {
 
     fun loadImagePreview(imageView: PhotoView, url: String?) {
         imageView.tag = null
-        Glide.with(BaseApplication.instance()).load(url).dontTransform().override(-1).into(imageView)
+        val options: RequestOptions = RequestOptions()
+            .format(DecodeFormat.PREFER_RGB_565)
+            .error(R.mipmap.ic_placeholder_2)
+            .placeholder(R.mipmap.ic_placeholder_2)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+        Glide.with(BaseApplication.instance()).load(url).dontTransform().override(-1).apply(options).into(imageView)
     }
 
     fun loadLongImage(iv: ImageView, bitmap: Bitmap?) {

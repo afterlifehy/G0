@@ -3,6 +3,7 @@ package ja.insepector.bxapp.mvvm.repository
 import ja.insepector.base.base.mvvm.BaseRepository
 import ja.insepector.base.bean.FeeRateResultBean
 import ja.insepector.base.bean.HttpWrapper
+import ja.insepector.base.bean.IncomeCountingBean
 import ja.insepector.base.bean.UpdateBean
 
 class MineRepository : BaseRepository() {
@@ -13,12 +14,12 @@ class MineRepository : BaseRepository() {
         return mServer.checkUpdate(param)
     }
 
-//    /**
-//     * 签退
-//     */
-//    suspend fun logout(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-//        return mServer.logout(param)
-//    }
+    /**
+     * 营收打印
+     */
+    suspend fun incomeCounting(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<IncomeCountingBean> {
+        return mServer.incomeCounting(param)
+    }
 
     /**
      * 费率

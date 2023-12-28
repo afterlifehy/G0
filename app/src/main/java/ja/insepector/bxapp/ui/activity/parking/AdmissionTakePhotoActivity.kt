@@ -79,8 +79,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var photoType = 10
     var plateBase64 = ""
     var panoramaBase64 = ""
+    var plateImageBitmap: Bitmap? = null
     var plateFileName = ""
     var panoramaFileName = ""
+    var panoramaImageBitmap: Bitmap? = null
 
     var promptDialog: PromptDialog? = null
     var simId = ""
@@ -245,11 +247,11 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请选择车牌颜色))
                     return
                 }
-                if (plateBase64.isEmpty()) {
+                if (plateImageBitmap == null) {
                     ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请上传车牌照))
                     return
                 }
-                if (panoramaBase64.isEmpty()) {
+                if (panoramaImageBitmap == null) {
                     ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.请上传全景照))
                     return
                 }
@@ -262,6 +264,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                         override fun onRightClickLinsener(msg: String) {
                             showProgressDialog(20000)
+                            plateImageBitmap = addTextWatermark(plateImageBitmap!!)
+                            panoramaImageBitmap = addTextWatermark(panoramaImageBitmap!!)
+                            convertBase64(plateImageBitmap!!, 10)
+                            convertBase64(panoramaImageBitmap!!, 11)
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
                             jsonobject["carLicense"] = binding.pvPlate.getPvTxt()
@@ -281,6 +287,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             R.id.iv_plateDelete -> {
                 binding.rflTakePhoto.show()
                 binding.rflPlateImg.gone()
+                plateImageBitmap = null
                 plateBase64 = ""
                 plateFileName = ""
             }
@@ -288,6 +295,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             R.id.iv_panoramaDelete -> {
                 binding.rflTakePhoto2.show()
                 binding.rflPanoramaImg.gone()
+                panoramaImageBitmap = null
                 panoramaBase64 = ""
                 panoramaFileName = ""
             }
@@ -320,8 +328,8 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         mViewModel.apply {
             placeOrderLiveData.observe(this@AdmissionTakePhotoActivity) {
                 dismissProgressDialog()
-                uploadImg(it.orderNo, plateBase64, plateFileName)
-                uploadImg(it.orderNo, panoramaBase64, panoramaFileName)
+                uploadImg(it.orderNo, plateBase64, plateFileName, 10)
+                uploadImg(it.orderNo, panoramaBase64, panoramaFileName, 11)
 //                promptDialog = PromptDialog(
 //                    i18N(ja.insepector.base.R.string.下单成功当前车辆有欠费记录是否追缴),
 //                    i18N(ja.insepector.base.R.string.是),
@@ -390,35 +398,47 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
             imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 12)
             imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
-            imageBitmap = ImageUtils.addTextWatermark(
-                imageBitmap,
-                TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
-                16, Color.RED, 6f, 3f
-            )
-            imageBitmap = ImageUtils.addTextWatermark(
-                imageBitmap,
-                parkingNo,
-                16, Color.RED, 6f, 19f
-            )
             ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.JPEG)
             if (photoType == 10) {
-                GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
+                plateImageBitmap = imageBitmap
+                GlideUtils.instance?.loadImage(binding.rivPlate, plateImageBitmap)
                 binding.rflTakePhoto.hide()
                 binding.rflPlateImg.show()
             } else {
-                GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
+                panoramaImageBitmap = imageBitmap
+                GlideUtils.instance?.loadImage(binding.rivPanorama, panoramaImageBitmap)
                 binding.rflTakePhoto2.hide()
                 binding.rflPanoramaImg.show()
             }
-            FileUtils.notifySystemToScan(imageFile)
-            val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
-            if (photoType == 10) {
-                plateBase64 = EncodeUtils.base64Encode2String(bytes)
-                plateFileName = imageFile!!.name
-            } else {
-                panoramaBase64 = EncodeUtils.base64Encode2String(bytes)
-                panoramaFileName = imageFile!!.name
+            if (panoramaImageBitmap == null) {
+                photoType = 11
+                takePhoto()
             }
+        }
+    }
+
+    fun addTextWatermark(imageBitmap: Bitmap): Bitmap? {
+        var bitmap = ImageUtils.addTextWatermark(
+            imageBitmap,
+            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
+            16, Color.RED, 6f, 3f
+        )
+        bitmap = ImageUtils.addTextWatermark(
+            bitmap,
+            parkingNo + "   " + binding.pvPlate.getPvTxt(),
+            16, Color.RED, 6f, 19f
+        )
+        return bitmap
+    }
+
+    fun convertBase64(imageBitmap: Bitmap, type: Int) {
+        val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
+        if (type == 10) {
+            plateBase64 = EncodeUtils.base64Encode2String(bytes)
+            plateFileName = imageFile!!.name
+        } else {
+            panoramaBase64 = EncodeUtils.base64Encode2String(bytes)
+            panoramaFileName = imageFile!!.name
         }
     }
 
@@ -438,12 +458,12 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         return imageFile
     }
 
-    fun uploadImg(orderNo: String, photo: String, name: String) {
+    fun uploadImg(orderNo: String, photo: String, name: String, type: Int) {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["businessId"] = orderNo
         jsonobject["photoName"] = name
-        jsonobject["photoType"] = photoType
+        jsonobject["photoType"] = type
         jsonobject["photoFormat"] = "jpg"
         jsonobject["photo"] = photo
         jsonobject["simId"] = simId
@@ -477,6 +497,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                         collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
                     } else {
                         collectionPlateColorAdapter?.updateColor(Constant.OTHERS, 6)
+                    }
+                    if (plateImageBitmap == null) {
+                        photoType = 10
+                        takePhoto()
                     }
                 }
             }

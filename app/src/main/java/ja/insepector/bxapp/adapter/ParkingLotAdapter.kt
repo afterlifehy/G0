@@ -60,6 +60,8 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
 
     override fun convert(holder: VBViewHolder<ItemParkingLotBinding>, item: ParkingLotBean) {
         if (item.state == "01") {
+            holder.vb.llPlate.hide()
+            holder.vb.tvPlate.show()
             holder.vb.llParkingLotBg.setBackgroundResource(ja.insepector.common.R.mipmap.ic_parking_bg_grey)
             holder.vb.tvParkingLotNum.setBackgroundResource(ja.insepector.common.R.mipmap.ic_parking_num_bg_grey)
             holder.vb.tvPlate.text = i18n(ja.insepector.base.R.string.空闲)

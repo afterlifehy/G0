@@ -129,7 +129,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         exitMethodList.add(ExitMethodBean("3", i18N(ja.insepector.base.R.string.当面拒绝驶离)))
         exitMethodList.add(ExitMethodBean("4", i18N(ja.insepector.base.R.string.强制关单)))
         exitMethodList.add(ExitMethodBean("5", i18N(ja.insepector.base.R.string.线上支付)))
-        exitMethodList.add(ExitMethodBean("10", i18N(ja.insepector.base.R.string.其他)))
+        exitMethodList.add(ExitMethodBean("9", i18N(ja.insepector.base.R.string.其他)))
 
         runBlocking {
             simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
@@ -292,7 +292,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             )
             imageBitmap = ImageUtils.addTextWatermark(
                 imageBitmap,
-                parkingNo,
+                parkingNo + "   " + carLicense,
                 16, Color.RED, 6f, 19f
             )
             ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.JPEG)

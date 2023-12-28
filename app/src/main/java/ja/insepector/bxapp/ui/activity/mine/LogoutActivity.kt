@@ -185,13 +185,6 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     putString(ARouterMap.DATA_PRINT_LOGIN_NAME, loginName)
                 })
                 ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.签退成功))
-                runBlocking {
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
-                }
-                RealmUtil.instance?.deleteAllStreet()
             }
             errMsg.observe(this@LogoutActivity) {
                 dismissProgressDialog()

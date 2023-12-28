@@ -156,22 +156,38 @@ class BluePrint() {
                     val todayIncomeBean = incomeCountingBean.list1[0]
                     printDrawText("今日时间:", TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd"), ystart, 9)
                     ystart += 40
-                    printDrawText("总收费：", todayIncomeBean.payMoney + " 元", ystart, 9)
-                    ystart += 40
-                    printDrawText("已下单：", todayIncomeBean.orderCount.toString() + " 笔", ystart, 9)
-                    ystart += 40
-                    printDrawText("拒付费：", todayIncomeBean.refusePayCount.toString() + " 笔", ystart, 9)
-                    ystart += 40
-                    printDrawText("部分付费：", todayIncomeBean.partPayCount.toString() + " 笔", ystart, 11)
-                    ystart += 40
-                    printDrawText("已追缴：", todayIncomeBean.oweCount.toString() + " 笔", ystart, 9)
-                    ystart += 40
-                    printDrawText("被追缴：", todayIncomeBean.passMoney + " 元", ystart, 9)
-                    ystart += 40
-                    printDrawText("追缴他人：", todayIncomeBean.oweMoney + " 元", ystart, 11)
-                    ystart += 40
-                    printDrawText("自主追缴：", todayIncomeBean.onlineMoney + " 元", ystart, 11)
-                    ystart += 40
+                    if (todayIncomeBean.payMoney.isNotEmpty()) {
+                        printDrawText("总收费：", todayIncomeBean.payMoney + " 元", ystart, 9)
+                        ystart += 40
+                    }
+                    if (todayIncomeBean.orderCount != -1) {
+                        printDrawText("已下单：", todayIncomeBean.orderCount.toString() + " 笔", ystart, 9)
+                        ystart += 40
+                    }
+                    if (todayIncomeBean.refusePayCount != -1) {
+                        printDrawText("拒付费：", todayIncomeBean.refusePayCount.toString() + " 笔", ystart, 9)
+                        ystart += 40
+                    }
+                    if (todayIncomeBean.partPayCount != -1) {
+                        printDrawText("部分付费：", todayIncomeBean.partPayCount.toString() + " 笔", ystart, 11)
+                        ystart += 40
+                    }
+                    if (todayIncomeBean.oweCount != -1) {
+                        printDrawText("已追缴：", todayIncomeBean.oweCount.toString() + " 笔", ystart, 9)
+                        ystart += 40
+                    }
+                    if (todayIncomeBean.passMoney.isNotEmpty()) {
+                        printDrawText("被追缴：", todayIncomeBean.passMoney + " 元", ystart, 9)
+                        ystart += 40
+                    }
+                    if (todayIncomeBean.oweMoney.isNotEmpty()) {
+                        printDrawText("追缴他人：", todayIncomeBean.oweMoney + " 元", ystart, 11)
+                        ystart += 40
+                    }
+                    if (todayIncomeBean.onlineMoney.isNotEmpty()) {
+                        printDrawText("自主追缴：", todayIncomeBean.onlineMoney + " 元", ystart, 11)
+                        ystart += 40
+                    }
                 }
                 if (incomeCountingBean.list2 != null && incomeCountingBean.list2.size > 0) {
                     ystart += 40

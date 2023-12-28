@@ -1,30 +1,47 @@
 package ja.insepector.bxapp.ui.activity.mine
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.os.Build
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.TimeUtils
+import com.tbruyelle.rxpermissions3.RxPermissions
 import ja.insepector.base.BaseApplication
 import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.bean.DataPrintBean
+import ja.insepector.base.bean.IncomeCountingBean
+import ja.insepector.base.ds.PreferencesDataStore
+import ja.insepector.base.ds.PreferencesKeys
 import ja.insepector.base.ext.i18N
+import ja.insepector.base.ext.i18n
 import ja.insepector.base.ext.startArouter
 import ja.insepector.base.help.ActivityCacheManager
+import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.bxapp.R
 import ja.insepector.bxapp.adapter.DataPrintAdapter
 import ja.insepector.bxapp.databinding.ActivityDataPrintBinding
 import ja.insepector.bxapp.mvvm.viewmodel.DataPrintViewModel
 import ja.insepector.bxapp.ui.activity.login.LoginActivity
+import ja.insepector.common.realm.RealmUtil
+import ja.insepector.common.util.BluePrint
 import ja.insepector.common.util.GlideUtils
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.DATA_PRINT)
 class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBinding>(), OnClickListener {
     var dataPrintAdapter: DataPrintAdapter? = null
     var dataPrintList: MutableList<DataPrintBean> = ArrayList()
-    var dataPrintCheckedList: MutableList<DataPrintBean> = ArrayList()
+    var startDate = ""
+    var endDate = ""
+    var loginName = ""
+    var incomeCountingBean: IncomeCountingBean? = null
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, ja.insepector.common.R.mipmap.ic_back_white)
@@ -33,7 +50,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
 
         binding.rvPrintInfo.setHasFixedSize(true)
         binding.rvPrintInfo.layoutManager = LinearLayoutManager(this)
-        dataPrintAdapter = DataPrintAdapter(dataPrintList, dataPrintCheckedList)
+        dataPrintAdapter = DataPrintAdapter(dataPrintList)
         binding.rvPrintInfo.adapter = dataPrintAdapter
     }
 
@@ -44,13 +61,19 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
     }
 
     override fun initData() {
-        dataPrintList.add(DataPrintBean("① 订单总数"))
-        dataPrintList.add(DataPrintBean("② 拒付费订单数"))
-        dataPrintList.add(DataPrintBean("③ 部分付费订单数"))
-        dataPrintList.add(DataPrintBean("④ 被追缴金额"))
-        dataPrintList.add(DataPrintBean("⑤ 追缴他人金额"))
-        dataPrintList.add(DataPrintBean("⑥ 停车人APP金额"))
-        dataPrintList.add(DataPrintBean("⑦ 总营收（含④和⑥，不含⑤）"))
+        runBlocking {
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+        }
+        endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
+        startDate = endDate.substring(0, 8) + "01"
+
+        dataPrintList.add(DataPrintBean(1, "① 订单总数"))
+        dataPrintList.add(DataPrintBean(2, "② 拒付费订单数"))
+        dataPrintList.add(DataPrintBean(3, "③ 部分付费订单数"))
+        dataPrintList.add(DataPrintBean(4, "④ 被追缴金额"))
+        dataPrintList.add(DataPrintBean(5, "⑤ 追缴他人金额"))
+        dataPrintList.add(DataPrintBean(6, "⑥ 停车人APP金额"))
+        dataPrintList.add(DataPrintBean(7, "⑦ 总营收（含④和⑥，不含⑤）"))
         dataPrintAdapter?.setList(dataPrintList)
     }
 
@@ -62,9 +85,111 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
             }
 
             R.id.rtv_print -> {
-                onBackPressedSupport()
+                showProgressDialog(20000)
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["startDate"] = startDate
+                jsonobject["endDate"] = endDate
+                jsonobject["loginName"] = loginName
+                jsonobject["searchRange"] = "0"
+                param["attr"] = jsonobject
+                mViewModel.incomeCounting(param)
             }
         }
+    }
+
+    @SuppressLint("CheckResult")
+    override fun startObserve() {
+        super.startObserve()
+        mViewModel.apply {
+            incomeCountingLiveData.observe(this@DataPrintActivity) {
+                dismissProgressDialog()
+                incomeCountingBean = it
+                incomeCountingBean?.loginName = loginName
+                incomeCountingBean?.range = ""
+                if (incomeCountingBean?.list1 != null) {
+                    incomeCountingBean?.list1!![0].oweCount = -1
+                    for (i in dataPrintList) {
+                        when (i.id) {
+                            1 -> {
+                                if (!i.ischeck) {
+                                    incomeCountingBean?.list1!![0].orderCount = -1
+                                }
+                            }
+
+                            2 -> {
+                                if (!i.ischeck) {
+                                    incomeCountingBean?.list1!![0].refusePayCount = -1
+                                }
+                            }
+
+                            3 -> {
+                                if (!i.ischeck) {
+                                    incomeCountingBean?.list1!![0].partPayCount = -1
+                                }
+                            }
+
+                            4 -> {
+                                if (!i.ischeck) {
+                                    incomeCountingBean?.list1!![0].passMoney = ""
+                                }
+                            }
+
+                            5 -> {
+                                if (!i.ischeck) {
+                                    incomeCountingBean?.list1!![0].oweMoney = ""
+                                }
+                            }
+
+                            6 -> {
+                                if (!i.ischeck) {
+                                    incomeCountingBean?.list1!![0].onlineMoney = ""
+                                }
+                            }
+
+                            7 -> {
+                                if (!i.ischeck) {
+                                    incomeCountingBean?.list1!![0].payMoney = ""
+                                }
+                            }
+                        }
+                    }
+                    var str = "receipt,"
+                    var rxPermissions = RxPermissions(this@DataPrintActivity)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                            if (it) {
+                                ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.开始打印))
+                                Thread {
+                                    BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
+                                }.start()
+                            }
+                        }
+                    } else {
+                        ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.开始打印))
+                        Thread {
+                            BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
+                        }.start()
+                    }
+                }
+                runBlocking {
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+                }
+                RealmUtil.instance?.deleteAllStreet()
+                onBackPressedSupport()
+            }
+            errMsg.observe(this@DataPrintActivity) {
+                dismissProgressDialog()
+                ToastUtil.showMiddleToast(it.msg)
+            }
+        }
+    }
+
+    override fun providerVMClass(): Class<DataPrintViewModel>? {
+        return DataPrintViewModel::class.java
     }
 
     override fun getVbBindingView(): ViewBinding {
