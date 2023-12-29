@@ -87,10 +87,13 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
                         }
 
                         else -> {
-                            if (editable != null && editable.length < 8) {
+                            if (editText != null && editable != null && editable.length < 8) {
                                 editable.insert(clickPosition, primaryCode.toChar().toString())
+                                clickPosition += 1
                             }
-                            clickPosition += 1
+                            if (editText == null) {
+                                clickPosition += 1
+                            }
                             if (callback != null) {
                                 callback?.keyInput(primaryCode.toChar().toString())
                             }

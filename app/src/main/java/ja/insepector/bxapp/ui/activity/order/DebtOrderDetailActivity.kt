@@ -148,9 +148,9 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                     jsonobject["arrivedTime"] = debtCollectionBean?.startTime
                     jsonobject["leftTime"] = debtCollectionBean?.endTime
                     jsonobject["roadName"] = debtCollectionBean?.streetName
-                    jsonobject["dueMoney"] = debtCollectionBean?.dueMoney
-                    jsonobject["oweMoney"] = debtCollectionBean?.oweMoney
-                    jsonobject["paidMoney"] = debtCollectionBean?.paidMoney
+                    jsonobject["dueMoney"] = debtCollectionBean?.dueMoney.toString()
+                    jsonobject["oweMoney"] = debtCollectionBean?.oweMoney.toString()
+                    jsonobject["paidMoney"] = debtCollectionBean?.paidMoney.toString()
                     param["attr"] = jsonobject
                     mViewModel.debtPayQr(param)
                 }

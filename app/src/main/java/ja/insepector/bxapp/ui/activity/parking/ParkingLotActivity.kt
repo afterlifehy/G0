@@ -159,6 +159,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                 if (parkingLotBean.state == "01") {
                     startArouter(ARouterMap.ADMISSION_TAKE_PHOTO, data = Bundle().apply {
                         putString(ARouterMap.ADMISSION_TAKE_PHOTO_PARKING_NO, parkingLotBean.parkingNo)
+                        putInt(ARouterMap.ADMISSION_TAKE_PHOTO_PARKING_AMOUNT, parkingLotList.size)
                     })
                 } else {
                     startArouter(ARouterMap.PARKING_SPACE, data = Bundle().apply {

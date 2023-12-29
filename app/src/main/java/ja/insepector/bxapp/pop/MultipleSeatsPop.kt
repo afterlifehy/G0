@@ -16,7 +16,13 @@ import ja.insepector.common.util.GlideUtils
 /**
  * Created by huy  on 2022/12/7.
  */
-class MultipleSeatsPop(val context: Context?, var currentParkingNo: String, var multipleSeat: String, var callback: MultipleSeatsCallback) :
+class MultipleSeatsPop(
+    val context: Context?,
+    var currentParkingNo: String,
+    var multipleSeat: String,
+    var parkingAmount: Int,
+    var callback: MultipleSeatsCallback
+) :
     PopupWindow(context), View.OnClickListener {
 
     private lateinit var binding: PopMultipleSeatsBinding
@@ -35,7 +41,11 @@ class MultipleSeatsPop(val context: Context?, var currentParkingNo: String, var 
         if (currentParkingNo.toInt() == 1) {
             binding.rrlParkingNo.gone()
             binding.viewLiner.gone()
-            binding.tvParkingNo2.text = frontSeat
+            binding.tvParkingNo2.text = behindSeat
+        } else if (currentParkingNo.toInt() == parkingAmount) {
+            binding.rrlParkingNo2.gone()
+            binding.viewLiner2.gone()
+            binding.tvParkingNo.text = frontSeat
         } else {
             binding.tvParkingNo.text = frontSeat
             binding.tvParkingNo2.text = behindSeat

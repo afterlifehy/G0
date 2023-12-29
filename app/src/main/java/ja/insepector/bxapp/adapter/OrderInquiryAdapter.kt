@@ -34,7 +34,6 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
     val sizes2 = intArrayOf(19, 19)
     var orderList: MutableList<OrderBean> = ArrayList()
 
-
     override fun convert(holder: VBViewHolder<ItemOrderBinding>, item: OrderBean) {
         holder.vb.tvNum.text = AppUtil.fillZero((data.indexOf(item) + 1).toString())
         holder.vb.tvLicensePlate.text = item.carLicense

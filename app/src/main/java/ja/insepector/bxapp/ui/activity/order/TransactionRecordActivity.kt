@@ -38,7 +38,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
     var transactionRecordAdapter: TransactionRecordAdapter? = null
     var transactionRecordList: MutableList<TicketPrintBean> = ArrayList()
     var orderNo = ""
-    var token = ""
+    var simId = ""
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, ja.insepector.common.R.mipmap.ic_back_white)
@@ -59,7 +59,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
 
     override fun initData() {
         runBlocking {
-            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
+            simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
         }
         query()
     }
@@ -69,7 +69,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["orderNo"] = orderNo
-//        20230904JAZ038001P7A32A
+        jsonobject["simId"] = simId
         param["attr"] = jsonobject
         mViewModel.inquiryTransactionByOrderNo(param)
     }

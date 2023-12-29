@@ -283,7 +283,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
-            imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 12)
+            imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 10)
             imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
             imageBitmap = ImageUtils.addTextWatermark(
                 imageBitmap,
@@ -310,8 +310,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         imageFile = File.createTempFile(
-            "JPG_${timeStamp}_", /* 前缀 */
-            ".jpg", /* 后缀 */
+            "PNG_${timeStamp}_", /* 前缀 */
+            ".png", /* 后缀 */
             storageDir /* 目录 */
         )
 
@@ -326,7 +326,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         jsonobject["businessId"] = orderNo
         jsonobject["photoName"] = name
         jsonobject["photoType"] = photoType
-        jsonobject["photoFormat"] = "jpg"
+        jsonobject["photoFormat"] = "png"
         jsonobject["photo"] = photo
         jsonobject["simId"] = simId
         param["attr"] = jsonobject

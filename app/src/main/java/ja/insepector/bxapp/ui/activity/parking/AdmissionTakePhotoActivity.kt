@@ -72,6 +72,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var checkedColor = ""
     val widthType = 2
     var parkingNo = ""
+    var parkingAmount = 0
 
     var multipleSeatsPop: MultipleSeatsPop? = null
     var multipleSeat = ""
@@ -96,6 +97,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), ja.insepector.base.R.color.white))
 
         parkingNo = intent.getStringExtra(ARouterMap.ADMISSION_TAKE_PHOTO_PARKING_NO).toString()
+        parkingAmount =intent.getIntExtra(ARouterMap.ADMISSION_TAKE_PHOTO_PARKING_AMOUNT,0)
         collectioPlateColorList.add(Constant.BLUE)
         collectioPlateColorList.add(Constant.GREEN)
         collectioPlateColorList.add(Constant.YELLOW)
@@ -203,6 +205,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                         this@AdmissionTakePhotoActivity,
                         parkingNo.substring(parkingNo.length - 3, parkingNo.length),
                         multipleSeat,
+                        parkingAmount,
                         object : MultipleSeatsPop.MultipleSeatsCallback {
                             override fun selecctSeats(seat: String) {
                                 multipleSeat = seat
@@ -396,7 +399,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
-            imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 12)
+            imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 10)
             imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
             ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.JPEG)
             if (photoType == 10) {
@@ -433,6 +436,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
     fun convertBase64(imageBitmap: Bitmap, type: Int) {
         val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
+
         if (type == 10) {
             plateBase64 = EncodeUtils.base64Encode2String(bytes)
             plateFileName = imageFile!!.name
@@ -449,8 +453,8 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         imageFile = File.createTempFile(
-            "JPG_${timeStamp}_", /* 前缀 */
-            ".jpg", /* 后缀 */
+            "PNG_${timeStamp}_", /* 前缀 */
+            ".png", /* 后缀 */
             storageDir /* 目录 */
         )
 
@@ -464,7 +468,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         jsonobject["businessId"] = orderNo
         jsonobject["photoName"] = name
         jsonobject["photoType"] = type
-        jsonobject["photoFormat"] = "jpg"
+        jsonobject["photoFormat"] = "png"
         jsonobject["photo"] = photo
         jsonobject["simId"] = simId
         param["attr"] = jsonobject

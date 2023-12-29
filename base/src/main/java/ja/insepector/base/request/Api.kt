@@ -60,6 +60,12 @@ interface Api {
     suspend fun picUpload(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 
     /**
+     * 异常上报
+     */
+    @POST("S_G0_10")
+    suspend fun abnormalReport(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
      * 订单查询
      */
     @POST("S_G0_11")
@@ -130,13 +136,6 @@ interface Api {
      */
     @POST("S_G0_21")
     suspend fun inquiryTransactionByOrderNo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintResultBean>
-
-
-    /**
-     * 异常上报
-     */
-    @POST("S_AB_801")
-    suspend fun abnormalReport(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 
     /**
      * 离场支付二维码
