@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.PopupWindow
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -207,8 +208,8 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                                 multipleSeat = seat
                                 if (multipleSeat.isNotEmpty()) {
                                     binding.tvMultipleSeats.text = ""
-                                    binding.tvParkingNo.text = parkingNo + "-" + AppUtil.fillZero(multipleSeat)
-                                    extParkingNo = parkingNo.substring(0, parkingNo.length - 2) + AppUtil.fillZero(multipleSeat)
+                                    binding.tvParkingNo.text = parkingNo + "-" + AppUtil.fillZero2(multipleSeat)
+                                    extParkingNo = parkingNo.substring(0, parkingNo.length - 2) + AppUtil.fillZero2(multipleSeat)
                                 } else {
                                     binding.tvMultipleSeats.text = i18N(ja.insepector.base.R.string.一车多位)
                                     binding.tvParkingNo.text = parkingNo
@@ -217,6 +218,27 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                             }
                         })
                 multipleSeatsPop?.showAsDropDown(v, (binding.rflMultipleSeats.width - SizeUtils.dp2px(92f)) / 2, SizeUtils.dp2px(3f))
+                val upDrawable = ContextCompat.getDrawable(BaseApplication.instance(), ja.insepector.common.R.mipmap.ic_multiple_seat_arrow_up)
+                upDrawable?.setBounds(0, 0, upDrawable.intrinsicWidth, upDrawable.intrinsicHeight)
+                binding.tvMultipleSeats.setCompoundDrawables(
+                    null,
+                    null,
+                    upDrawable,
+                    null
+                )
+                multipleSeatsPop?.setOnDismissListener(object : PopupWindow.OnDismissListener {
+                    override fun onDismiss() {
+                        val downDrawable =
+                            ContextCompat.getDrawable(BaseApplication.instance(), ja.insepector.common.R.mipmap.ic_multiple_seat_arrow_down)
+                        downDrawable?.setBounds(0, 0, downDrawable.intrinsicWidth, downDrawable.intrinsicHeight)
+                        binding.tvMultipleSeats.setCompoundDrawables(
+                            null,
+                            null,
+                            downDrawable,
+                            null
+                        )
+                    }
+                })
             }
 
             R.id.iv_recognize -> {
