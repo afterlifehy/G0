@@ -34,17 +34,18 @@ public void *(android.webkit.WebView, java.lang.String);
 }
 
 #---------------------------------1.实体类---------------------------------
--keep class ja.insepector.ipms_video.bean.**{*;}
--keep class ja.insepector.ipms_video.event.**{*;}
+-keep class ja.insepector.bxapp.bean.**{*;}
+-keep class ja.insepector.bxapp.event.**{*;}
 -keep class ja.insepector.base.bean.**{*;}
 -keep class ja.insepector.base.event.**{*;}
 -keep class ja.insepector.common.bean.**{*;}
 -keep class ja.insepector.common.event.**{*;}
 #--数据库实体类不被混淆
-#-keep class ja.insepector.ipms_video.roomdao.**{*;}
+#-keep class ja.insepector.bxapp.roomdao.**{*;}
 #-------------------------------------------------------------------------
 
 #---------------------------------2.第三方包-------------------------------
+# gsyvideoplayer
 -keep class tv.danmaku.ijk.** { *; }
 -dontwarn tv.danmaku.ijk.**
 -keep class com.shuyu.gsyvideoplayer.** { *; }
@@ -160,7 +161,7 @@ public void *(android.webkit.WebView, java.lang.String);
 -keep class com.google.protobuf.** {*;}
 
 #---------------------------------自定义view-----------------------
--keep class ja.insepector.ipms_video.view.**{*;}
+-keep class ja.insepector.bxapp.view.**{*;}
 -keep class ja.insepector.common.view.**{*;}
 -keep class ja.insepector.common.widget.**{*;}
 -keep class ja.insepector.base.view.**{*;}

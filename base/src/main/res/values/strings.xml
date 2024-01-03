@@ -167,7 +167,7 @@
     <string name="入场">入场</string>
     <string name="出场">出场</string>
     <string name="订单金额">订单金额</string>
-    <string name="上传">上传</string>
+    <string name="上传欠费">上传欠费</string>
     <string name="已付">已付:</string>
     <string name="欠">欠:</string>
     <string name="是否立即上传">是否立即上传</string>

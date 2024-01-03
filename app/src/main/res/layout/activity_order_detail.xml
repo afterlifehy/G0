@@ -197,7 +197,7 @@
             android:layout_marginEnd="@dimen/dp_5"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/上传"
+            android:text="@string/上传欠费"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_19"
             android:textStyle="bold"

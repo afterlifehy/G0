@@ -2,7 +2,6 @@ package ja.insepector.bxapp.ui.activity.parking
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -14,7 +13,6 @@ import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -25,7 +23,6 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.EncodeUtils
-import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.ImageUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -40,7 +37,6 @@ import ja.insepector.base.ext.i18N
 import ja.insepector.base.ext.i18n
 import ja.insepector.base.ext.show
 import ja.insepector.base.ext.startArouter
-import ja.insepector.base.help.ActivityCacheManager
 import ja.insepector.base.util.ToastUtil
 import ja.insepector.base.viewbase.VbBaseActivity
 import ja.insepector.bxapp.R
@@ -49,7 +45,6 @@ import ja.insepector.bxapp.databinding.ActivityAdmissionTakePhotoBinding
 import ja.insepector.bxapp.dialog.PromptDialog
 import ja.insepector.bxapp.mvvm.viewmodel.AdmissionTakePhotoViewModel
 import ja.insepector.bxapp.pop.MultipleSeatsPop
-import ja.insepector.bxapp.ui.activity.login.LoginActivity
 import ja.insepector.common.event.RefreshParkingLotEvent
 import ja.insepector.common.realm.RealmUtil
 import ja.insepector.common.util.AppUtil
@@ -97,7 +92,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), ja.insepector.base.R.color.white))
 
         parkingNo = intent.getStringExtra(ARouterMap.ADMISSION_TAKE_PHOTO_PARKING_NO).toString()
-        parkingAmount =intent.getIntExtra(ARouterMap.ADMISSION_TAKE_PHOTO_PARKING_AMOUNT,0)
+        parkingAmount = intent.getIntExtra(ARouterMap.ADMISSION_TAKE_PHOTO_PARKING_AMOUNT, 0)
         collectioPlateColorList.add(Constant.BLUE)
         collectioPlateColorList.add(Constant.GREEN)
         collectioPlateColorList.add(Constant.YELLOW)
@@ -190,6 +185,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         return false
     }
 
+    @SuppressLint("NewApi")
     override fun onClick(v: View?) {
         if (keyboardUtil.isShow()) {
             keyboardUtil.hideKeyboard()

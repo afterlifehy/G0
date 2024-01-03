@@ -125,7 +125,7 @@
             android:drawableStart="@mipmap/ic_report"
             android:drawablePadding="@dimen/dp_14"
             android:gravity="center"
-            android:text="@string/上传"
+            android:text="@string/上传欠费"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_19"
             android:textStyle="bold" />
