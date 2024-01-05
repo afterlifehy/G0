@@ -320,7 +320,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     }
 
     fun uploadImg(orderNo: String, photo: String, name: String) {
-        showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["businessId"] = orderNo
@@ -374,7 +373,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             endOrderLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                if (type == "1") {
+                if (type == "1" || type == "0") {
                     startArouter(ARouterMap.ORDER_INFO, data = Bundle().apply {
                         putString(ARouterMap.ORDER_INFO_ORDER_NO, orderNo)
                     })

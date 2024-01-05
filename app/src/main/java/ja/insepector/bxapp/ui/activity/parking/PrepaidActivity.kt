@@ -63,7 +63,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         orderNo = intent.getStringExtra(ARouterMap.PREPAID_ORDER_NO).toString()
 
         binding.tvPlate.text = carLicense
-        binding.tvParkingNo.text = parkingNo?.replace("-", "")
+        binding.tvParkingNo.text = parkingNo
     }
 
     override fun initListener() {

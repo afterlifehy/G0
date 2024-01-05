@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import ja.insepector.base.ext.gone
 import ja.insepector.bxapp.R
 import ja.insepector.bxapp.databinding.PopMultipleSeatsBinding
+import ja.insepector.common.util.AppUtil
 import ja.insepector.common.util.GlideUtils
 
 /**
@@ -36,8 +37,8 @@ class MultipleSeatsPop(
     private fun initView() {
         binding = PopMultipleSeatsBinding.inflate(LayoutInflater.from(context))
 
-        frontSeat = (currentParkingNo.toInt() - 1).toString()
-        behindSeat = (currentParkingNo.toInt() + 1).toString()
+        frontSeat = AppUtil.fillZero2((currentParkingNo.toInt() - 1).toString())
+        behindSeat = AppUtil.fillZero2((currentParkingNo.toInt() + 1).toString())
         if (currentParkingNo.toInt() == 1) {
             binding.rrlParkingNo.gone()
             binding.viewLiner.gone()
