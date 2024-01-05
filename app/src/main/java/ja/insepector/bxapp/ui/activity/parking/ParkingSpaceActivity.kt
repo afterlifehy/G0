@@ -46,7 +46,6 @@ import ja.insepector.bxapp.databinding.ActivityParkingSpaceBinding
 import ja.insepector.bxapp.dialog.ExitMethodDialog
 import ja.insepector.bxapp.mvvm.viewmodel.ParkingSpaceViewModel
 import ja.insepector.common.event.EndOrderEvent
-import ja.insepector.common.event.RefreshParkingLotEvent
 import ja.insepector.common.event.RefreshParkingSpaceEvent
 import ja.insepector.common.util.AppUtil
 import ja.insepector.common.util.BluePrint
@@ -86,6 +85,9 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var type = ""
     var simId = ""
 
+    var isUpload = false
+    var orderList: MutableList<String> = ArrayList()
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(endOrderEvent: EndOrderEvent) {
         onBackPressedSupport()
@@ -100,6 +102,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         orderNo = intent.getStringExtra(ARouterMap.ORDER_NO).toString()
         carLicense = intent.getStringExtra(ARouterMap.CAR_LICENSE).toString()
         binding.tvPlate.text = carLicense
+        orderList.add(orderNo)
 
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, ja.insepector.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), ja.insepector.base.R.color.white))
@@ -243,6 +246,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     return
                 }
                 type = currentMethod!!.id
+                if (type == "3" && !isUpload) {
+                    ToastUtil.showMiddleToast(i18N(ja.insepector.base.R.string.请先拍摄在场照片))
+                    return
+                }
                 DialogHelp.Builder().setTitle(i18N(ja.insepector.base.R.string.是否确定结束订单))
                     .setLeftMsg(i18N(ja.insepector.base.R.string.取消))
                     .setRightMsg(i18N(ja.insepector.base.R.string.确定)).setCancelable(true)
@@ -373,17 +380,33 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             endOrderLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                if (type == "1" || type == "0") {
-                    startArouter(ARouterMap.ORDER_INFO, data = Bundle().apply {
-                        putString(ARouterMap.ORDER_INFO_ORDER_NO, orderNo)
-                    })
-                    finish()
-                } else {
-                    EventBus.getDefault().post(RefreshParkingLotEvent())
-                    onBackPressedSupport()
+                when (type) {
+                    "1", "0" -> {
+                        startArouter(ARouterMap.ORDER_INFO, data = Bundle().apply {
+                            putString(ARouterMap.ORDER_INFO_ORDER_NO, orderNo)
+                        })
+                        finish()
+                    }
+
+                    "2", "3", "5" -> {
+                        val param = HashMap<String, Any>()
+                        val jsonobject = JSONObject()
+                        jsonobject["orderNoList"] = orderList.joinToString(separator = ",") { it }
+                        param["attr"] = jsonobject
+                        mViewModel.debtUpload(param)
+                        EventBus.getDefault().post(EndOrderEvent())
+                        onBackPressedSupport()
+                    }
+
+                    "9", "4" -> {
+                        onBackPressedSupport()
+                    }
                 }
             }
+            debtUploadLiveData.observe(this@ParkingSpaceActivity) {
+            }
             picUploadLiveData.observe(this@ParkingSpaceActivity) {
+                isUpload = true
             }
             inquiryTransactionByOrderNoLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()

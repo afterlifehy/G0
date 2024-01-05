@@ -25,8 +25,6 @@ import ja.insepector.bxapp.adapter.ParkingLotAdapter
 import ja.insepector.bxapp.databinding.ActivityParkingLotBinding
 import ja.insepector.bxapp.mvvm.viewmodel.ParkingLotViewModel
 import ja.insepector.bxapp.pop.StreetPop
-import ja.insepector.common.event.EndOrderEvent
-import ja.insepector.common.event.RefreshParkingLotEvent
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -39,11 +37,6 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
 
     var streetPop: StreetPop? = null
     var streetList: MutableList<Street> = ArrayList()
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(refreshParkingLotEvent: RefreshParkingLotEvent) {
-        getParkingLotList()
-    }
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.ivBack, ja.insepector.common.R.mipmap.ic_back_white)

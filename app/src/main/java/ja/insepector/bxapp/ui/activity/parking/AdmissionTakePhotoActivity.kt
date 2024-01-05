@@ -46,7 +46,6 @@ import ja.insepector.bxapp.databinding.ActivityAdmissionTakePhotoBinding
 import ja.insepector.bxapp.dialog.PromptDialog
 import ja.insepector.bxapp.mvvm.viewmodel.AdmissionTakePhotoViewModel
 import ja.insepector.bxapp.pop.MultipleSeatsPop
-import ja.insepector.common.event.RefreshParkingLotEvent
 import ja.insepector.common.realm.RealmUtil
 import ja.insepector.common.util.AppUtil
 import ja.insepector.common.util.Constant
@@ -357,12 +356,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     i18N(ja.insepector.base.R.string.确定),
                     object : PromptDialog.PromptCallBack {
                         override fun leftClick() {
-                            EventBus.getDefault().post(RefreshParkingLotEvent())
                             onBackPressedSupport()
                         }
 
                         override fun rightClick() {
-                            EventBus.getDefault().post(RefreshParkingLotEvent())
                             startArouter(ARouterMap.PREPAID, data = Bundle().apply {
                                 putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
                                 putString(ARouterMap.PREPAID_CARLICENSE, binding.pvPlate.getPvTxt())
@@ -399,6 +396,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             photoFile!!
         )
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+        takePictureIntent.putExtra("android.intent.extra.quickCapture",true)
         takePictureLauncher.launch(takePictureIntent)
     }
 

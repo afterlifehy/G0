@@ -1,6 +1,7 @@
 package ja.insepector.bxapp.mvvm.repository
 
 import ja.insepector.base.base.mvvm.BaseRepository
+import ja.insepector.base.bean.DebtUploadBean
 import ja.insepector.base.bean.HttpWrapper
 import ja.insepector.base.bean.ParkingLotResultBean
 import ja.insepector.base.bean.ParkingSpaceBean
@@ -62,6 +63,13 @@ class ParkingRepository : BaseRepository() {
      */
     suspend fun inquiryTransactionByOrderNo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintResultBean> {
         return mServer.inquiryTransactionByOrderNo(param)
+    }
+
+    /**
+     * 欠费上传
+     */
+    suspend fun debtUpload(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<DebtUploadBean> {
+        return mServer.debtUpload(param)
     }
 //    /**
 //     *  支付结果

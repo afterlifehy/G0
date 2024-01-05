@@ -3,6 +3,7 @@ package ja.insepector.bxapp.mvvm.viewmodel
 import androidx.lifecycle.MutableLiveData
 import ja.insepector.base.base.mvvm.BaseViewModel
 import ja.insepector.base.base.mvvm.ErrorMessage
+import ja.insepector.base.bean.DebtUploadBean
 import ja.insepector.base.bean.EndOrderInfoBean
 import ja.insepector.base.bean.PayQRBean
 import ja.insepector.base.bean.PayResultBean
@@ -19,9 +20,10 @@ class OrderInfoViewModel : BaseViewModel() {
     val endOrderInfoLiveData = MutableLiveData<EndOrderInfoBean>()
     val endOrderQRLiveData = MutableLiveData<PayQRBean>()
     val payResultInquiryLiveData = MutableLiveData<PayResultBean>()
-
+    val debtUploadLiveData = MutableLiveData<DebtUploadBean>()
     fun endOrderInfo(param: Map<String, Any?>) {
         launch {
+
             val response = withContext(Dispatchers.IO) {
                 mOrderRepository.endOrderInfo(param)
             }
@@ -53,6 +55,19 @@ class OrderInfoViewModel : BaseViewModel() {
             }
             executeResponse(response, {
                 payResultInquiryLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun debtUpload(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.debtUpload(param)
+            }
+            executeResponse(response, {
+                debtUploadLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })
