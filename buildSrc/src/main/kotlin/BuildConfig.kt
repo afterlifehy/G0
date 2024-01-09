@@ -1,5 +1,5 @@
 object BuildConfig {
-    const val applicationId = "ja.insepector.bxapp"
+    const val applicationId = "com.kernal.demo.plateid"
 
     const val compileSdk = 33
     const val minSdk = 23

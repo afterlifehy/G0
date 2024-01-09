@@ -34,14 +34,14 @@ public void *(android.webkit.WebView, java.lang.String);
 }
 
 #---------------------------------1.实体类---------------------------------
--keep class ja.insepector.bxapp.bean.**{*;}
--keep class ja.insepector.bxapp.event.**{*;}
--keep class ja.insepector.base.bean.**{*;}
--keep class ja.insepector.base.event.**{*;}
--keep class ja.insepector.common.bean.**{*;}
--keep class ja.insepector.common.event.**{*;}
+-keep class com.kernal.demo.plateid.bean.**{*;}
+-keep class com.kernal.demo.plateid.event.**{*;}
+-keep class com.kernal.demo.base.bean.**{*;}
+-keep class com.kernal.demo.base.event.**{*;}
+-keep class com.kernal.demo.common.bean.**{*;}
+-keep class com.kernal.demo.common.event.**{*;}
 #--数据库实体类不被混淆
-#-keep class ja.insepector.bxapp.roomdao.**{*;}
+#-keep class com.kernal.demo.plateid.roomdao.**{*;}
 #-------------------------------------------------------------------------
 
 #---------------------------------2.第三方包-------------------------------
@@ -161,11 +161,11 @@ public void *(android.webkit.WebView, java.lang.String);
 -keep class com.google.protobuf.** {*;}
 
 #---------------------------------自定义view-----------------------
--keep class ja.insepector.bxapp.view.**{*;}
--keep class ja.insepector.common.view.**{*;}
--keep class ja.insepector.common.widget.**{*;}
--keep class ja.insepector.base.view.**{*;}
--keep class ja.insepector.base.widget.**{*;}
+-keep class com.kernal.demo.plateid.view.**{*;}
+-keep class com.kernal.demo.common.view.**{*;}
+-keep class com.kernal.demo.common.widget.**{*;}
+-keep class com.kernal.demo.base.view.**{*;}
+-keep class com.kernal.demo.base.widget.**{*;}
 #---------------------------------反射相关的类和方法-----------------------
  -keepclassmembers class androidx.viewpager.widget.ViewPager.** {
    public *;

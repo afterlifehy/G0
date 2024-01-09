@@ -52,16 +52,16 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("inspectorapp.jks")
-            storePassword = "D0ub1e"
-            keyAlias = "inspector"
-            keyPassword = "D0ub1e"
+            storeFile = file("demo.jks")
+            storePassword = "1q2w3e4r5t"
+            keyAlias = "mykeys"
+            keyPassword = "1q2w3e4r5t"
         }
         getByName("debug") {
-            storeFile = file("inspectorapp.jks")
-            storePassword = "D0ub1e"
-            keyAlias = "inspector"
-            keyPassword = "D0ub1e"
+            storeFile = file("demo.jks")
+            storePassword = "1q2w3e4r5t"
+            keyAlias = "mykeys"
+            keyPassword = "1q2w3e4r5t"
         }
     }
 
@@ -104,7 +104,7 @@ android {
         outputs.all {
             if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                 this.outputFileName =
-                    "inspector_${versionName}_${versionCode}_${Time.getDate()}_${buildType.name}_${BuildConfig.debug_is_dev}.apk"
+                    "G0_${versionName}_${versionCode}_${Time.getDate()}_${buildType.name}_${BuildConfig.debug_is_dev}.apk"
             }
         }
     }
