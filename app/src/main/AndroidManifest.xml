@@ -77,7 +77,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.kernal.demo.fileprovider"
+            android:authorities="com.kernal.demo.plateid.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

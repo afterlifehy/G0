@@ -40,13 +40,13 @@ import com.kernal.demo.base.ext.show
 import com.kernal.demo.base.ext.startArouter
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
+import com.kernal.demo.common.realm.RealmUtil
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.adapter.CollectionPlateColorAdapter
 import com.kernal.demo.plateid.databinding.ActivityAdmissionTakePhotoBinding
 import com.kernal.demo.plateid.dialog.PromptDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.AdmissionTakePhotoViewModel
 import com.kernal.demo.plateid.pop.MultipleSeatsPop
-import com.kernal.demo.common.realm.RealmUtil
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.Constant
 import com.kernal.demo.common.util.FileUtil
@@ -106,7 +106,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         binding.rvPlateColor.adapter = collectionPlateColorAdapter
 
         binding.tvParkingNo.text = parkingNo
-        val street = com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentStreet()
+        val street = RealmUtil.instance?.findCurrentStreet()
         binding.tvStreetName.text = street?.streetName
         binding.pvPlate.setPlateBgAndTxtColor(Constant.BLUE)
 
