@@ -314,6 +314,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
                 jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
+                jsonobject["loginName"] = loginName
                 param["attr"] = jsonobject
                 showProgressDialog(20000)
                 mViewModel.inquiryOrderNoByParkingNo(param)

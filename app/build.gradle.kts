@@ -54,13 +54,13 @@ android {
         create("release") {
             storeFile = file("demo.jks")
             storePassword = "1q2w3e4r5t"
-            keyAlias = "mykeys"
+            keyAlias = "mykey"
             keyPassword = "1q2w3e4r5t"
         }
         getByName("debug") {
             storeFile = file("demo.jks")
             storePassword = "1q2w3e4r5t"
-            keyAlias = "mykeys"
+            keyAlias = "mykey"
             keyPassword = "1q2w3e4r5t"
         }
     }
