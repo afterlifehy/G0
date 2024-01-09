@@ -45,6 +45,7 @@ import ja.insepector.bxapp.R
 import ja.insepector.bxapp.databinding.ActivityParkingSpaceBinding
 import ja.insepector.bxapp.dialog.ExitMethodDialog
 import ja.insepector.bxapp.mvvm.viewmodel.ParkingSpaceViewModel
+import ja.insepector.common.event.AbnormalReportEvent
 import ja.insepector.common.event.EndOrderEvent
 import ja.insepector.common.event.RefreshParkingSpaceEvent
 import ja.insepector.common.util.AppUtil
@@ -96,6 +97,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(refreshParkingSpaceEvent: RefreshParkingSpaceEvent) {
         parkingSpaceRequest()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(abnormalReportEvent: AbnormalReportEvent) {
+        onBackPressedSupport()
     }
 
     override fun initView() {

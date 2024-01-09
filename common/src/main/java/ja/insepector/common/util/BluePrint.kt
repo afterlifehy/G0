@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.Typeface
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -15,9 +16,13 @@ import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.TimeUtils
 import ja.insepector.base.BaseApplication
+import ja.insepector.base.arouter.ARouterMap
 import ja.insepector.base.bean.IncomeCountingBean
 import ja.insepector.base.bean.PrintInfoBean
+import ja.insepector.base.dialog.DialogHelp
+import ja.insepector.base.ext.i18N
 import ja.insepector.base.ext.i18n
+import ja.insepector.base.ext.startArouter
 import ja.insepector.base.help.ActivityCacheManager
 import ja.insepector.base.util.ToastUtil
 import org.json.JSONException
@@ -55,7 +60,24 @@ class BluePrint() {
             printResult = Print1(content)
         } catch (e: Exception) {
             Handler(Looper.getMainLooper()).post {
-                ToastUtil.showMiddleToast("打印机状态异常")
+                DialogHelp.Builder().setTitle(i18n(ja.insepector.base.R.string.打印机状态异常请重新连接))
+                    .setLeftMsg(i18n(ja.insepector.base.R.string.取消))
+                    .setRightMsg(i18n(ja.insepector.base.R.string.去连接)).setCancelable(true)
+                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                        override fun onLeftClickLinsener(msg: String) {
+                        }
+
+                        override fun onRightClickLinsener(msg: String) {
+//                            if (ActivityCacheManager.instance().getCurrentActivity() !is LoginActivity &&
+//                                ActivityCacheManager.instance().getCurrentActivity() !is StreetChooseActivity
+//                            ) {
+                                startArouter(ARouterMap.MINE, data = Bundle().apply {
+                                    putInt(ARouterMap.MINE_BLUE_PRINT, 1)
+                                })
+//                            }
+                        }
+
+                    }).build(ActivityCacheManager.instance().getCurrentActivity()).showDailog()
             }
         }
         ActivityCacheManager.instance().getCurrentActivity()!!.runOnUiThread {
@@ -326,7 +348,24 @@ class BluePrint() {
                 when (zpSDK?.GetStatus()) {
                     -1 -> {
                         Handler(Looper.getMainLooper()).post {
-                            ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.打印机状态异常))
+                            DialogHelp.Builder().setTitle(i18n(ja.insepector.base.R.string.打印机状态异常请重新连接))
+                                .setLeftMsg(i18n(ja.insepector.base.R.string.取消))
+                                .setRightMsg(i18n(ja.insepector.base.R.string.去连接)).setCancelable(true)
+                                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                    override fun onLeftClickLinsener(msg: String) {
+                                    }
+
+                                    override fun onRightClickLinsener(msg: String) {
+//                            if (ActivityCacheManager.instance().getCurrentActivity() !is LoginActivity &&
+//                                ActivityCacheManager.instance().getCurrentActivity() !is StreetChooseActivity
+//                            ) {
+                                        startArouter(ARouterMap.MINE, data = Bundle().apply {
+                                            putInt(ARouterMap.MINE_BLUE_PRINT, 1)
+                                        })
+//                            }
+                                    }
+
+                                }).build(ActivityCacheManager.instance().getCurrentActivity()).showDailog()
                         }
                         return@Thread
                     }
@@ -351,7 +390,24 @@ class BluePrint() {
                 }
             } catch (e: Exception) {
                 Handler(Looper.getMainLooper()).post {
-                    ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.打印机状态异常))
+                    DialogHelp.Builder().setTitle(i18n(ja.insepector.base.R.string.打印机状态异常请重新连接))
+                        .setLeftMsg(i18n(ja.insepector.base.R.string.取消))
+                        .setRightMsg(i18n(ja.insepector.base.R.string.去连接)).setCancelable(true)
+                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                            override fun onLeftClickLinsener(msg: String) {
+                            }
+
+                            override fun onRightClickLinsener(msg: String) {
+//                            if (ActivityCacheManager.instance().getCurrentActivity() !is LoginActivity &&
+//                                ActivityCacheManager.instance().getCurrentActivity() !is StreetChooseActivity
+//                            ) {
+                                startArouter(ARouterMap.MINE, data = Bundle().apply {
+                                    putInt(ARouterMap.MINE_BLUE_PRINT, 1)
+                                })
+//                            }
+                            }
+
+                        }).build(ActivityCacheManager.instance().getCurrentActivity()).showDailog()
                 }
                 return@Thread
             }

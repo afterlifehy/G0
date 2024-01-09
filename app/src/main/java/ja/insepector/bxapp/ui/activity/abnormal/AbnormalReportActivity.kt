@@ -47,7 +47,7 @@ import ja.insepector.bxapp.databinding.ActivityAbnormalReportBinding
 import ja.insepector.bxapp.dialog.AbnormalClassificationDialog
 import ja.insepector.bxapp.dialog.AbnormalStreetListDialog
 import ja.insepector.bxapp.mvvm.viewmodel.AbnormalReportViewModel
-import ja.insepector.common.event.RefreshParkingSpaceEvent
+import ja.insepector.common.event.AbnormalReportEvent
 import ja.insepector.common.util.Constant
 import ja.insepector.common.util.FileUtil
 import kotlinx.coroutines.runBlocking
@@ -555,7 +555,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     uploadImg(orderNo, panoramaBase64, panoramaFileName, 11)
                 }
                 ToastUtil.showMiddleToast(i18n(ja.insepector.base.R.string.上报成功))
-                EventBus.getDefault().post(RefreshParkingSpaceEvent())
+                EventBus.getDefault().post(AbnormalReportEvent())
                 onBackPressedSupport()
             }
             errMsg.observe(this@AbnormalReportActivity) {
