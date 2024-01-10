@@ -28,7 +28,7 @@ class PaymentQrDialog(var qr: String, var amount: String) : VBBaseLibDialog<Dial
 
     private fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
-        val qrBitmap = com.kernal.demo.common.util.CodeUtils.createImage(qr, SizeUtils.dp2px(184f), SizeUtils.dp2px(184f), null)
+        val qrBitmap = CodeUtils.createImage(qr, SizeUtils.dp2px(184f), SizeUtils.dp2px(184f), null)
         GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
         val strings = arrayOf(i18N(com.kernal.demo.base.R.string.支付), amount, i18n(com.kernal.demo.base.R.string.元))
         binding.tvPayAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)

@@ -5,6 +5,7 @@ import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.base.mvvm.BaseViewModel
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
+import com.kernal.demo.common.realm.RealmUtil
 import kotlinx.coroutines.runBlocking
 
 open class BaseInfoViewModel : BaseViewModel() {
@@ -12,7 +13,7 @@ open class BaseInfoViewModel : BaseViewModel() {
 
     fun getBaseInfo() {
         val baseInfoList: MutableList<String> = ArrayList()
-        val street = com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentStreet()
+        val street = RealmUtil.instance?.findCurrentStreet()
         return runBlocking {
             val name = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.name)
             val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)

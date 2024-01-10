@@ -96,7 +96,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
     override fun initData() {
         runBlocking {
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
-            val workingHour = com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentWorkingHour(loginName)
+            val workingHour = RealmUtil.instance?.findCurrentWorkingHour(loginName)
             if (workingHour != null) {
                 binding.tvWorkingHours.text = TimeUtils.millis2String(workingHour.time, "yyyy-MM-dd HH:mm:ss")
             }

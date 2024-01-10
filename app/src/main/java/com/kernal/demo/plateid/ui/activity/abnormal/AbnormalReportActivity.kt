@@ -133,12 +133,12 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
     }
 
     override fun initData() {
-        com.kernal.demo.common.realm.RealmUtil.instance?.findCheckedStreetList()?.let { streetList.addAll(it) }
+        RealmUtil.instance?.findCheckedStreetList()?.let { streetList.addAll(it) }
         runBlocking {
             simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
         }
-        currentStreet = com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentStreet()
+        currentStreet = RealmUtil.instance?.findCurrentStreet()
         if (streetList.size == 1) {
             binding.cbLotName.hide()
             binding.rflLotName.setOnClickListener(null)
@@ -314,7 +314,6 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
                 jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
-                jsonobject["loginName"] = loginName
                 param["attr"] = jsonobject
                 showProgressDialog(20000)
                 mViewModel.inquiryOrderNoByParkingNo(param)
@@ -545,6 +544,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     jsonobject["carLicenseNew"] = carLicense
                     jsonobject["carColor"] = carColor
                 }
+                jsonobject["loginName"] = loginName
                 jsonobject["orderNo"] = orderNo
                 param["attr"] = jsonobject
                 mViewModel.abnormalReport(param)
@@ -556,7 +556,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     uploadImg(orderNo, panoramaBase64, panoramaFileName, 11)
                 }
                 ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.上报成功))
-                EventBus.getDefault().post(com.kernal.demo.common.event.AbnormalReportEvent())
+                EventBus.getDefault().post(AbnormalReportEvent())
                 onBackPressedSupport()
             }
             errMsg.observe(this@AbnormalReportActivity) {

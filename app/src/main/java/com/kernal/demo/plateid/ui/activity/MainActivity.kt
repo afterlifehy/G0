@@ -88,9 +88,9 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     @SuppressLint("CheckResult", "MissingPermission")
     fun connectBluePrint() {
         BluePrint.instance?.disConnect()
-        if (com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
+        if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
             Thread {
-                val device = com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentDeviceList()!![0]
+                val device = RealmUtil.instance?.findCurrentDeviceList()!![0]
                 if (device != null) {
                     val printResult = BluePrint.instance?.connet(device.address)
                     if (printResult != 0) {
@@ -129,8 +129,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                                 val device = printList[0]
                                 var connectResult = BluePrint.instance?.connet(device.address)
                                 if (connectResult == 0) {
-                                    com.kernal.demo.common.realm.RealmUtil.instance?.deleteAllDevice()
-                                    com.kernal.demo.common.realm.RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
+                                    RealmUtil.instance?.deleteAllDevice()
+                                    RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
                                 }
                             }.start()
                         } else if (printList.size > 1) {
@@ -159,8 +159,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                         val device = printList[0]
                         var connectResult = BluePrint.instance?.connet(device.address)
                         if (connectResult == 0) {
-                            com.kernal.demo.common.realm.RealmUtil.instance?.deleteAllDevice()
-                            com.kernal.demo.common.realm.RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
+                            RealmUtil.instance?.deleteAllDevice()
+                            RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
                         }
                     }.start()
                 } else if (printList.size > 1) {

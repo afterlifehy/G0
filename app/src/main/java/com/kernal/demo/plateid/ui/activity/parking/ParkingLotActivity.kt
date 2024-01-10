@@ -50,8 +50,8 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     }
 
     override fun initData() {
-        streetList = com.kernal.demo.common.realm.RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
-        currentStreet = com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentStreet()
+        streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
+        currentStreet = RealmUtil.instance?.findCurrentStreet()
         if (currentStreet!!.streetName.indexOf("(") < 0) {
             binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
         } else {
@@ -107,12 +107,12 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
             }
 
             R.id.tv_title -> {
-                currentStreet = com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentStreet()
+                currentStreet = RealmUtil.instance?.findCurrentStreet()
                 streetPop = StreetPop(this@ParkingLotActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
                     override fun selectStreet(street: Street) {
                         currentStreet = street
-                        val old = com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentStreet()
-                        com.kernal.demo.common.realm.RealmUtil.instance?.updateCurrentStreet(street, old)
+                        val old = RealmUtil.instance?.findCurrentStreet()
+                        RealmUtil.instance?.updateCurrentStreet(street, old)
                         if (street.streetName.indexOf("(") < 0) {
                             binding.tvTitle.text = street.streetNo + street.streetName
                         } else {

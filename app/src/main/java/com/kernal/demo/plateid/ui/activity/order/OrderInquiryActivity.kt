@@ -27,6 +27,7 @@ import com.kernal.demo.base.ext.startArouter
 import com.kernal.demo.base.help.ActivityCacheManager
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
+import com.kernal.demo.common.event.RefreshIsPrintEvent
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.common.view.keyboard.KeyboardUtil
 import com.kernal.demo.common.view.keyboard.MyOnTouchListener
@@ -37,6 +38,8 @@ import com.kernal.demo.plateid.databinding.ActivityOrderInquiryBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.OrderInquiryViewModel
 import com.kernal.demo.plateid.pop.DatePop
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterMap.ORDER_INQUIRY)
 class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrderInquiryBinding>(), OnClickListener {
@@ -49,6 +52,13 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
     var startDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
     var endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
     var loginName = ""
+    var currentOrder: OrderBean? = null
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(refreshIsPrintEvent: RefreshIsPrintEvent) {
+        currentOrder?.isPrinted = "1"
+        orderInquiryAdapter?.notifyItemChanged(orderList.indexOf(currentOrder))
+    }
 
     override fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -162,9 +172,9 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             }
 
             R.id.fl_order -> {
-                val orderBean = v.tag as OrderBean
+                currentOrder = v.tag as OrderBean
                 startArouter(ARouterMap.ORDER_DETAIL, data = Bundle().apply {
-                    putParcelable(ARouterMap.ORDER, orderBean)
+                    putParcelable(ARouterMap.ORDER, currentOrder)
                 })
             }
 
@@ -290,7 +300,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
     }
 
     override fun isRegEventBus(): Boolean {
-        return super.isRegEventBus()
+        return true
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

@@ -46,7 +46,6 @@ import com.kernal.demo.plateid.databinding.ActivityParkingSpaceBinding
 import com.kernal.demo.plateid.dialog.ExitMethodDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.ParkingSpaceViewModel
 import com.kernal.demo.common.event.AbnormalReportEvent
-import com.kernal.demo.common.event.EndOrderEvent
 import com.kernal.demo.common.event.RefreshParkingSpaceEvent
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.BluePrint
@@ -90,17 +89,12 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var orderList: MutableList<String> = ArrayList()
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(endOrderEvent: com.kernal.demo.common.event.EndOrderEvent) {
-        onBackPressedSupport()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(refreshParkingSpaceEvent: com.kernal.demo.common.event.RefreshParkingSpaceEvent) {
+    fun onEvent(refreshParkingSpaceEvent: RefreshParkingSpaceEvent) {
         parkingSpaceRequest()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(abnormalReportEvent: com.kernal.demo.common.event.AbnormalReportEvent) {
+    fun onEvent(abnormalReportEvent: AbnormalReportEvent) {
         onBackPressedSupport()
     }
 
@@ -290,7 +284,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             photoFile!!
         )
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-        takePictureIntent.putExtra("android.intent.extra.quickCapture",true)
+        takePictureIntent.putExtra("android.intent.extra.quickCapture", true)
         takePictureLauncher.launch(takePictureIntent)
     }
 
@@ -379,7 +373,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 val strings3 = arrayOf(i18N(com.kernal.demo.base.R.string.超时时长), parkingSpaceBean?.timeOut.toString())
                 binding.tvTimeoutDuration.text = AppUtil.getSpan(strings3, sizes, colors)
 
-                val strings4 = arrayOf(i18N(com.kernal.demo.base.R.string.待缴费用), "${parkingSpaceBean?.realtimeMoney}元")
+                val strings4 = arrayOf(
+                    i18N(com.kernal.demo.base.R.string.待缴费用),
+                    "${AppUtil.keepNDecimals(parkingSpaceBean?.realtimeMoney.toString(), 2)}元"
+                )
                 binding.tvPendingFee.text = AppUtil.getSpan(strings4, sizes, colors2, styles)
 
                 binding.tvArrearsNum.text = "${parkingSpaceBean?.historyCount}笔"
@@ -389,19 +386,25 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 dismissProgressDialog()
                 when (type) {
                     "1", "0" -> {
-                        startArouter(ARouterMap.ORDER_INFO, data = Bundle().apply {
-                            putString(ARouterMap.ORDER_INFO_ORDER_NO, orderNo)
-                        })
-                        finish()
+                        if (parkingSpaceBean?.realtimeMoney!!.toDouble() == 0.0) {
+                            onBackPressedSupport()
+                        } else {
+                            startArouter(ARouterMap.ORDER_INFO, data = Bundle().apply {
+                                putString(ARouterMap.ORDER_INFO_ORDER_NO, orderNo)
+                            })
+                            finish()
+                        }
                     }
 
                     "2", "3", "5" -> {
-                        val param = HashMap<String, Any>()
-                        val jsonobject = JSONObject()
-                        jsonobject["orderNoList"] = orderList.joinToString(separator = ",") { it }
-                        param["attr"] = jsonobject
-                        mViewModel.debtUpload(param)
-                        EventBus.getDefault().post(com.kernal.demo.common.event.EndOrderEvent())
+                        if (parkingSpaceBean?.realtimeMoney!!.toDouble() == 0.0) {
+                        } else {
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["orderNoList"] = orderList.joinToString(separator = ",") { it }
+                            param["attr"] = jsonobject
+                            mViewModel.debtUpload(param)
+                        }
                         onBackPressedSupport()
                     }
 

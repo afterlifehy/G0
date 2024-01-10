@@ -70,8 +70,8 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
     }
 
     override fun initData() {
-        if (com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
-            currentDevice = com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentDeviceList()!![0]
+        if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
+            currentDevice = RealmUtil.instance?.findCurrentDeviceList()!![0]
             if (currentDevice != null) {
                 binding.tvDeviceName.text = currentDevice?.name
             }
@@ -150,7 +150,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             R.id.fl_version -> {
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
-                jsonobject["version"] = AppUtils.getAppVersionCode()
+                jsonobject["version"] = AppUtils.getAppVersionName()
                 param["attr"] = jsonobject
                 mViewModel.checkUpdate(param)
             }
@@ -193,7 +193,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
                             }
-                            com.kernal.demo.common.realm.RealmUtil.instance?.deleteAllStreet()
+                            RealmUtil.instance?.deleteAllStreet()
                         }
 
                     }).build(this@MineActivity).showDailog()
@@ -203,8 +203,8 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
 
     fun showBlueToothDeviceListDialog() {
         if (BluePrint.instance?.blueToothDevice!!.size > 0) {
-            if (com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
-                currentDevice = com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentDeviceList()!![0]
+            if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
+                currentDevice = RealmUtil.instance?.findCurrentDeviceList()!![0]
             }
 
             blueToothDeviceListDialog = BlueToothDeviceListDialog(
@@ -216,8 +216,8 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                         if (device != null) {
                             var connectResult = BluePrint.instance?.connet(device.address)
                             if (connectResult == 0) {
-                                com.kernal.demo.common.realm.RealmUtil.instance?.deleteAllDevice()
-                                com.kernal.demo.common.realm.RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
+                                RealmUtil.instance?.deleteAllDevice()
+                                RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
                                 binding.tvDeviceName.text = device.name
                                 bluePrintStatus = 0
                             } else {

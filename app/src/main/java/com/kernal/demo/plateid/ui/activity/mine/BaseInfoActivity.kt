@@ -32,7 +32,7 @@ class BaseInfoActivity : VbBaseActivity<BaseInfoViewModel, ActivityBaseInfoBindi
     }
 
     override fun initData() {
-        streetList = com.kernal.demo.common.realm.RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
+        streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
         for (i in streetList) {
             val street = View.inflate(BaseApplication.instance(), R.layout.item_baseinfo_street, null)
             street.findViewById<TextView>(R.id.tv_street).text = i.streetName

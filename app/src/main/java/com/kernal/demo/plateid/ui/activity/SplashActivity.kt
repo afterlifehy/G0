@@ -89,7 +89,7 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
             PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
             PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
         }
-        com.kernal.demo.common.realm.RealmUtil.instance?.deleteAllStreet()
+        RealmUtil.instance?.deleteAllStreet()
         Handler(Looper.getMainLooper()).postDelayed({
             runBlocking {
                 if (PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId).isEmpty()) {

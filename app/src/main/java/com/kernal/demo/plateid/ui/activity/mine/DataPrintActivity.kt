@@ -178,7 +178,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
                 }
-                com.kernal.demo.common.realm.RealmUtil.instance?.deleteAllStreet()
+                RealmUtil.instance?.deleteAllStreet()
                 onBackPressedSupport()
             }
             errMsg.observe(this@DataPrintActivity) {

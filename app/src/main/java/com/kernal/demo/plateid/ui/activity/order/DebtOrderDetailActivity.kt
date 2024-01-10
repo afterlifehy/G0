@@ -14,6 +14,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.SizeUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.bean.DebtCollectionBean
@@ -143,9 +144,10 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                     jsonobject["businessId"] = debtCollectionBean?.orderNo
                     jsonobject["simId"] = simId
                     jsonobject["channel"] = "pos"
+                    jsonobject["orderId"] = debtCollectionBean?.oweOrderId
                     jsonobject["parkingTime"] = debtCollectionBean?.parkingTime
-                    jsonobject["arrivedTime"] = debtCollectionBean?.startTime
-                    jsonobject["leftTime"] = debtCollectionBean?.endTime
+                    jsonobject["arrivedTime"] = debtCollectionBean?.startTime!!.replace("-", "").replace(":", "").replace(" ", "")
+                    jsonobject["leftTime"] = debtCollectionBean?.endTime!!.replace("-", "").replace(":", "").replace(" ", "")
                     jsonobject["roadName"] = debtCollectionBean?.streetName
                     jsonobject["dueMoney"] = debtCollectionBean?.dueMoney.toString()
                     jsonobject["oweMoney"] = debtCollectionBean?.oweMoney.toString()
@@ -192,7 +194,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             debtPayQrLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
-                paymentQrDialog = PaymentQrDialog(it.qrCode, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
+                paymentQrDialog = PaymentQrDialog(it.qr_code, AppUtil.keepNDecimals((it.amount / 100).toString(), 2))
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
                 count = 0
@@ -216,7 +218,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 } else {
                     startPrint(it)
                 }
-                EventBus.getDefault().post(com.kernal.demo.common.event.RefreshDebtOrderListEvent())
+                EventBus.getDefault().post(RefreshDebtOrderListEvent())
                 onBackPressedSupport()
             }
             errMsg.observe(this@DebtOrderDetailActivity) {

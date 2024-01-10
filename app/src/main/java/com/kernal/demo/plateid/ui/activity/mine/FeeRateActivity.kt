@@ -48,7 +48,7 @@ class FeeRateActivity : VbBaseActivity<FeeRateViewModel, ActivityFeeRateBinding>
     }
 
     override fun initData() {
-        tabList = com.kernal.demo.common.realm.RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
+        tabList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
         if (tabList.size == 1) {
             binding.ivArrowRight.hide()
         }

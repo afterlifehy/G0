@@ -47,7 +47,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     var simId = ""
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(refreshDebtOrderListEvent: com.kernal.demo.common.event.RefreshDebtOrderListEvent) {
+    fun onEvent(refreshDebtOrderListEvent: RefreshDebtOrderListEvent) {
         if (carLicense.isEmpty()) {
             return
         }

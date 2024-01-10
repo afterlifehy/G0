@@ -27,6 +27,7 @@ import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
+import com.kernal.demo.common.realm.RealmUtil
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.adapter.StreetChoosedAdapter
 import com.kernal.demo.plateid.databinding.ActivityStreetChooseBinding
@@ -147,7 +148,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             checkOnWorkLiveData.observe(this@StreetChooseActivity) {
                 dismissProgressDialog()
                 for (i in streetChoosedList) {
-                    com.kernal.demo.common.realm.RealmUtil.instance?.updateStreetChoosed(i)
+                    RealmUtil.instance?.updateStreetChoosed(i)
                 }
                 val streetList = loginInfo?.result as ArrayList<Street>
                 runBlocking {
@@ -156,19 +157,19 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, loginInfo!!.name)
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, loginInfo!!.loginName)
                 }
-                com.kernal.demo.common.realm.RealmUtil.instance?.deleteAllStreet()
-                com.kernal.demo.common.realm.RealmUtil.instance?.addRealmAsyncList(streetList)
-                com.kernal.demo.common.realm.RealmUtil.instance?.updateCurrentStreet(streetChoosedList[0], null)
+                RealmUtil.instance?.deleteAllStreet()
+                RealmUtil.instance?.addRealmAsyncList(streetList)
+                RealmUtil.instance?.updateCurrentStreet(streetChoosedList[0], null)
 
-                val workingHoursBean = com.kernal.demo.common.realm.RealmUtil.instance?.findCurrentWorkingHour(loginInfo!!.loginName)
+                val workingHoursBean = RealmUtil.instance?.findCurrentWorkingHour(loginInfo!!.loginName)
                 if (workingHoursBean != null) {
                     val lastDay = TimeUtils.millis2String(workingHoursBean.time, "yyyy-MM-dd")
                     val currentDay = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
                     if (lastDay != currentDay) {
-                        com.kernal.demo.common.realm.RealmUtil.instance?.addRealm(WorkingHoursBean(loginInfo!!.loginName, System.currentTimeMillis()))
+                        RealmUtil.instance?.addRealm(WorkingHoursBean(loginInfo!!.loginName, System.currentTimeMillis()))
                     }
                 } else {
-                    com.kernal.demo.common.realm.RealmUtil.instance?.addRealm(WorkingHoursBean(loginInfo!!.loginName, System.currentTimeMillis()))
+                    RealmUtil.instance?.addRealm(WorkingHoursBean(loginInfo!!.loginName, System.currentTimeMillis()))
                 }
                 ARouter.getInstance().build(ARouterMap.MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }

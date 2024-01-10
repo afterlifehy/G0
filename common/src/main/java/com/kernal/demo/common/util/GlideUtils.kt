@@ -65,7 +65,7 @@ class GlideUtils private constructor() {
     }
 
     fun loadImage(iv: ImageView, url: String?, placeholder: Int, mRadius: Int) {
-        val options = RequestOptions.noAnimation().transform(com.kernal.demo.common.util.CropRoundRadiusTransformation(iv.context, mRadius))
+        val options = RequestOptions.noAnimation().transform(CropRoundRadiusTransformation(iv.context, mRadius))
             .error(placeholder).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
         Glide.with(BaseApplication.instance()).load(url).apply(options).into(iv)
     }

@@ -148,7 +148,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                     } else {
                         startPrint(payResultBean)
                     }
-                    EventBus.getDefault().post(com.kernal.demo.common.event.RefreshParkingSpaceEvent())
+                    EventBus.getDefault().post(RefreshParkingSpaceEvent())
                     onBackPressedSupport()
                 }
             }

@@ -29,7 +29,7 @@ import com.kernal.demo.base.ext.gone
 import com.kernal.demo.base.ext.startArouter
 import com.kernal.demo.base.help.ActivityCacheManager
 import com.kernal.demo.base.util.ToastUtil
-import com.kernal.demo.common.event.RefreshOrderListEvent
+import com.kernal.demo.common.event.RefreshIsPrintEvent
 import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.ORDER_DETAIL)
@@ -233,7 +233,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                 dismissProgressDialog()
                 if (it.result) {
                     ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.上传成功))
-                    EventBus.getDefault().post(com.kernal.demo.common.event.RefreshOrderListEvent())
+                    EventBus.getDefault().post(RefreshIsPrintEvent())
                     binding.rtvUpload.delegate.setBackgroundColor(
                         ContextCompat.getColor(
                             BaseApplication.instance(), com.kernal.demo.base.R.color.color_ffc5dddb

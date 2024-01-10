@@ -32,7 +32,6 @@ import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.BluePrint
 import com.kernal.demo.common.util.GlideUtils
 import kotlinx.coroutines.runBlocking
-import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.ORDER_INFO)
 class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBinding>(), OnClickListener {
@@ -142,7 +141,6 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
             }
             debtUploadLiveData.observe(this@OrderInfoActivity) {
                 dismissProgressDialog()
-                EventBus.getDefault().post(com.kernal.demo.common.event.EndOrderEvent())
                 onBackPressedSupport()
             }
             endOrderQRLiveData.observe(this@OrderInfoActivity) {
@@ -174,7 +172,6 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                     } else {
                         startPrint(payResultBean)
                     }
-                    EventBus.getDefault().post(com.kernal.demo.common.event.RefreshParkingSpaceEvent())
                     onBackPressedSupport()
                 }
             }

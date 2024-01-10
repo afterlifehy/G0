@@ -146,10 +146,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     override fun initData() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["version"] = AppUtils.getAppVersionCode()
+        jsonobject["version"] = AppUtils.getAppVersionName()
         param["attr"] = jsonobject
-//        TODO()
 //        mViewModel.checkUpdate(param)
+//        TODO（检查更新）
     }
 
     @SuppressLint("CheckResult", "MissingPermission")
