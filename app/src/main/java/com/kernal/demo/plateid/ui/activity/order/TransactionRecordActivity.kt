@@ -137,7 +137,6 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
             }
             mException.observe(this@TransactionRecordActivity){
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.message)
             }
         }
     }

@@ -64,7 +64,6 @@ class BaseInfoActivity : VbBaseActivity<BaseInfoViewModel, ActivityBaseInfoBindi
             }
             mException.observe(this@BaseInfoActivity){
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.message)
             }
         }
     }

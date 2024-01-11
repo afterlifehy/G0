@@ -186,7 +186,6 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             }
             mException.observe(this@LogoutActivity){
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.message)
             }
         }
     }

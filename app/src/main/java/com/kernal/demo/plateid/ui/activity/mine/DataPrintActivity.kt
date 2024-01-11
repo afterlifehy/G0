@@ -187,7 +187,6 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
             }
             mException.observe(this@DataPrintActivity){
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.message)
             }
         }
     }

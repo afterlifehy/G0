@@ -179,7 +179,6 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
             mException.observe(this@StreetChooseActivity){
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.message)
             }
         }
     }

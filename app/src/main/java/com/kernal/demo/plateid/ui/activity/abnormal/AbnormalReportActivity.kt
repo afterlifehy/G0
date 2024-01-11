@@ -565,7 +565,6 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             }
             mException.observe(this@AbnormalReportActivity){
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.message)
             }
         }
     }

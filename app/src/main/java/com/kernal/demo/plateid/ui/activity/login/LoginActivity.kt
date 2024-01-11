@@ -228,7 +228,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             mException.observe(this@LoginActivity){
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.message)
             }
         }
     }

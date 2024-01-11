@@ -198,7 +198,6 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
             }
             mException.observe(this@IncomeCountingActivity){
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.message)
             }
         }
     }

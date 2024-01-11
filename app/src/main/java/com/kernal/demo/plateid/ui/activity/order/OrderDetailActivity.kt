@@ -251,7 +251,6 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             }
             mException.observe(this@OrderDetailActivity){
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.message)
             }
         }
     }
