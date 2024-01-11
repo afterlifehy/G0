@@ -300,6 +300,10 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             errMsg.observe(this@MineActivity) {
                 ToastUtil.showMiddleToast(it.msg)
             }
+            mException.observe(this@MineActivity){
+                dismissProgressDialog()
+                ToastUtil.showMiddleToast(it.message)
+            }
         }
     }
 

@@ -430,6 +430,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
+            mException.observe(this@ParkingSpaceActivity){
+                dismissProgressDialog()
+                ToastUtil.showMiddleToast(it.message)
+            }
         }
     }
 

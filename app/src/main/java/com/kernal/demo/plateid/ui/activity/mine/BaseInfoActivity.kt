@@ -10,6 +10,7 @@ import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.bean.Street
 import com.kernal.demo.base.ext.i18N
+import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.common.realm.RealmUtil
 import com.kernal.demo.common.util.GlideUtils
@@ -56,6 +57,14 @@ class BaseInfoActivity : VbBaseActivity<BaseInfoViewModel, ActivityBaseInfoBindi
                 binding.tvName.text = it[0]
                 binding.tvAccount.text = it[1]
                 binding.tvPhoneNum.text = it[2]
+            }
+            errMsg.observe(this@BaseInfoActivity){
+                dismissProgressDialog()
+                ToastUtil.showMiddleToast(it.msg)
+            }
+            mException.observe(this@BaseInfoActivity){
+                dismissProgressDialog()
+                ToastUtil.showMiddleToast(it.message)
             }
         }
     }
