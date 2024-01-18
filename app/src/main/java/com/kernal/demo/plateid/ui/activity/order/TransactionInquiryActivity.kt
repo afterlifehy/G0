@@ -250,7 +250,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                     roadId = it.roadName,
                     plateId = it.carLicense,
                     payMoney = String.format("%.2f", payMoney.toFloat()),
-                    orderId = currentTransactionBean!!.orderNo,
+                    orderId = it.tradeNo,
                     phone = it.phone,
                     startTime = it.startTime,
                     leftTime = it.endTime,
@@ -264,7 +264,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
             }
             payResultInquiryLiveData.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()
-                if(it != null){
+                if (it != null) {
                     ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.支付成功))
                     currentTransactionBean?.hasPayed = "1"
                     currentTransactionBean?.payedAmount = currentTransactionBean!!.oweMoney
@@ -275,7 +275,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
-            mException.observe(this@TransactionInquiryActivity){
+            mException.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()
             }
         }

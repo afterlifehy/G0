@@ -37,7 +37,6 @@ import org.greenrobot.eventbus.EventBus
 class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>(), OnClickListener {
     var timeDuration = 1.0
     var paymentQrDialog: PaymentQrDialog? = null
-    var qr = "www.baidu.com"
 
     var minAmount = 1.0
     var parkingNo = ""
@@ -187,7 +186,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             roadId = it.roadName,
             plateId = it.carLicense,
             payMoney = String.format("%.2f", payMoney.toFloat()),
-            orderId = orderNo,
+            orderId = it.tradeNo,
             phone = it.phone,
             startTime = it.startTime,
             leftTime = it.endTime,
