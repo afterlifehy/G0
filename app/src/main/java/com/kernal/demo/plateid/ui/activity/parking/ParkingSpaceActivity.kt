@@ -290,24 +290,26 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
-            imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 10)
-            imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
-            imageBitmap = ImageUtils.addTextWatermark(
-                imageBitmap,
-                TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
-                16, Color.RED, 6f, 3f
-            )
-            imageBitmap = ImageUtils.addTextWatermark(
-                imageBitmap,
-                parkingSpaceBean?.parkingNo + "   " + carLicense,
-                16, Color.RED, 6f, 19f
-            )
-            ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.JPEG)
-            FileUtils.notifySystemToScan(imageFile)
-            val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
-            picBase64 = EncodeUtils.base64Encode2String(bytes)
-            uploadImg(parkingSpaceBean!!.orderNo, picBase64, imageFile!!.name)
+            GlobalScope.launch {
+                var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+                imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 10)
+                imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
+                imageBitmap = ImageUtils.addTextWatermark(
+                    imageBitmap,
+                    TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
+                    16, Color.RED, 6f, 3f
+                )
+                imageBitmap = ImageUtils.addTextWatermark(
+                    imageBitmap,
+                    parkingSpaceBean?.parkingNo + "   " + carLicense,
+                    16, Color.RED, 6f, 19f
+                )
+                ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.JPEG)
+                FileUtils.notifySystemToScan(imageFile)
+                val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
+                picBase64 = EncodeUtils.base64Encode2String(bytes)
+                uploadImg(parkingSpaceBean!!.orderNo, picBase64, imageFile!!.name)
+            }
         }
     }
 
@@ -430,7 +432,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
-            mException.observe(this@ParkingSpaceActivity){
+            mException.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
             }
         }

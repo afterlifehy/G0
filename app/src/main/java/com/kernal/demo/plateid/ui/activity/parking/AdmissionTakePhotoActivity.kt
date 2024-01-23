@@ -52,6 +52,8 @@ import com.kernal.demo.common.util.Constant
 import com.kernal.demo.common.util.FileUtil
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.common.view.keyboard.KeyboardUtil
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.text.SimpleDateFormat
@@ -383,7 +385,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                 }
             }
-            mException.observe(this@AdmissionTakePhotoActivity){
+            mException.observe(this@AdmissionTakePhotoActivity) {
                 dismissProgressDialog()
             }
         }
@@ -398,30 +400,40 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             photoFile!!
         )
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-        takePictureIntent.putExtra("android.intent.extra.quickCapture",true)
+        takePictureIntent.putExtra("android.intent.extra.quickCapture", true)
         takePictureLauncher.launch(takePictureIntent)
     }
 
     val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
-            imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 10)
-            imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
-            ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.PNG)
-            if (photoType == 10) {
-                plateImageBitmap = imageBitmap
-                GlideUtils.instance?.loadImage(binding.rivPlate, plateImageBitmap)
-                binding.rflTakePhoto.hide()
-                binding.rflPlateImg.show()
-            } else {
-                panoramaImageBitmap = imageBitmap
-                GlideUtils.instance?.loadImage(binding.rivPanorama, panoramaImageBitmap)
-                binding.rflTakePhoto2.hide()
-                binding.rflPanoramaImg.show()
-            }
-            if (panoramaImageBitmap == null) {
-                photoType = 11
-                takePhoto()
+            GlobalScope.launch {
+                var imageBitmap: Bitmap? = null
+                if (photoType == 10) {
+                    imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+                    runOnUiThread {
+                        GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
+                        binding.rflTakePhoto.hide()
+                        binding.rflPlateImg.show()
+                    }
+                } else {
+                    imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+                    runOnUiThread {
+                        GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
+                        binding.rflTakePhoto2.hide()
+                        binding.rflPanoramaImg.show()
+                    }
+                }
+
+                imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 10)
+                imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
+                ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.PNG)
+                if (photoType == 10) {
+                    plateImageBitmap?.recycle()
+                    plateImageBitmap = imageBitmap
+                } else {
+                    panoramaImageBitmap?.recycle()
+                    panoramaImageBitmap = imageBitmap
+                }
             }
         }
     }
@@ -532,10 +544,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     panoramaImageBitmap = null
                     panoramaBase64 = ""
                     panoramaFileName = ""
-                    if (plateImageBitmap == null) {
-                        photoType = 10
-                        takePhoto()
-                    }
                 }
             }
         }

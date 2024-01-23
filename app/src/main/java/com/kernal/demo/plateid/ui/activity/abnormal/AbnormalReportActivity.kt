@@ -147,14 +147,19 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             binding.rflLotName.setOnClickListener(this)
         }
         binding.tvLotName.text = currentStreet?.streetName
-        binding.rtvStreetNo.text = currentStreet?.streetNo
-        binding.retParkingNo.setText(parkingNo.replaceFirst(currentStreet?.streetNo.toString(), "").replace("-", ""))
+        if (currentStreet?.streetNo!!.contains("_")) {
+            val index = currentStreet?.streetNo!!.indexOf("_")
+            val newStreetNo = currentStreet?.streetNo!!.substring(0, index)
+            binding.rtvStreetNo.text = newStreetNo
+            binding.retParkingNo.setText(parkingNo.replaceFirst(newStreetNo, "").replace("-", ""))
+        } else {
+            binding.rtvStreetNo.text = currentStreet?.streetNo
+            binding.retParkingNo.setText(parkingNo.replaceFirst(currentStreet?.streetNo.toString(), "").replace("-", ""))
+        }
 
         classificationList.add(i18n(com.kernal.demo.base.R.string.无法关单))
         classificationList.add(i18n(com.kernal.demo.base.R.string.订单丢失))
         classificationList.add(i18n(com.kernal.demo.base.R.string.车牌录入错误))
-
-
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -382,12 +387,10 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val photoFile: File? = createImageFile()
         val photoURI: Uri = FileProvider.getUriForFile(
-            this,
-            "com.kernal.demo.plateid.fileprovider",
-            photoFile!!
+            this, "com.kernal.demo.plateid.fileprovider", photoFile!!
         )
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-        takePictureIntent.putExtra("android.intent.extra.quickCapture",true)
+        takePictureIntent.putExtra("android.intent.extra.quickCapture", true)
         takePictureLauncher.launch(takePictureIntent)
     }
 
@@ -417,14 +420,10 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
 
     fun addTextWatermark(imageBitmap: Bitmap): Bitmap? {
         var bitmap = ImageUtils.addTextWatermark(
-            imageBitmap,
-            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
-            16, Color.RED, 6f, 3f
+            imageBitmap, TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"), 16, Color.RED, 6f, 3f
         )
         bitmap = ImageUtils.addTextWatermark(
-            bitmap,
-            parkingNo + "   " + binding.etPlate.toString(),
-            16, Color.RED, 6f, 19f
+            bitmap, parkingNo + "   " + binding.etPlate.toString(), 16, Color.RED, 6f, 19f
         )
         return bitmap
     }
@@ -556,7 +555,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
-            mException.observe(this@AbnormalReportActivity){
+            mException.observe(this@AbnormalReportActivity) {
                 dismissProgressDialog()
             }
         }
