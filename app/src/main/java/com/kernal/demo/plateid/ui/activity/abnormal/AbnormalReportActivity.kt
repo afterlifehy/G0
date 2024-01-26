@@ -49,7 +49,7 @@ import com.kernal.demo.plateid.dialog.AbnormalStreetListDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.AbnormalReportViewModel
 import com.kernal.demo.common.event.AbnormalReportEvent
 import com.kernal.demo.common.util.Constant
-import com.kernal.demo.common.util.FileUtil
+import com.kernal.demo.common.util.ImageCompressor
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -387,40 +387,68 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val photoFile: File? = createImageFile()
         val photoURI: Uri = FileProvider.getUriForFile(
-            this, "com.kernal.demo.plateid.fileprovider", photoFile!!
+            this,
+            "com.kernal.demo.plateid.fileprovider",
+            photoFile!!
         )
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
         takePictureIntent.putExtra("android.intent.extra.quickCapture", true)
-        takePictureLauncher.launch(takePictureIntent)
+        if (photoType == 10) {
+            takePictureLauncher10.launch(takePictureIntent)
+        } else {
+            takePictureLauncher11.launch(takePictureIntent)
+        }
     }
 
-    val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    val takePictureLauncher10 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
-            imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 10)
-            imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
-            ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.JPEG)
-            if (photoType == 10) {
-                plateImageBitmap = imageBitmap
-                GlideUtils.instance?.loadImage(binding.rivPlate, plateImageBitmap)
-                binding.rflTakePhoto.hide()
-                binding.rflPlateImg.show()
-            } else {
-                panoramaImageBitmap = imageBitmap
-                GlideUtils.instance?.loadImage(binding.rivPanorama, panoramaImageBitmap)
-                binding.rflTakePhoto2.hide()
-                binding.rflPanoramaImg.show()
-            }
-            if (panoramaImageBitmap == null) {
-                photoType = 11
-                takePhoto()
-            }
+            ImageCompressor.compress(this@AbnormalReportActivity, imageFile10!!, object : ImageCompressor.CompressResult {
+                override fun onSuccess(file: File) {
+                    var imageBitmap: Bitmap? = null
+                    imageBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
+                    binding.rflTakePhoto.hide()
+                    binding.rflPlateImg.show()
+                    imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 8)
+                    ImageUtils.save(imageBitmap, imageFile10, Bitmap.CompressFormat.PNG)
+                    plateImageBitmap = imageBitmap
+                }
+
+                override fun onError(e: Throwable) {
+
+                }
+
+            })
+        }
+    }
+
+    val takePictureLauncher11 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            ImageCompressor.compress(this@AbnormalReportActivity, imageFile11!!, object : ImageCompressor.CompressResult {
+                override fun onSuccess(file: File) {
+                    var imageBitmap: Bitmap? = null
+                    imageBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
+                    binding.rflTakePhoto2.hide()
+                    binding.rflPanoramaImg.show()
+                    imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 8)
+                    ImageUtils.save(imageBitmap, imageFile11, Bitmap.CompressFormat.PNG)
+                    panoramaImageBitmap = imageBitmap
+                    imageBitmap = null
+                }
+
+                override fun onError(e: Throwable) {
+
+                }
+
+            })
         }
     }
 
     fun addTextWatermark(imageBitmap: Bitmap): Bitmap? {
         var bitmap = ImageUtils.addTextWatermark(
-            imageBitmap, TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"), 16, Color.RED, 6f, 3f
+            imageBitmap,
+            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"), 16, Color.RED, 6f, 3f
         )
         bitmap = ImageUtils.addTextWatermark(
             bitmap, parkingNo + "   " + binding.etPlate.toString(), 16, Color.RED, 6f, 19f
@@ -433,27 +461,26 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
 
         if (type == 10) {
             plateBase64 = EncodeUtils.base64Encode2String(bytes)
-            plateFileName = imageFile!!.name
+            plateFileName = imageFile10!!.name
         } else {
             panoramaBase64 = EncodeUtils.base64Encode2String(bytes)
-            panoramaFileName = imageFile!!.name
+            panoramaFileName = imageFile11!!.name
         }
     }
 
-    var currentPhotoPath = ""
-    var imageFile: File? = null
+    var imageFile10: File? = null
+    var imageFile11: File? = null
     private fun createImageFile(): File? {
         // 创建图像文件名称
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        imageFile = File.createTempFile(
-            "PNG_${timeStamp}_", /* 前缀 */
-            ".png", /* 后缀 */
-            storageDir /* 目录 */
-        )
-
-        currentPhotoPath = imageFile!!.absolutePath
-        return imageFile
+        if (photoType == 10) {
+            imageFile10 = File(storageDir, "PNG_${timeStamp}_${photoType}.png")
+            return imageFile10
+        } else {
+            imageFile11 = File(storageDir, "PNG_${timeStamp}_${photoType}.png")
+            return imageFile11
+        }
     }
 
     fun uploadImg(orderNo: String, photo: String, name: String, type: Int) {
@@ -579,4 +606,12 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         return AbnormalReportViewModel::class.java
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        plateImageBitmap?.recycle()
+        plateImageBitmap = null
+        panoramaImageBitmap?.recycle()
+        panoramaImageBitmap = null
+        System.gc()
+    }
 }

@@ -49,11 +49,9 @@ import com.kernal.demo.plateid.mvvm.viewmodel.AdmissionTakePhotoViewModel
 import com.kernal.demo.plateid.pop.MultipleSeatsPop
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.Constant
-import com.kernal.demo.common.util.FileUtil
 import com.kernal.demo.common.util.GlideUtils
+import com.kernal.demo.common.util.ImageCompressor
 import com.kernal.demo.common.view.keyboard.KeyboardUtil
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.text.SimpleDateFormat
@@ -401,53 +399,66 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         )
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
         takePictureIntent.putExtra("android.intent.extra.quickCapture", true)
-        takePictureLauncher.launch(takePictureIntent)
+        if (photoType == 10) {
+            takePictureLauncher10.launch(takePictureIntent)
+        } else {
+            takePictureLauncher11.launch(takePictureIntent)
+        }
     }
 
-    val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    val takePictureLauncher10 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            GlobalScope.launch {
-                var imageBitmap: Bitmap? = null
-                if (photoType == 10) {
-                    imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
-                    runOnUiThread {
-                        GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
-                        binding.rflTakePhoto.hide()
-                        binding.rflPlateImg.show()
-                    }
-                } else {
-                    imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
-                    runOnUiThread {
-                        GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
-                        binding.rflTakePhoto2.hide()
-                        binding.rflPanoramaImg.show()
-                    }
+            ImageCompressor.compress(this@AdmissionTakePhotoActivity, imageFile10!!, object : ImageCompressor.CompressResult {
+                override fun onSuccess(file: File) {
+                    var imageBitmap: Bitmap? = null
+                    imageBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
+                    binding.rflTakePhoto.hide()
+                    binding.rflPlateImg.show()
+                    imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 8)
+                    ImageUtils.save(imageBitmap, imageFile10, Bitmap.CompressFormat.PNG)
+                    plateImageBitmap = imageBitmap
+                    imageBitmap = null
                 }
 
-                imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 10)
-                imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
-                ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.PNG)
-                if (photoType == 10) {
-                    plateImageBitmap?.recycle()
-                    plateImageBitmap = imageBitmap
-                } else {
-                    panoramaImageBitmap?.recycle()
-                    panoramaImageBitmap = imageBitmap
+                override fun onError(e: Throwable) {
+
                 }
-            }
+
+            })
+        }
+    }
+
+    val takePictureLauncher11 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            ImageCompressor.compress(this@AdmissionTakePhotoActivity, imageFile11!!, object : ImageCompressor.CompressResult {
+                override fun onSuccess(file: File) {
+                    var imageBitmap: Bitmap? = null
+                    imageBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
+                    binding.rflTakePhoto2.hide()
+                    binding.rflPanoramaImg.show()
+                    imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 8)
+                    ImageUtils.save(imageBitmap, imageFile11, Bitmap.CompressFormat.PNG)
+                    panoramaImageBitmap = imageBitmap
+                    imageBitmap = null
+                }
+
+                override fun onError(e: Throwable) {
+
+                }
+
+            })
         }
     }
 
     fun addTextWatermark(imageBitmap: Bitmap): Bitmap? {
         var bitmap = ImageUtils.addTextWatermark(
             imageBitmap,
-            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
-            16, Color.RED, 6f, 3f
+            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"), 16, Color.RED, 6f, 3f
         )
         bitmap = ImageUtils.addTextWatermark(
-            bitmap,
-            parkingNo + "   " + binding.pvPlate.getPvTxt(),
-            16, Color.RED, 6f, 19f
+            bitmap, parkingNo + "   " + binding.pvPlate.getPvTxt(), 16, Color.RED, 6f, 19f
         )
         return bitmap
     }
@@ -457,27 +468,26 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
         if (type == 10) {
             plateBase64 = EncodeUtils.base64Encode2String(bytes)
-            plateFileName = imageFile!!.name
+            plateFileName = imageFile10!!.name
         } else {
             panoramaBase64 = EncodeUtils.base64Encode2String(bytes)
-            panoramaFileName = imageFile!!.name
+            panoramaFileName = imageFile11!!.name
         }
     }
 
-    var currentPhotoPath = ""
-    var imageFile: File? = null
+    var imageFile10: File? = null
+    var imageFile11: File? = null
     private fun createImageFile(): File? {
         // 创建图像文件名称
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        imageFile = File.createTempFile(
-            "PNG_${timeStamp}_", /* 前缀 */
-            ".png", /* 后缀 */
-            storageDir /* 目录 */
-        )
-
-        currentPhotoPath = imageFile!!.absolutePath
-        return imageFile
+        if (photoType == 10) {
+            imageFile10 = File(storageDir, "PNG_${timeStamp}_${photoType}.png")
+            return imageFile10
+        } else {
+            imageFile11 = File(storageDir, "PNG_${timeStamp}_${photoType}.png")
+            return imageFile11
+        }
     }
 
     fun uploadImg(orderNo: String, photo: String, name: String, type: Int) {
@@ -565,5 +575,14 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
     override fun marginStatusBarView(): View {
         return binding.layoutToolbar.ablToolbar
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        plateImageBitmap?.recycle()
+        plateImageBitmap = null
+        panoramaImageBitmap?.recycle()
+        panoramaImageBitmap = null
+        System.gc()
     }
 }

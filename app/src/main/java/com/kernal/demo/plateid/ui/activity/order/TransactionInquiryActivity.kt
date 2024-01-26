@@ -55,6 +55,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
     var loginName = ""
     var simId = ""
     var currentTransactionBean: TransactionBean? = null
+    var isQueryResult = false
 
     override fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -195,6 +196,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
             }
 
             R.id.fl_paymentInquiry -> {
+                isQueryResult = true
                 currentTransactionBean = v.tag as TransactionBean
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
@@ -273,6 +275,10 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
             }
             errMsg.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()
+                if (isQueryResult) {
+                    ToastUtil.showMiddleToast("未查询到支付结果")
+                    isQueryResult = false
+                }
                 ToastUtil.showMiddleToast(it.msg)
             }
             mException.observe(this@TransactionInquiryActivity) {

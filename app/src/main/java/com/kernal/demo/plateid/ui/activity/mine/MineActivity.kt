@@ -40,6 +40,7 @@ import com.kernal.demo.plateid.ui.activity.login.LoginActivity
 import com.kernal.demo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.ext.startArouter
+import com.kernal.demo.plateid.BuildConfig
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.MINE)
@@ -57,7 +58,11 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.white))
 
         mineBluePrint = intent.getIntExtra(ARouterMap.MINE_BLUE_PRINT, 0)
-        binding.tvVersion.text = AppUtils.getAppVersionName()
+        if (BuildConfig.is_dev) {
+            binding.tvVersion.text = AppUtils.getAppVersionName() + "." + AppUtils.getAppVersionCode()
+        } else {
+            binding.tvVersion.text = AppUtils.getAppVersionName()
+        }
     }
 
     override fun initListener() {
@@ -300,7 +305,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             errMsg.observe(this@MineActivity) {
                 ToastUtil.showMiddleToast(it.msg)
             }
-            mException.observe(this@MineActivity){
+            mException.observe(this@MineActivity) {
                 dismissProgressDialog()
             }
         }

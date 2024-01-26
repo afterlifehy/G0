@@ -36,6 +36,7 @@ import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.dialog.DialogHelp
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
+import com.kernal.demo.base.ext.hide
 import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.show
 import com.kernal.demo.base.ext.startArouter
@@ -51,6 +52,7 @@ import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.BluePrint
 import com.kernal.demo.common.util.FileUtil
 import com.kernal.demo.common.util.GlideUtils
+import com.kernal.demo.common.util.ImageCompressor
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -290,42 +292,42 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            GlobalScope.launch {
-                var imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
-                imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 10)
-                imageBitmap = FileUtil.compressToMaxSize(imageBitmap, 50, false)
-                imageBitmap = ImageUtils.addTextWatermark(
-                    imageBitmap,
-                    TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
-                    16, Color.RED, 6f, 3f
-                )
-                imageBitmap = ImageUtils.addTextWatermark(
-                    imageBitmap,
-                    parkingSpaceBean?.parkingNo + "   " + carLicense,
-                    16, Color.RED, 6f, 19f
-                )
-                ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.JPEG)
-                FileUtils.notifySystemToScan(imageFile)
-                val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
-                picBase64 = EncodeUtils.base64Encode2String(bytes)
-                uploadImg(parkingSpaceBean!!.orderNo, picBase64, imageFile!!.name)
-            }
+            ImageCompressor.compress(this@ParkingSpaceActivity, imageFile!!, object : ImageCompressor.CompressResult {
+                override fun onSuccess(file: File) {
+                    var imageBitmap: Bitmap? = null
+                    imageBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 8)
+                    imageBitmap = ImageUtils.addTextWatermark(
+                        imageBitmap,
+                        TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
+                        16, Color.RED, 6f, 3f
+                    )
+                    imageBitmap = ImageUtils.addTextWatermark(
+                        imageBitmap,
+                        parkingSpaceBean?.parkingNo + "   " + carLicense,
+                        16, Color.RED, 6f, 19f
+                    )
+                    ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.PNG)
+                    val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
+                    picBase64 = EncodeUtils.base64Encode2String(bytes)
+                    uploadImg(parkingSpaceBean!!.orderNo, picBase64, imageFile!!.name)
+                    imageBitmap = null
+                }
+
+                override fun onError(e: Throwable) {
+
+                }
+
+            })
         }
     }
 
-    var currentPhotoPath = ""
     var imageFile: File? = null
     private fun createImageFile(): File? {
         // 创建图像文件名称
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        imageFile = File.createTempFile(
-            "PNG_${timeStamp}_", /* 前缀 */
-            ".png", /* 后缀 */
-            storageDir /* 目录 */
-        )
-
-        currentPhotoPath = imageFile!!.absolutePath
+        imageFile = File(storageDir, "PNG_${timeStamp}_${photoType}.png")
         return imageFile
     }
 
