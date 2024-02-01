@@ -1,6 +1,5 @@
 package com.kernal.demo.common.util
 
-import android.R
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -36,7 +35,7 @@ object ImageUtil {
         textPaint.textSize = 22f //字体大小
         textPaint.setTypeface(Typeface.DEFAULT_BOLD)
         textPaint.setColor(Color.RED)
-        textPaint.setShadowLayer(3f, 1f, 1f, context.resources.getColor(R.color.background_dark))
+        textPaint.setShadowLayer(3f, 1f, 1f, context.resources.getColor(com.kernal.demo.base.R.color.black))
         val layout = StaticLayout(waterBerthId, textPaint, layoutWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true)
         canvas.save()
         canvas.translate(20f, 20f) //从20，20开始画
