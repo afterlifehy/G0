@@ -22,6 +22,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.EncodeUtils
+import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.ImageUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.BaseApplication
@@ -50,6 +51,7 @@ import com.kernal.demo.plateid.mvvm.viewmodel.AbnormalReportViewModel
 import com.kernal.demo.common.event.AbnormalReportEvent
 import com.kernal.demo.common.util.Constant
 import com.kernal.demo.common.util.ImageCompressor
+import com.kernal.demo.common.util.ImageUtil
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -311,8 +313,6 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     return
                 }
                 if (type == "03") {
-                    plateImageBitmap = addTextWatermark(plateImageBitmap!!)
-                    panoramaImageBitmap = addTextWatermark(panoramaImageBitmap!!)
                     convertBase64(plateImageBitmap!!, 10)
                     convertBase64(panoramaImageBitmap!!, 11)
                 }
@@ -404,14 +404,21 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         if (result.resultCode == Activity.RESULT_OK) {
             ImageCompressor.compress(this@AbnormalReportActivity, imageFile10!!, object : ImageCompressor.CompressResult {
                 override fun onSuccess(file: File) {
-                    var imageBitmap: Bitmap? = null
-                    imageBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                    GlideUtils.instance?.loadImage(binding.rivPlate, imageBitmap)
+                    val waterContent1: String = currentStreet?.streetName + " " + parkingNo
+                    val waterContent2: String =
+                        binding.etPlate.text.toString()+ " " + TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss")
+                    val bitmapCompressed = ImageUtil.getCompressedImage(file.absolutePath, 945f, 1140f)
+                    var bitmapWater = ImageUtil.addWaterMark3(
+                        bitmapCompressed!!,
+                        waterContent1,
+                        waterContent2,
+                        this@AbnormalReportActivity
+                    )
+                    GlideUtils.instance?.loadImage(binding.rivPlate, bitmapWater)
                     binding.rflTakePhoto.hide()
                     binding.rflPlateImg.show()
-                    imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 8)
-                    ImageUtils.save(imageBitmap, imageFile10, Bitmap.CompressFormat.PNG)
-                    plateImageBitmap = imageBitmap
+                    plateImageBitmap = bitmapWater
+                    FileUtils.delete(imageFile10)
                 }
 
                 override fun onError(e: Throwable) {
@@ -426,15 +433,21 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         if (result.resultCode == Activity.RESULT_OK) {
             ImageCompressor.compress(this@AbnormalReportActivity, imageFile11!!, object : ImageCompressor.CompressResult {
                 override fun onSuccess(file: File) {
-                    var imageBitmap: Bitmap? = null
-                    imageBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                    GlideUtils.instance?.loadImage(binding.rivPanorama, imageBitmap)
+                    val waterContent1: String = currentStreet?.streetName + " " + parkingNo
+                    val waterContent2: String =
+                        binding.etPlate.text.toString() + " " + TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss")
+                    val bitmapCompressed = ImageUtil.getCompressedImage(file.absolutePath, 945f, 1140f)
+                    var bitmapWater = ImageUtil.addWaterMark3(
+                        bitmapCompressed!!,
+                        waterContent1,
+                        waterContent2,
+                        this@AbnormalReportActivity
+                    )
+                    GlideUtils.instance?.loadImage(binding.rivPanorama, bitmapWater)
                     binding.rflTakePhoto2.hide()
                     binding.rflPanoramaImg.show()
-                    imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 8)
-                    ImageUtils.save(imageBitmap, imageFile11, Bitmap.CompressFormat.PNG)
-                    panoramaImageBitmap = imageBitmap
-                    imageBitmap = null
+                    panoramaImageBitmap = bitmapWater
+                    FileUtils.delete(imageFile11)
                 }
 
                 override fun onError(e: Throwable) {

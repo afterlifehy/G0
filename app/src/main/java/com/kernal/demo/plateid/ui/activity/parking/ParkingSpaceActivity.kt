@@ -32,6 +32,7 @@ import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.bean.ExitMethodBean
 import com.kernal.demo.base.bean.ParkingSpaceBean
 import com.kernal.demo.base.bean.PrintInfoBean
+import com.kernal.demo.base.bean.Street
 import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.dialog.DialogHelp
 import com.kernal.demo.base.ds.PreferencesDataStore
@@ -48,11 +49,13 @@ import com.kernal.demo.plateid.dialog.ExitMethodDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.ParkingSpaceViewModel
 import com.kernal.demo.common.event.AbnormalReportEvent
 import com.kernal.demo.common.event.RefreshParkingSpaceEvent
+import com.kernal.demo.common.realm.RealmUtil
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.BluePrint
 import com.kernal.demo.common.util.FileUtil
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.common.util.ImageCompressor
+import com.kernal.demo.common.util.ImageUtil
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -89,6 +92,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     var isUpload = false
     var orderList: MutableList<String> = ArrayList()
+    var currentStreet: Street? = null
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(refreshParkingSpaceEvent: RefreshParkingSpaceEvent) {
@@ -125,6 +129,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     }
 
     override fun initData() {
+        currentStreet = RealmUtil.instance?.findCurrentStreet()
+
         exitMethodList.add(ExitMethodBean("2", i18N(com.kernal.demo.base.R.string.收费员不在场欠费驶离)))
         exitMethodList.add(ExitMethodBean("1", i18N(com.kernal.demo.base.R.string.正常缴费驶离)))
         exitMethodList.add(ExitMethodBean("3", i18N(com.kernal.demo.base.R.string.当面拒绝驶离)))
@@ -294,24 +300,22 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         if (result.resultCode == Activity.RESULT_OK) {
             ImageCompressor.compress(this@ParkingSpaceActivity, imageFile!!, object : ImageCompressor.CompressResult {
                 override fun onSuccess(file: File) {
-                    var imageBitmap: Bitmap? = null
-                    imageBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                    imageBitmap = ImageUtils.compressBySampleSize(imageBitmap, 8)
-                    imageBitmap = ImageUtils.addTextWatermark(
-                        imageBitmap,
-                        TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"),
-                        16, Color.RED, 6f, 3f
+                    val waterContent1: String = currentStreet?.streetName + " " + parkingSpaceBean?.parkingNo
+                    val waterContent2: String =
+                        parkingSpaceBean?.carLicense + " " + TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss")
+                    val bitmapCompressed = ImageUtil.getCompressedImage(file.absolutePath, 945f, 1140f)
+                    var bitmapWater = ImageUtil.addWaterMark3(
+                        bitmapCompressed!!,
+                        waterContent1,
+                        waterContent2,
+                        this@ParkingSpaceActivity
                     )
-                    imageBitmap = ImageUtils.addTextWatermark(
-                        imageBitmap,
-                        parkingSpaceBean?.parkingNo + "   " + carLicense,
-                        16, Color.RED, 6f, 19f
-                    )
-                    ImageUtils.save(imageBitmap, imageFile, Bitmap.CompressFormat.PNG)
-                    val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
+                    FileUtils.delete(imageFile)
+
+                    val bytes = ConvertUtils.bitmap2Bytes(bitmapWater)
                     picBase64 = EncodeUtils.base64Encode2String(bytes)
                     uploadImg(parkingSpaceBean!!.orderNo, picBase64, imageFile!!.name)
-                    imageBitmap = null
+                    FileUtil.FileSaveToInside("${System.currentTimeMillis()}_20.png", bitmapWater!!)
                 }
 
                 override fun onError(e: Throwable) {

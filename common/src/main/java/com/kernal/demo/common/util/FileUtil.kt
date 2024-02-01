@@ -2,6 +2,7 @@ package com.kernal.demo.common.util
 
 import android.content.ContentResolver
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -11,10 +12,15 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.format.DateUtils
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import com.kernal.demo.base.BaseApplication
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 
 
 /**
@@ -51,12 +57,11 @@ object FileUtil {
         return customFile.absolutePath + File.separator
     }
 
-    fun saveBitmap(bmp: Bitmap, path: String): File {
+    fun saveBitmap(bmp: Bitmap, path: String, fileName: String): File {
         val appDir = File(path)
         if (!appDir.exists()) {
             appDir.mkdir()
         }
-        val fileName = System.currentTimeMillis().toString() + ".jpg"
         val file = File(appDir, fileName)
         try {
             val fos = FileOutputStream(file)
@@ -167,5 +172,39 @@ object FileUtil {
             BaseApplication.instance(), "${BaseApplication.instance().packageName}.provider",
             file
         )
+    }
+
+    /**
+     * 保存图片到沙盒目录
+     *
+     * @param context  上下文
+     * @param fileName 文件名
+     * @param bitmap   文件
+     * @return 路径，为空时表示保存失败
+     */
+    fun FileSaveToInside(fileName: String?, bitmap: Bitmap): String? {
+        var fos: FileOutputStream? = null
+        var path: String? = null
+        try {
+            val folder = BaseApplication.instance().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            if (folder!!.exists() || folder.mkdir()) {
+                val file = File(folder, fileName.toString())
+                fos = FileOutputStream(file)
+                //写入文件
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, fos)
+                fos.flush()
+                path = file.absolutePath
+            }
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                fos?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        //返回路径
+        return path
     }
 }
