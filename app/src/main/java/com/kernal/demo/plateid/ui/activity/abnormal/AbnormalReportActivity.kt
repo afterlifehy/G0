@@ -50,6 +50,7 @@ import com.kernal.demo.plateid.dialog.AbnormalStreetListDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.AbnormalReportViewModel
 import com.kernal.demo.common.event.AbnormalReportEvent
 import com.kernal.demo.common.util.Constant
+import com.kernal.demo.common.util.FileUtil
 import com.kernal.demo.common.util.ImageCompressor
 import com.kernal.demo.common.util.ImageUtil
 import kotlinx.coroutines.runBlocking
@@ -312,10 +313,6 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请上传全景照))
                     return
                 }
-                if (type == "03") {
-                    convertBase64(plateImageBitmap!!, 10)
-                    convertBase64(panoramaImageBitmap!!, 11)
-                }
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
                 jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
@@ -414,11 +411,11 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                         waterContent2,
                         this@AbnormalReportActivity
                     )
+                    FileUtils.delete(imageFile10)
                     GlideUtils.instance?.loadImage(binding.rivPlate, bitmapWater)
                     binding.rflTakePhoto.hide()
                     binding.rflPlateImg.show()
                     plateImageBitmap = bitmapWater
-                    FileUtils.delete(imageFile10)
                 }
 
                 override fun onError(e: Throwable) {
@@ -455,29 +452,6 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                 }
 
             })
-        }
-    }
-
-    fun addTextWatermark(imageBitmap: Bitmap): Bitmap? {
-        var bitmap = ImageUtils.addTextWatermark(
-            imageBitmap,
-            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"), 16, Color.RED, 6f, 3f
-        )
-        bitmap = ImageUtils.addTextWatermark(
-            bitmap, parkingNo + "   " + binding.etPlate.toString(), 16, Color.RED, 6f, 19f
-        )
-        return bitmap
-    }
-
-    fun convertBase64(imageBitmap: Bitmap, type: Int) {
-        val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
-
-        if (type == 10) {
-            plateBase64 = EncodeUtils.base64Encode2String(bytes)
-            plateFileName = imageFile10!!.name
-        } else {
-            panoramaBase64 = EncodeUtils.base64Encode2String(bytes)
-            panoramaFileName = imageFile11!!.name
         }
     }
 
@@ -584,8 +558,13 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             abnormalReportLiveData.observe(this@AbnormalReportActivity) {
                 dismissProgressDialog()
                 if (type == "03") {
-                    uploadImg(orderNo, plateBase64, plateFileName, 10)
-                    uploadImg(orderNo, panoramaBase64, panoramaFileName, 11)
+                    val plateSavedFile = FileUtil.FileSaveToInside("${orderNo}_10.png", plateImageBitmap!!)
+                    plateBase64 = FileUtil.fileToBase64(plateSavedFile).toString()
+                    uploadImg(orderNo, plateBase64, "${orderNo}_10.png", 10)
+
+                    val panoramaSavedFile = FileUtil.FileSaveToInside("${orderNo}_11.png", panoramaImageBitmap!!)
+                    panoramaBase64 = FileUtil.fileToBase64(panoramaSavedFile).toString()
+                    uploadImg(orderNo, panoramaBase64, "${orderNo}_11.png", 11)
                 }
                 ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.上报成功))
                 EventBus.getDefault().post(AbnormalReportEvent())

@@ -97,11 +97,11 @@ object ImageUtil {
     fun compressImageByQuality(image: Bitmap): Bitmap? {
         val baos = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos) // 质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
-        var options = 90
-        while (baos.toByteArray().size / 1024 > 100) { // 循环判断如果压缩后图片是否大于100kb,大于继续压缩
+        var options = 95
+        while (baos.toByteArray().size / 1024 > 50 && options > 5) { // 循环判断如果压缩后图片是否大于50kb,大于继续压缩
             baos.reset() // 重置baos即清空baos
             image.compress(Bitmap.CompressFormat.JPEG, options, baos) // 这里压缩options%，把压缩后的数据存放到baos中
-            options -= 10 // 每次都减少10
+            options -= 5 // 每次都减少5
         }
         val isBm = ByteArrayInputStream(baos.toByteArray()) // 把压缩后的数据baos存放到ByteArrayInputStream中
         return BitmapFactory.decodeStream(isBm, null, null) // 把ByteArrayInputStream数据生成图片
@@ -111,7 +111,7 @@ object ImageUtil {
         var inSampleSize = 1
         val reqWidth = (options.outWidth * scaleFactor).toInt()
         val reqHeight = (options.outHeight * scaleFactor).toInt()
-        while (reqWidth / inSampleSize > 1240 || reqHeight / inSampleSize > 945) {
+        while (reqWidth / inSampleSize > 1140 || reqHeight / inSampleSize > 945) {
             inSampleSize *= 2
         }
         return inSampleSize

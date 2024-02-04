@@ -80,8 +80,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var panoramaBase64 = ""
     var plateImageBitmap: Bitmap? = null
     var panoramaImageBitmap: Bitmap? = null
-    var plateFileName = ""
-    var panoramaFileName = ""
 
     var promptDialog: PromptDialog? = null
     var simId = ""
@@ -276,8 +274,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                         override fun onRightClickLinsener(msg: String) {
                             showProgressDialog(20000)
-                            convertBase64(plateImageBitmap!!, 10)
-                            convertBase64(panoramaImageBitmap!!, 11)
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
                             jsonobject["carLicense"] = binding.pvPlate.getPvTxt()
@@ -299,7 +295,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 binding.rflPlateImg.gone()
                 plateImageBitmap = null
                 plateBase64 = ""
-                plateFileName = ""
             }
 
             R.id.iv_panoramaDelete -> {
@@ -307,7 +302,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 binding.rflPanoramaImg.gone()
                 panoramaImageBitmap = null
                 panoramaBase64 = ""
-                panoramaFileName = ""
             }
 
             R.id.riv_plate -> {
@@ -338,10 +332,14 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         mViewModel.apply {
             placeOrderLiveData.observe(this@AdmissionTakePhotoActivity) {
                 dismissProgressDialog()
-//                FileUtil.FileSaveToInside("${it.orderNo}_10.png", plateImageBitmap!!)
-//                FileUtil.FileSaveToInside("${it.orderNo}_11.png", panoramaImageBitmap!!)
-                uploadImg(it.orderNo, plateBase64, plateFileName, 10)
-                uploadImg(it.orderNo, panoramaBase64, panoramaFileName, 11)
+
+                val plateSavedFile = FileUtil.FileSaveToInside("${it.orderNo}_10.png", plateImageBitmap!!)
+                plateBase64 = FileUtil.fileToBase64(plateSavedFile).toString()
+                uploadImg(it.orderNo, plateBase64, "${it.orderNo}_10.png", 10)
+
+                val panoramaSavedFile = FileUtil.FileSaveToInside("${it.orderNo}_11.png", panoramaImageBitmap!!)
+                panoramaBase64 = FileUtil.fileToBase64(panoramaSavedFile).toString()
+                uploadImg(it.orderNo, panoramaBase64, "${it.orderNo}_11.png", 11)
 //                promptDialog = PromptDialog(
 //                    i18N(com.kernal.demo.base.R.string.下单成功当前车辆有欠费记录是否追缴),
 //                    i18N(com.kernal.demo.base.R.string.是),
@@ -425,11 +423,11 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                         waterContent2,
                         this@AdmissionTakePhotoActivity
                     )
+                    FileUtils.delete(imageFile10)
                     GlideUtils.instance?.loadImage(binding.rivPlate, bitmapWater)
                     binding.rflTakePhoto.hide()
                     binding.rflPlateImg.show()
                     plateImageBitmap = bitmapWater
-                    FileUtils.delete(imageFile10)
                 }
 
                 override fun onError(e: Throwable) {
@@ -466,18 +464,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 }
 
             })
-        }
-    }
-
-    fun convertBase64(imageBitmap: Bitmap, type: Int) {
-        val bytes = ConvertUtils.bitmap2Bytes(imageBitmap)
-
-        if (type == 10) {
-            plateBase64 = EncodeUtils.base64Encode2String(bytes)
-            plateFileName = imageFile10!!.name
-        } else {
-            panoramaBase64 = EncodeUtils.base64Encode2String(bytes)
-            panoramaFileName = imageFile11!!.name
         }
     }
 
@@ -554,12 +540,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     binding.rflPlateImg.gone()
                     plateImageBitmap = null
                     plateBase64 = ""
-                    plateFileName = ""
                     binding.rflTakePhoto2.show()
                     binding.rflPanoramaImg.gone()
                     panoramaImageBitmap = null
                     panoramaBase64 = ""
-                    panoramaFileName = ""
                 }
             }
         }

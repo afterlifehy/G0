@@ -12,12 +12,14 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.format.DateUtils
+import android.util.Base64
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import com.kernal.demo.base.BaseApplication
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
@@ -182,13 +184,14 @@ object FileUtil {
      * @param bitmap   文件
      * @return 路径，为空时表示保存失败
      */
-    fun FileSaveToInside(fileName: String?, bitmap: Bitmap): String? {
+    fun FileSaveToInside(fileName: String?, bitmap: Bitmap): File{
         var fos: FileOutputStream? = null
         var path: String? = null
+        var file:File? = null
         try {
             val folder = BaseApplication.instance().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             if (folder!!.exists() || folder.mkdir()) {
-                val file = File(folder, fileName.toString())
+                file = File(folder, fileName.toString())
                 fos = FileOutputStream(file)
                 //写入文件
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 20, fos)
@@ -205,6 +208,21 @@ object FileUtil {
             }
         }
         //返回路径
-        return path
+        return file!!
+    }
+
+    fun fileToBase64(file: File): String? {
+        try {
+            val inputStream = FileInputStream(file)
+            val bytes = ByteArray(file.length().toInt())
+            inputStream.read(bytes)
+            inputStream.close()
+
+            // 使用Base64编码将字节数组转换为字符串
+            return Base64.encodeToString(bytes, Base64.DEFAULT)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
     }
 }

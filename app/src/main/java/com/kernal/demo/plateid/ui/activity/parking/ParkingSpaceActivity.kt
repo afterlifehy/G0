@@ -303,7 +303,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     val waterContent1: String = currentStreet?.streetName + " " + parkingSpaceBean?.parkingNo
                     val waterContent2: String =
                         parkingSpaceBean?.carLicense + " " + TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss")
-                    val bitmapCompressed = ImageUtil.getCompressedImage(file.absolutePath, 945f, 1140f)
+                    var bitmapCompressed = ImageUtil.getCompressedImage(file.absolutePath, 945f, 1140f)
                     var bitmapWater = ImageUtil.addWaterMark3(
                         bitmapCompressed!!,
                         waterContent1,
@@ -311,11 +311,9 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                         this@ParkingSpaceActivity
                     )
                     FileUtils.delete(imageFile)
-
-                    val bytes = ConvertUtils.bitmap2Bytes(bitmapWater)
-                    picBase64 = EncodeUtils.base64Encode2String(bytes)
-                    uploadImg(parkingSpaceBean!!.orderNo, picBase64, imageFile!!.name)
-                    FileUtil.FileSaveToInside("${System.currentTimeMillis()}_20.png", bitmapWater!!)
+                    val savedFile = FileUtil.FileSaveToInside("${parkingSpaceBean!!.orderNo}_20.png", bitmapWater)
+                    picBase64 = FileUtil.fileToBase64(savedFile).toString()
+                    uploadImg(parkingSpaceBean!!.orderNo, picBase64, "${parkingSpaceBean!!.orderNo}_20.png")
                 }
 
                 override fun onError(e: Throwable) {
