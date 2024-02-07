@@ -219,7 +219,7 @@ object FileUtil {
             inputStream.close()
 
             // 使用Base64编码将字节数组转换为字符串
-            return Base64.encodeToString(bytes, Base64.DEFAULT)
+            return Base64.encodeToString(bytes, Base64.NO_WRAP)
         } catch (e: IOException) {
             e.printStackTrace()
         }
