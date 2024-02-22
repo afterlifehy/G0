@@ -63,7 +63,11 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             val strings =
                 arrayOf(i18n(com.kernal.demo.base.R.string.已付), order?.paidAmount.toString(), i18n(com.kernal.demo.base.R.string.元))
             binding.tvPayment.text = AppUtil.getSpan(strings, sizes, colors, styles)
-            binding.rtvUpload.gone()
+            if (order?.hasPayed == "1") {
+                binding.rtvUpload.gone()
+            } else {
+                binding.rtvUpload.show()
+            }
             binding.rtvTransactionRecord.delegate.setBackgroundColor(
                 ContextCompat.getColor(
                     BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091

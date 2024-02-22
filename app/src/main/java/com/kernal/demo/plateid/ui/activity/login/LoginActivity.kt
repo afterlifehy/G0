@@ -52,7 +52,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             Manifest.permission.BLUETOOTH_SCAN,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_PHONE_STATE
         ).subscribe {
             if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -75,6 +76,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 })
             }
         }
+        binding.tvVersion.text = AppUtils.getAppVersionName() + "_" + AppUtils.getAppVersionCode()
     }
 
     override fun initListener() {

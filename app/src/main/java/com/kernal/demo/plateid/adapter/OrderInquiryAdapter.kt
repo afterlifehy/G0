@@ -37,7 +37,19 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
     override fun convert(holder: VBViewHolder<ItemOrderBinding>, item: OrderBean) {
         holder.vb.tvNum.text = AppUtil.fillZero((data.indexOf(item) + 1).toString())
         holder.vb.tvLicensePlate.text = item.carLicense
-        if (item.paidAmount.toDouble() > 0.0 || (item.paidAmount.toDouble() == 0.0 && item.amount.toDouble() == 0.0)) {
+        if (item.paidAmount.toDouble() > 0.0) {
+            if (item.hasPayed == "1") {
+                holder.vb.cbOrder.gone()
+            } else {
+                holder.vb.cbOrder.show()
+            }
+            val strings = arrayOf(
+                i18n(com.kernal.demo.base.R.string.已付),
+                AppUtil.keepNDecimals(item.paidAmount, 2),
+                i18n(com.kernal.demo.base.R.string.元)
+            )
+            holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsBlue, styles)
+        } else if ((item.paidAmount.toDouble() == 0.0 && item.amount.toDouble() == 0.0)) {
             holder.vb.cbOrder.gone()
             val strings = arrayOf(
                 i18n(com.kernal.demo.base.R.string.已付),

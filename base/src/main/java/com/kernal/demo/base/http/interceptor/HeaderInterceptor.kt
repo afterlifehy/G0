@@ -1,10 +1,12 @@
 package com.kernal.demo.base.http.interceptor
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.EncryptUtils
+import com.blankj.utilcode.util.PhoneUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
@@ -19,6 +21,7 @@ import java.util.*
 
 class HeaderInterceptor : Interceptor {
 
+    @SuppressLint("MissingPermission")
     override fun intercept(chain: Interceptor.Chain): Response {
         var sortParam = ""
 
@@ -48,6 +51,7 @@ class HeaderInterceptor : Interceptor {
         runBlocking {
             val token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             addHeader.addHeader("Content-Type", "application/json")
+                .addHeader("imei", PhoneUtils.getIMEI())
                 .addHeader("timestamp", timeStamp)
                 .addHeader("token", token)
                 .addHeader("version", AppUtils.getAppVersionName())
