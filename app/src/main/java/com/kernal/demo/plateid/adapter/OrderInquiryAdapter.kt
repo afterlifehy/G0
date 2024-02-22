@@ -42,6 +42,11 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
                 holder.vb.cbOrder.gone()
             } else {
                 holder.vb.cbOrder.show()
+                if (item.isPrinted == "0") {
+                    holder.vb.cbOrder.show()
+                } else {
+                    holder.vb.cbOrder.gone()
+                }
             }
             val strings = arrayOf(
                 i18n(com.kernal.demo.base.R.string.已付),

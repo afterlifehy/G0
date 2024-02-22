@@ -67,6 +67,23 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                 binding.rtvUpload.gone()
             } else {
                 binding.rtvUpload.show()
+                if (order?.isPrinted == "0") {
+                    binding.rtvUpload.delegate.setBackgroundColor(
+                        ContextCompat.getColor(
+                            BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
+                        )
+                    )
+                    binding.rtvUpload.setOnClickListener(this)
+                    binding.rtvUpload.delegate.init()
+                } else {
+                    binding.rtvUpload.delegate.setBackgroundColor(
+                        ContextCompat.getColor(
+                            BaseApplication.instance(), com.kernal.demo.base.R.color.color_ffc5dddb
+                        )
+                    )
+                    binding.rtvUpload.setOnClickListener(null)
+                    binding.rtvUpload.delegate.init()
+                }
             }
             binding.rtvTransactionRecord.delegate.setBackgroundColor(
                 ContextCompat.getColor(
