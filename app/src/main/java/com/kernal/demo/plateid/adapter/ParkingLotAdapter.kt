@@ -16,6 +16,7 @@ import com.kernal.demo.base.ext.show
 import com.kernal.demo.plateid.databinding.ItemParkingLotBinding
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.Constant
+import kotlin.random.Random
 
 class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickListener: OnClickListener) :
     BaseBindingAdapter<ParkingLotBean, ItemParkingLotBinding>(data) {
@@ -70,6 +71,15 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
             holder.vb.rflParking.tag = item
             holder.vb.rflParking.setOnClickListener(onClickListener)
         } else {
+//            val value = Random.nextInt(10)
+//            if (value % 3 == 0) {
+////            if (item.deadLine > System.currentTimeMillis()) {
+//                holder.vb.llParkingLotBg.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_bg_green)
+//                holder.vb.tvParkingLotNum.setBackgroundResource(com.kernal.demo.common.R.mipmap.p_da)
+//            } else {
+//                holder.vb.llParkingLotBg.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_bg_red)
+//                holder.vb.tvParkingLotNum.setBackgroundResource(com.kernal.demo.common.R.mipmap.p_db)
+//            }
             if (item.deadLine > System.currentTimeMillis()) {
                 holder.vb.llParkingLotBg.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_bg_green)
                 holder.vb.tvParkingLotNum.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_num_bg_green)
@@ -95,9 +105,18 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                     holder.vb.tvPlate.text = AppUtil.getSpan(strings, sizes, colors2)
                 } else {
                     holder.vb.tvPlate.text = item.carLicense
+//                    holder.vb.tvPlate.text = item.carLicense.substring(0, 2) + "\n" + item.carLicense.substring(2, item.carLicense.length)
                 }
                 holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), plateTxtColorMap[item.carColor]!!))
                 holder.vb.tvPlate.background = plateBgMap[item.carColor]?.let { ContextCompat.getDrawable(BaseApplication.instance(), it) }
+//                val value = Random.nextInt(10)
+//                if (value % 3 != 0 && item.carColor == "5") {
+//                    holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.white))
+//                    holder.vb.tvPlate.background = plateBgMap[item.carColor]?.let { ContextCompat.getDrawable(BaseApplication.instance(), it) }
+//                }else{
+//                    holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.black))
+//                    holder.vb.tvPlate.background =  ContextCompat.getDrawable(BaseApplication.instance(), com.kernal.demo.common.R.mipmap.ic_plate_bg_green)
+//                }
             }
             holder.vb.rflParking.tag = item
             holder.vb.rflParking.setOnClickListener(onClickListener)

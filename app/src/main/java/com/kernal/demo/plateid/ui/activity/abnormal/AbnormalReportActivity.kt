@@ -94,7 +94,9 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         if (intent.getStringExtra(ARouterMap.ABNORMAL_CARLICENSE) != null) {
             parkingNo = intent.getStringExtra(ARouterMap.ABNORMAL_PARKING_NO)!!
             carLicense = intent.getStringExtra(ARouterMap.ABNORMAL_CARLICENSE)!!
+            checkedColor = intent.getStringExtra(ARouterMap.ABNORMAL_CAR_COLOR)!!
         }
+        binding.etPlate.setText(carLicense)
 
         collectioPlateColorList.add(Constant.BLUE)
         collectioPlateColorList.add(Constant.GREEN)
@@ -108,6 +110,22 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
         collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)
         binding.rvPlateColor.adapter = collectionPlateColorAdapter
+
+        if (checkedColor == Constant.BLUE) {
+            collectionPlateColorAdapter?.updateColor(checkedColor, 0)
+        } else if (checkedColor == Constant.GREEN) {
+            collectionPlateColorAdapter?.updateColor(checkedColor, 1)
+        } else if (checkedColor == Constant.YELLOW) {
+            collectionPlateColorAdapter?.updateColor(checkedColor, 2)
+        } else if (checkedColor == Constant.YELLOW_GREEN) {
+            collectionPlateColorAdapter?.updateColor(checkedColor, 3)
+        } else if (checkedColor == Constant.WHITE) {
+            collectionPlateColorAdapter?.updateColor(checkedColor, 4)
+        } else if (checkedColor == Constant.BLACK) {
+            collectionPlateColorAdapter?.updateColor(checkedColor, 5)
+        } else {
+            collectionPlateColorAdapter?.updateColor(checkedColor, 6)
+        }
 
         initKeyboard()
     }
@@ -398,7 +416,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                 override fun onSuccess(file: File) {
                     val waterContent1: String = currentStreet?.streetName + " " + parkingNo
                     val waterContent2: String =
-                        binding.etPlate.text.toString()+ " " + TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss")
+                        binding.etPlate.text.toString() + " " + TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss")
                     val bitmapCompressed = ImageUtil.getCompressedImage(file.absolutePath, 945f, 1140f)
                     var bitmapWater = ImageUtil.addWaterMark3(
                         bitmapCompressed!!,
@@ -411,6 +429,10 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     binding.rflTakePhoto.hide()
                     binding.rflPlateImg.show()
                     plateImageBitmap = bitmapWater
+                    if (panoramaImageBitmap == null) {
+                        photoType = 11
+                        takePhoto()
+                    }
                 }
 
                 override fun onError(e: Throwable) {

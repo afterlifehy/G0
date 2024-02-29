@@ -5,6 +5,9 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
@@ -69,6 +72,41 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         binding.rflAdd.setOnClickListener(this)
         binding.rflMinus.setOnClickListener(this)
         binding.rflScanPay.setOnClickListener(this)
+        binding.etTimeDuration.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                val value = s.toString()
+                if (value.contains(".")) {
+                    val splitInput = value.split(".")
+                    if (splitInput.size > 1 && splitInput[1].length > 1) {
+                        s?.delete(s.length - 1, s.length)
+                    }
+                    if (value.endsWith(".") && value.length > 1) {
+                        timeDuration = value.replace(".", "").toDouble()
+                    } else if (value.endsWith(".") && value.length <= 1) {
+                        timeDuration = minAmount - 0.5
+                    } else {
+                        timeDuration = value.toDouble()
+                    }
+                } else if (value.length > 0) {
+                    timeDuration = value.toDouble()
+                } else {
+                    timeDuration = 0.0
+                }
+                if (timeDuration > 999) {
+                    timeDuration = 999.0
+                    binding.etTimeDuration.setText(timeDuration.toString())
+                    binding.etTimeDuration.setSelection(timeDuration.toString().length)
+                }
+            }
+
+        })
     }
 
     override fun initData() {
@@ -85,32 +123,44 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_add -> {
-                if (timeDuration == 99.0) {
+                if (timeDuration == 999.0) {
                     return
                 }
-                timeDuration += 0.5
-                binding.tvTimeDuration.text = timeDuration.toString()
+                if (timeDuration < minAmount) {
+                    timeDuration = minAmount
+                } else {
+                    timeDuration += 0.5
+                }
+                binding.etTimeDuration.setText(timeDuration.toString())
+                binding.etTimeDuration.setSelection(timeDuration.toString().length)
             }
 
             R.id.rfl_minus -> {
-                if (timeDuration == minAmount) {
-                    return
+                if (timeDuration <= minAmount) {
+                    timeDuration = minAmount
+                } else {
+                    timeDuration -= 0.5
                 }
-                timeDuration -= 0.5
-                binding.tvTimeDuration.text = timeDuration.toString()
+                binding.etTimeDuration.setText(timeDuration.toString())
+                binding.etTimeDuration.setSelection(timeDuration.toString().length)
             }
 
             R.id.rfl_scanPay -> {
-                val param = HashMap<String, Any>()
-                val jsonobject = JSONObject()
-                jsonobject["parkingNo"] = parkingNo
-                jsonobject["orderNo"] = orderNo
-                jsonobject["loginName"] = loginName
-                jsonobject["simId"] = simId
-                jsonobject["parkingHours"] = timeDuration.toString()
-                jsonobject["orderType"] = "1"
-                param["attr"] = jsonobject
-                mViewModel.prePayFeeInquiry(param)
+                if (timeDuration >= minAmount) {
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    jsonobject["parkingNo"] = parkingNo
+                    jsonobject["orderNo"] = orderNo
+                    jsonobject["loginName"] = loginName
+                    jsonobject["simId"] = simId
+                    jsonobject["parkingHours"] = timeDuration.toString()
+                    jsonobject["orderType"] = "1"
+                    param["attr"] = jsonobject
+                    mViewModel.prePayFeeInquiry(param)
+                } else {
+                    ToastUtil.showMiddleToast("时长过短")
+                    return
+                }
             }
         }
     }
@@ -155,7 +205,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
-            mException.observe(this@PrepaidActivity){
+            mException.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
             }
         }

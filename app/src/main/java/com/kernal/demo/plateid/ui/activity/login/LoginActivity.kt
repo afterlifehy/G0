@@ -76,7 +76,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 })
             }
         }
-        binding.tvVersion.text = AppUtils.getAppVersionName()
+        binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
     }
 
     override fun initListener() {
@@ -228,7 +228,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
-            mException.observe(this@LoginActivity){
+            mException.observe(this@LoginActivity) {
                 dismissProgressDialog()
             }
         }

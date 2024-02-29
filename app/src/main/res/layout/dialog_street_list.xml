@@ -6,7 +6,6 @@
     android:paddingStart="@dimen/dp_13"
     android:paddingTop="@dimen/dp_4"
     android:paddingEnd="@dimen/dp_13"
-    android:paddingBottom="@dimen/dp_17"
     app:rv_topLeftRadius="@dimen/dp_10"
     app:rv_topRightRadius="@dimen/dp_10">
 
@@ -25,7 +24,6 @@
         android:id="@+id/rv_street"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/rtv_ok"
         android:layout_marginTop="@dimen/dp_10" />
 
     <com.aries.ui.view.radius.RadiusTextView
@@ -33,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_47"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/dp_100"
+        android:layout_marginBottom="@dimen/dp_17"
         android:gravity="center"
         android:text="@string/确定"
         android:textColor="@color/white"

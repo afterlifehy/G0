@@ -84,7 +84,7 @@
                     android:id="@+id/rfl_minus"
                     android:layout_width="@dimen/dp_53"
                     android:layout_height="@dimen/dp_47"
-                    android:layout_toStartOf="@+id/tv_timeDuration"
+                    android:layout_toStartOf="@+id/et_timeDuration"
                     app:rv_backgroundColor="@color/color_fff0f0f0"
                     app:rv_bottomLeftRadius="@dimen/dp_5"
                     app:rv_topLeftRadius="@dimen/dp_5">
@@ -96,17 +96,20 @@
                         android:src="@mipmap/ic_minus" />
                 </com.aries.ui.view.radius.RadiusFrameLayout>
 
-                <TextView
-                    android:id="@+id/tv_timeDuration"
+                <EditText
+                    android:id="@+id/et_timeDuration"
                     android:layout_width="@dimen/dp_69"
                     android:layout_height="@dimen/dp_47"
                     android:layout_marginStart="@dimen/dp_1"
                     android:layout_marginEnd="@dimen/dp_1"
                     android:layout_toStartOf="@+id/rfl_add"
                     android:background="@color/color_fff0f0f0"
+                    android:cursorVisible="true"
                     android:gravity="center"
+                    android:inputType="number"
                     android:text="1.0"
                     android:textColor="@color/color_ff1a1a1a"
+                    android:textCursorDrawable="@drawable/shape_cursor"
                     android:textSize="@dimen/sp_19"
                     android:textStyle="bold" />
 

@@ -44,7 +44,7 @@
     <string name="拍照">拍照</string>
     <string name="收费员不在场欠费驶离">收费员不在场欠费驶离</string>
     <string name="正常缴费驶离">正常缴费驶离</string>
-    <string name="当面拒绝驶离">当面拒绝驶离</string>
+    <string name="当面拒缴驶离">当面拒缴驶离</string>
     <string name="强制关单">强制关单</string>
     <string name="线上支付">线上支付</string>
     <string name="其它">其它</string>

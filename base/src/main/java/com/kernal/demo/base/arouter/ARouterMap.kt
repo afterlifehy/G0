@@ -14,6 +14,7 @@ object ARouterMap {
     const val PARKING_SPACE = "/G0_app/parkingSpace"
     const val ORDER_NO = "orderNo"
     const val CAR_LICENSE = "carLicense"
+    const val CAR_COLOR = "carColor"
 
     const val PREVIEW_IMAGE = "/G0_app/previewImg"
     const val IMG_INDEX = "imgIndex"
@@ -34,6 +35,7 @@ object ARouterMap {
     const val ABNORMAL_REPORT = "/G0_app/abnormalReport"
     const val ABNORMAL_PARKING_NO = "parkingNo"
     const val ABNORMAL_CARLICENSE = "carLicense"
+    const val ABNORMAL_CAR_COLOR = "carColor"
 
     const val ABNORMAL_HELP = "/G0_app/abnormalHelp"
 

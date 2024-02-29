@@ -78,6 +78,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     var orderNo = ""
     var carLicense = ""
+    var carColor = ""
     var parkingSpaceBean: ParkingSpaceBean? = null
 
     var picBase64 = ""
@@ -107,6 +108,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     override fun initView() {
         orderNo = intent.getStringExtra(ARouterMap.ORDER_NO).toString()
         carLicense = intent.getStringExtra(ARouterMap.CAR_LICENSE).toString()
+        carColor = intent.getStringExtra(ARouterMap.CAR_COLOR).toString()
+
         binding.tvPlate.text = carLicense
         orderList.add(orderNo)
 
@@ -133,7 +136,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
         exitMethodList.add(ExitMethodBean("2", i18N(com.kernal.demo.base.R.string.收费员不在场欠费驶离)))
         exitMethodList.add(ExitMethodBean("1", i18N(com.kernal.demo.base.R.string.正常缴费驶离)))
-        exitMethodList.add(ExitMethodBean("3", i18N(com.kernal.demo.base.R.string.当面拒绝驶离)))
+        exitMethodList.add(ExitMethodBean("3", i18N(com.kernal.demo.base.R.string.当面拒缴驶离)))
         exitMethodList.add(ExitMethodBean("0", i18N(com.kernal.demo.base.R.string.正常关单)))
         exitMethodList.add(ExitMethodBean("4", i18N(com.kernal.demo.base.R.string.强制关单)))
         exitMethodList.add(ExitMethodBean("5", i18N(com.kernal.demo.base.R.string.线上支付)))
@@ -222,6 +225,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 startArouter(ARouterMap.ABNORMAL_REPORT, data = Bundle().apply {
                     putString(ARouterMap.ABNORMAL_PARKING_NO, parkingSpaceBean?.parkingNo)
                     putString(ARouterMap.ABNORMAL_CARLICENSE, parkingSpaceBean?.carLicense)
+                    putString(ARouterMap.ABNORMAL_CAR_COLOR, carColor)
                 })
             }
 

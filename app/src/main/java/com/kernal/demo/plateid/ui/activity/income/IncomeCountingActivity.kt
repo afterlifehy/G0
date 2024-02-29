@@ -51,7 +51,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.营收盘点)
-        GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.kernal.demo.common.R.mipmap.ic_calendar)
+        GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.kernal.demo.common.R.mipmap.ic_calendar_green)
         binding.layoutToolbar.ivRight.show()
     }
 
