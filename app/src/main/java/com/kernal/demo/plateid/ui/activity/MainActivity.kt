@@ -82,7 +82,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     @SuppressLint("SetTextI18n")
     override fun initData() {
-        connectBluePrint()
+//        connectBluePrint()
     }
 
     @SuppressLint("CheckResult", "MissingPermission")

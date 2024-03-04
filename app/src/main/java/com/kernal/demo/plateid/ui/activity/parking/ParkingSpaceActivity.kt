@@ -479,9 +479,17 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             company = it.businessCname,
             oweCount = 0
         )
-        Thread {
-            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
-        }.start()
+        val printList = BluePrint.instance?.blueToothDevice!!
+        if (printList.size == 1) {
+            Thread {
+                val device = printList[0]
+                var connectResult = BluePrint.instance?.connet(device.address)
+                if (connectResult == 0) {
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+                    BluePrint.instance?.disConnect()
+                }
+            }.start()
+        }
         GlobalScope.launch {
             delay(2000)
             // 执行打印完成后的回调

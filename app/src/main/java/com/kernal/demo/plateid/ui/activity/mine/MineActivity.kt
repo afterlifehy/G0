@@ -70,74 +70,74 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         binding.flBaseInfo.setOnClickListener(this)
         binding.flVersion.setOnClickListener(this)
         binding.flFeeRate.setOnClickListener(this)
-        binding.flBlueToothPrint.setOnClickListener(this)
+//        binding.flBlueToothPrint.setOnClickListener(this)
         binding.rtvLogout.setOnClickListener(this)
     }
 
     override fun initData() {
-        if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
-            currentDevice = RealmUtil.instance?.findCurrentDeviceList()!![0]
-            if (currentDevice != null) {
-                binding.tvDeviceName.text = currentDevice?.name
-            }
-        }
+//        if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
+//            currentDevice = RealmUtil.instance?.findCurrentDeviceList()!![0]
+//            if (currentDevice != null) {
+//                binding.tvDeviceName.text = currentDevice?.name
+//            }
+//        }
     }
 
     @SuppressLint("CheckResult")
     override fun onResume() {
         super.onResume()
-        Thread {
-            if (BluePrint.instance != null && BluePrint.instance!!.zpSDK != null) {
-                try {
-                    BluePrint.instance!!.zpSDK?.printerStatus()
-                    when (BluePrint.instance!!.zpSDK?.GetStatus()) {
-                        -1 -> {
-                            bluePrintStatus = -1
-                            runOnUiThread {
-                                BluePrint.instance!!.zpSDK?.disconnect()
-                                binding.tvDeviceName.text = ""
-                            }
-                        }
-
-                        0 -> {
-                            bluePrintStatus = 0
-                        }
-
-                        1 -> {
-                            bluePrintStatus = 1
-                            runOnUiThread {
-                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.打印机缺纸))
-                            }
-                        }
-
-                        2 -> {
-                            bluePrintStatus = 2
-                            runOnUiThread {
-                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.打印机开盖))
-                            }
-                        }
-                    }
-                } catch (e: Exception) {
-                    runOnUiThread {
-//                        BluePrint.instance!!.zpSDK?.disconnect()
-                        binding.tvDeviceName.text = ""
-                    }
-                }
-            }
-        }.start()
-        if (mineBluePrint == 1) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                var rxPermissions = RxPermissions(this@MineActivity)
-                rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
-                    if (it) {
-                        showBlueToothDeviceListDialog()
-                    }
-                }
-            } else {
-                showBlueToothDeviceListDialog()
-            }
-            mineBluePrint = 0
-        }
+//        Thread {
+//            if (BluePrint.instance != null && BluePrint.instance!!.zpSDK != null) {
+//                try {
+//                    BluePrint.instance!!.zpSDK?.printerStatus()
+//                    when (BluePrint.instance!!.zpSDK?.GetStatus()) {
+//                        -1 -> {
+//                            bluePrintStatus = -1
+//                            runOnUiThread {
+//                                BluePrint.instance!!.zpSDK?.disconnect()
+//                                binding.tvDeviceName.text = ""
+//                            }
+//                        }
+//
+//                        0 -> {
+//                            bluePrintStatus = 0
+//                        }
+//
+//                        1 -> {
+//                            bluePrintStatus = 1
+//                            runOnUiThread {
+//                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.打印机缺纸))
+//                            }
+//                        }
+//
+//                        2 -> {
+//                            bluePrintStatus = 2
+//                            runOnUiThread {
+//                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.打印机开盖))
+//                            }
+//                        }
+//                    }
+//                } catch (e: Exception) {
+//                    runOnUiThread {
+////                        BluePrint.instance!!.zpSDK?.disconnect()
+//                        binding.tvDeviceName.text = ""
+//                    }
+//                }
+//            }
+//        }.start()
+//        if (mineBluePrint == 1) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//                var rxPermissions = RxPermissions(this@MineActivity)
+//                rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+//                    if (it) {
+//                        showBlueToothDeviceListDialog()
+//                    }
+//                }
+//            } else {
+//                showBlueToothDeviceListDialog()
+//            }
+//            mineBluePrint = 0
+//        }
     }
 
     @SuppressLint("CheckResult", "MissingPermission")
@@ -165,16 +165,16 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             }
 
             R.id.fl_blueToothPrint -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    var rxPermissions = RxPermissions(this@MineActivity)
-                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
-                        if (it) {
-                            showBlueToothDeviceListDialog()
-                        }
-                    }
-                } else {
-                    showBlueToothDeviceListDialog()
-                }
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//                    var rxPermissions = RxPermissions(this@MineActivity)
+//                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+//                        if (it) {
+//                            showBlueToothDeviceListDialog()
+//                        }
+//                    }
+//                } else {
+//                    showBlueToothDeviceListDialog()
+//                }
             }
 
             R.id.rtv_logout -> {

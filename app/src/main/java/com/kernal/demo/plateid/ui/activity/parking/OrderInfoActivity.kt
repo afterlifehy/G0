@@ -218,10 +218,17 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
             company = it.businessCname,
             oweCount = it.oweCount
         )
-        ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
-        Thread {
-            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
-        }.start()
+        val printList = BluePrint.instance?.blueToothDevice!!
+        if (printList.size == 1) {
+            Thread {
+                val device = printList[0]
+                var connectResult = BluePrint.instance?.connet(device.address)
+                if (connectResult == 0) {
+                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+                }
+            }.start()
+        }
     }
 
     override fun providerVMClass(): Class<OrderInfoViewModel>? {

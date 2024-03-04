@@ -129,6 +129,7 @@
             android:id="@+id/fl_blueToothPrint"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_72"
+            android:visibility="gone"
             android:layout_below="@+id/fl_feeRate">
 
             <androidx.appcompat.widget.AppCompatTextView
