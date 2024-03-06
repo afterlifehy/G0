@@ -179,7 +179,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
-            mException.observe(this@OrderInfoActivity){
+            mException.observe(this@OrderInfoActivity) {
                 dismissProgressDialog()
             }
         }
@@ -224,7 +224,9 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                 val device = printList[0]
                 var connectResult = BluePrint.instance?.connet(device.address)
                 if (connectResult == 0) {
-                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                    runOnUiThread {
+                        ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                    }
                     BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
                 }
             }.start()

@@ -165,7 +165,9 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                                         val device = printList[0]
                                         var connectResult = BluePrint.instance?.connet(device.address)
                                         if (connectResult == 0) {
-                                            ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                                            runOnUiThread {
+                                                ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                                            }
                                             BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                                         }
                                     }.start()
@@ -179,7 +181,9 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                                 val device = printList[0]
                                 var connectResult = BluePrint.instance?.connet(device.address)
                                 if (connectResult == 0) {
-                                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                                    runOnUiThread {
+                                        ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                                    }
                                     BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                                 }
                             }.start()
@@ -199,7 +203,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
-            mException.observe(this@DataPrintActivity){
+            mException.observe(this@DataPrintActivity) {
                 dismissProgressDialog()
             }
         }
