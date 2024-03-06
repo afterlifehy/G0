@@ -54,7 +54,6 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
     var tradeNo = ""
 
     override fun initView() {
-        binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.white))
 
@@ -62,6 +61,11 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         carLicense = intent.getStringExtra(ARouterMap.PREPAID_CARLICENSE).toString()
         parkingNo = intent.getStringExtra(ARouterMap.PREPAID_PARKING_NO).toString()
         orderNo = intent.getStringExtra(ARouterMap.PREPAID_ORDER_NO).toString()
+        if (minAmount == 1.0) {
+            binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
+        } else {
+            binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.续费)
+        }
 
         binding.tvPlate.text = carLicense
         binding.tvParkingNo.text = parkingNo
