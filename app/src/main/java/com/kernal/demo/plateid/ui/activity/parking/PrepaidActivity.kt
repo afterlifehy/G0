@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.ArrayMap
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
@@ -21,8 +22,10 @@ import com.kernal.demo.base.bean.PayResultBean
 import com.kernal.demo.base.bean.PrintInfoBean
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
+import com.kernal.demo.base.ext.hide
 import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.i18n
+import com.kernal.demo.base.ext.show
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.plateid.R
@@ -32,6 +35,7 @@ import com.kernal.demo.plateid.mvvm.viewmodel.PrepaidViewModel
 import com.kernal.demo.common.event.RefreshParkingSpaceEvent
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.BluePrint
+import com.kernal.demo.common.util.Constant
 import com.kernal.demo.common.util.GlideUtils
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
@@ -45,6 +49,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
     var parkingNo = ""
     var carLicense = ""
     var orderNo = ""
+    var carColor = ""
 
     var simId = ""
     var loginName = ""
@@ -52,6 +57,24 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
     var count = 0
     var handler = Handler(Looper.getMainLooper())
     var tradeNo = ""
+    var plateLogoColorMap: MutableMap<String, Int> = ArrayMap()
+
+    init {
+        plateLogoColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.black
+        plateLogoColorMap[Constant.WHITE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.GREY] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.RED] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.BLUE] = com.kernal.demo.base.R.color.color_ff0046de
+        plateLogoColorMap[Constant.YELLOW] = com.kernal.demo.base.R.color.color_fffda027
+        plateLogoColorMap[Constant.ORANGE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.BROWN] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.GREEN] = com.kernal.demo.base.R.color.color_ff09a95f
+        plateLogoColorMap[Constant.PURPLE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.CYAN] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.PINK] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.white
+    }
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
@@ -61,6 +84,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         carLicense = intent.getStringExtra(ARouterMap.PREPAID_CARLICENSE).toString()
         parkingNo = intent.getStringExtra(ARouterMap.PREPAID_PARKING_NO).toString()
         orderNo = intent.getStringExtra(ARouterMap.PREPAID_ORDER_NO).toString()
+        carColor = intent.getStringExtra(ARouterMap.PREPAID_CAR_COLOR).toString()
         if (minAmount == 1.0) {
             binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
         } else {
@@ -69,6 +93,42 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
 
         binding.tvPlate.text = carLicense
         binding.tvParkingNo.text = parkingNo
+        if (carColor == Constant.YELLOW_GREEN) {
+            binding.llCarColor.show()
+            binding.rtvCarColor.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    com.kernal.demo.base.R.color.transparent
+                )
+            )
+            binding.rtvCarColor.delegate.init()
+        } else {
+            binding.llCarColor.hide()
+            binding.rtvCarColor.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    plateLogoColorMap[carColor]!!
+                )
+            )
+            if (plateLogoColorMap[carColor]!! == com.kernal.demo.base.R.color.white) {
+                binding.rtvCarColor.delegate.setStrokeWidth(1)
+                binding.rtvCarColor.delegate.setTextColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(),
+                        com.kernal.demo.base.R.color.black
+                    )
+                )
+            } else {
+                binding.rtvCarColor.delegate.setStrokeWidth(0)
+                binding.rtvCarColor.delegate.setTextColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(),
+                        com.kernal.demo.base.R.color.white
+                    )
+                )
+            }
+            binding.rtvCarColor.delegate.init()
+        }
     }
 
     override fun initListener() {

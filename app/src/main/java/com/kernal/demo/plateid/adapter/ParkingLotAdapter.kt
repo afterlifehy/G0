@@ -36,7 +36,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
         plateLogoColorMap[Constant.YELLOW] = com.kernal.demo.base.R.color.color_fffda027
         plateLogoColorMap[Constant.ORANGE] = com.kernal.demo.base.R.color.white
         plateLogoColorMap[Constant.BROWN] = com.kernal.demo.base.R.color.white
-        plateLogoColorMap[Constant.GREEN] = com.kernal.demo.base.R.color.color_ff7af3af
+        plateLogoColorMap[Constant.GREEN] = com.kernal.demo.base.R.color.color_ff09a95f
         plateLogoColorMap[Constant.PURPLE] = com.kernal.demo.base.R.color.white
         plateLogoColorMap[Constant.CYAN] = com.kernal.demo.base.R.color.white
         plateLogoColorMap[Constant.PINK] = com.kernal.demo.base.R.color.white
@@ -114,7 +114,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                 holder.vb.rtvParkingLotNum.delegate.setBackgroundColor(
                     ContextCompat.getColor(
                         BaseApplication.instance(),
-                        com.kernal.demo.base.R.color.color_ffff4141
+                        com.kernal.demo.base.R.color.color_ffff5a41
                     )
                 )
             }
@@ -138,7 +138,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                 )
                 if (plateLogoColorMap[item.carColor]!! == com.kernal.demo.base.R.color.white) {
                     holder.vb.rtvCarColor.delegate.setStrokeWidth(1)
-                    holder.vb.rtvCarColor.setTextColor(
+                    holder.vb.rtvCarColor.delegate.setTextColor(
                         ContextCompat.getColor(
                             BaseApplication.instance(),
                             com.kernal.demo.base.R.color.black
@@ -146,7 +146,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                     )
                 } else {
                     holder.vb.rtvCarColor.delegate.setStrokeWidth(0)
-                    holder.vb.rtvCarColor.setTextColor(
+                    holder.vb.rtvCarColor.delegate.setTextColor(
                         ContextCompat.getColor(
                             BaseApplication.instance(),
                             com.kernal.demo.base.R.color.white

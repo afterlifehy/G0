@@ -35,8 +35,6 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/dp_13"
-            android:drawableStart="@mipmap/ic_plate"
-            android:drawablePadding="@dimen/dp_13"
             android:textColor="@color/color_ff1a1a1a"
             android:textSize="@dimen/sp_24"
             android:textStyle="bold"

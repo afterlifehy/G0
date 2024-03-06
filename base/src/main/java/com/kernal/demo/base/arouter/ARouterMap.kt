@@ -28,6 +28,7 @@ object ARouterMap {
     const val PREPAID_CARLICENSE = "carLicense"
     const val PREPAID_PARKING_NO = "parkingNo"
     const val PREPAID_ORDER_NO = "orderNo"
+    const val PREPAID_CAR_COLOR = "carColor"
 
     const val ORDER_INFO = "/G0_app/orderInfo"
     const val ORDER_INFO_ORDER_NO = "orderNo"

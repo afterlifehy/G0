@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.ArrayMap
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.activity.result.contract.ActivityResultContracts
@@ -52,6 +53,7 @@ import com.kernal.demo.common.event.RefreshParkingSpaceEvent
 import com.kernal.demo.common.realm.RealmUtil
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.BluePrint
+import com.kernal.demo.common.util.Constant
 import com.kernal.demo.common.util.FileUtil
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.common.util.ImageCompressor
@@ -94,6 +96,24 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var isUpload = false
     var orderList: MutableList<String> = ArrayList()
     var currentStreet: Street? = null
+    var plateLogoColorMap: MutableMap<String, Int> = ArrayMap()
+
+    init {
+        plateLogoColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.black
+        plateLogoColorMap[Constant.WHITE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.GREY] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.RED] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.BLUE] = com.kernal.demo.base.R.color.color_ff0046de
+        plateLogoColorMap[Constant.YELLOW] = com.kernal.demo.base.R.color.color_fffda027
+        plateLogoColorMap[Constant.ORANGE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.BROWN] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.GREEN] = com.kernal.demo.base.R.color.color_ff09a95f
+        plateLogoColorMap[Constant.PURPLE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.CYAN] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.PINK] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.white
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(refreshParkingSpaceEvent: RefreshParkingSpaceEvent) {
@@ -110,6 +130,42 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         carLicense = intent.getStringExtra(ARouterMap.CAR_LICENSE).toString()
         carColor = intent.getStringExtra(ARouterMap.CAR_COLOR).toString()
 
+        if (carColor == Constant.YELLOW_GREEN) {
+            binding.llCarColor.show()
+            binding.rtvCarColor.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    com.kernal.demo.base.R.color.transparent
+                )
+            )
+            binding.rtvCarColor.delegate.init()
+        } else {
+            binding.llCarColor.hide()
+            binding.rtvCarColor.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    plateLogoColorMap[carColor]!!
+                )
+            )
+            if (plateLogoColorMap[carColor]!! == com.kernal.demo.base.R.color.white) {
+                binding.rtvCarColor.delegate.setStrokeWidth(1)
+                binding.rtvCarColor.delegate.setTextColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(),
+                        com.kernal.demo.base.R.color.black
+                    )
+                )
+            } else {
+                binding.rtvCarColor.delegate.setStrokeWidth(0)
+                binding.rtvCarColor.delegate.setTextColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(),
+                        com.kernal.demo.base.R.color.white
+                    )
+                )
+            }
+            binding.rtvCarColor.delegate.init()
+        }
         binding.tvPlate.text = carLicense
         orderList.add(orderNo)
 
@@ -237,17 +293,20 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                             putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
                             putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
                             putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
+                            putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
                         } else {
                             putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
                             putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
                             putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
                             putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
+                            putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
                         }
                     } else {
                         putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
                         putString(ARouterMap.PREPAID_CARLICENSE, "")
                         putString(ARouterMap.PREPAID_PARKING_NO, "")
                         putString(ARouterMap.PREPAID_ORDER_NO, "")
+                        putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
                     }
                 })
             }

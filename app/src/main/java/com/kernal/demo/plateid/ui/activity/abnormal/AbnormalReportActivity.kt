@@ -7,11 +7,13 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.ArrayMap
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
@@ -85,6 +87,24 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
     var plateFileName = ""
     var panoramaFileName = ""
     var panoramaImageBitmap: Bitmap? = null
+    var plateLogoColorMap: MutableMap<String, Int> = ArrayMap()
+
+    init {
+        plateLogoColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.black
+        plateLogoColorMap[Constant.WHITE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.GREY] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.RED] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.BLUE] = com.kernal.demo.base.R.color.color_ff0046de
+        plateLogoColorMap[Constant.YELLOW] = com.kernal.demo.base.R.color.color_fffda027
+        plateLogoColorMap[Constant.ORANGE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.BROWN] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.GREEN] = com.kernal.demo.base.R.color.color_ff09a95f
+        plateLogoColorMap[Constant.PURPLE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.CYAN] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.PINK] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.white
+    }
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18n(com.kernal.demo.base.R.string.泊位异常上报)
@@ -126,7 +146,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         } else {
             collectionPlateColorAdapter?.updateColor(checkedColor, 6)
         }
-
+        updateColor()
         initKeyboard()
     }
 
@@ -341,6 +361,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             R.id.fl_color -> {
                 checkedColor = v.tag as String
                 collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
+                updateColor()
             }
         }
     }
@@ -535,6 +556,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                         checkedColor = Constant.OTHERS
                         collectionPlateColorAdapter?.updateColor(checkedColor, 6)
                     }
+                    updateColor()
                     binding.rflTakePhoto.show()
                     binding.rflPlateImg.gone()
                     plateImageBitmap = null
@@ -550,6 +572,44 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         }
     }
 
+    fun updateColor(){
+        if (checkedColor == Constant.YELLOW_GREEN) {
+            binding.llCarColor.show()
+            binding.rtvCarColor.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    com.kernal.demo.base.R.color.transparent
+                )
+            )
+            binding.rtvCarColor.delegate.init()
+        } else {
+            binding.llCarColor.hide()
+            binding.rtvCarColor.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    plateLogoColorMap[checkedColor]!!
+                )
+            )
+            if (plateLogoColorMap[checkedColor]!! == com.kernal.demo.base.R.color.white) {
+                binding.rtvCarColor.delegate.setStrokeWidth(1)
+                binding.rtvCarColor.delegate.setTextColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(),
+                        com.kernal.demo.base.R.color.black
+                    )
+                )
+            } else {
+                binding.rtvCarColor.delegate.setStrokeWidth(0)
+                binding.rtvCarColor.delegate.setTextColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(),
+                        com.kernal.demo.base.R.color.white
+                    )
+                )
+            }
+            binding.rtvCarColor.delegate.init()
+        }
+    }
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {

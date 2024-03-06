@@ -17,7 +17,7 @@
         android:id="@+id/layout_toolbar"
         layout="@layout/layout_comment_toolbar" />
 
-    <com.aries.ui.view.radius.RadiusFrameLayout
+    <com.aries.ui.view.radius.RadiusLinearLayout
         android:id="@+id/rfl_plate"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_54"
@@ -25,8 +25,54 @@
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_6"
         android:layout_marginEnd="@dimen/dp_13"
+        android:orientation="horizontal"
         app:rv_backgroundColor="@color/white"
         app:rv_radius="@dimen/dp_7">
+
+        <FrameLayout
+            android:layout_width="@dimen/dp_26"
+            android:layout_height="@dimen/dp_18"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_13">
+
+            <LinearLayout
+                android:id="@+id/ll_carColor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:visibility="invisible">
+
+                <com.aries.ui.view.radius.RadiusFrameLayout
+                    android:id="@+id/rfl_yellow"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:rv_backgroundColor="@color/color_fffda027"
+                    app:rv_bottomLeftRadius="@dimen/dp_3"
+                    app:rv_topLeftRadius="@dimen/dp_3" />
+
+                <com.aries.ui.view.radius.RadiusFrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    app:rv_backgroundColor="@color/color_ff09a95f"
+                    app:rv_bottomRightRadius="@dimen/dp_3"
+                    app:rv_topRightRadius="@dimen/dp_3" />
+            </LinearLayout>
+
+            <com.aries.ui.view.radius.RadiusTextView
+                android:id="@+id/rtv_carColor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/车牌"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_10"
+                app:rv_backgroundColor="@color/color_ff0046de"
+                app:rv_radius="@dimen/dp_3"
+                app:rv_strokeColor="@color/black"
+                app:rv_strokeWidth="@dimen/dp_1" />
+        </FrameLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_plate"
@@ -35,13 +81,11 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/dp_13"
-            android:drawableStart="@mipmap/ic_plate"
-            android:drawablePadding="@dimen/dp_13"
             android:textColor="@color/color_ff1a1a1a"
             android:textSize="@dimen/sp_24"
             android:textStyle="bold"
             tools:text="沪A36N81" />
-    </com.aries.ui.view.radius.RadiusFrameLayout>
+    </com.aries.ui.view.radius.RadiusLinearLayout>
 
     <com.aries.ui.view.radius.RadiusLinearLayout
         android:layout_width="match_parent"
