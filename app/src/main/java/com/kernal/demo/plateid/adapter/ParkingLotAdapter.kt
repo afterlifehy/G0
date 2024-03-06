@@ -22,106 +22,144 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
     BaseBindingAdapter<ParkingLotBean, ItemParkingLotBinding>(data) {
     var plateBgMap: MutableMap<String, Int> = ArrayMap()
     var plateTxtColorMap: MutableMap<String, Int> = ArrayMap()
-    var colors = intArrayOf(com.kernal.demo.base.R.color.color_ffeb0000, com.kernal.demo.base.R.color.black)
-    var colors2 = intArrayOf(com.kernal.demo.base.R.color.black, com.kernal.demo.base.R.color.color_ffeb0000)
-    var sizes = intArrayOf(24, 24)
+    var plateLogoColorMap: MutableMap<String, Int> = ArrayMap()
+//    var colors = intArrayOf(com.kernal.demo.base.R.color.color_ffeb0000, com.kernal.demo.base.R.color.black)
+//    var colors2 = intArrayOf(com.kernal.demo.base.R.color.black, com.kernal.demo.base.R.color.color_ffeb0000)
+//    var sizes = intArrayOf(24, 24)
 
     init {
-        plateBgMap[Constant.BLACK] = com.kernal.demo.common.R.mipmap.ic_plate_bg_black
-        plateBgMap[Constant.WHITE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap[Constant.GREY] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap[Constant.RED] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap[Constant.BLUE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_blue
-        plateBgMap[Constant.YELLOW] = com.kernal.demo.common.R.mipmap.ic_plate_bg_yellow
-        plateBgMap[Constant.ORANGE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap[Constant.BROWN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap[Constant.GREEN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_green
-        plateBgMap[Constant.PURPLE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap[Constant.CYAN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap[Constant.PINK] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap[Constant.TRANSPARENT] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap[Constant.OTHERS] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+        plateLogoColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.black
+        plateLogoColorMap[Constant.WHITE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.GREY] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.RED] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.BLUE] = com.kernal.demo.base.R.color.color_ff0046de
+        plateLogoColorMap[Constant.YELLOW] = com.kernal.demo.base.R.color.color_fffda027
+        plateLogoColorMap[Constant.ORANGE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.BROWN] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.GREEN] = com.kernal.demo.base.R.color.color_ff7af3af
+        plateLogoColorMap[Constant.PURPLE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.CYAN] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.PINK] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.white
 
-        plateTxtColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.white
-        plateTxtColorMap[Constant.WHITE] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.GREY] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.RED] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.BLUE] = com.kernal.demo.base.R.color.white
-        plateTxtColorMap[Constant.YELLOW] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.ORANGE] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.BROWN] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.GREEN] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.PURPLE] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.CYAN] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.PINK] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.YELLOW_GREEN] = com.kernal.demo.base.R.color.black
-        plateTxtColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.black
+//        plateBgMap[Constant.BLACK] = com.kernal.demo.common.R.mipmap.ic_plate_bg_black
+//        plateBgMap[Constant.WHITE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.GREY] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.RED] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.BLUE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_blue
+//        plateBgMap[Constant.YELLOW] = com.kernal.demo.common.R.mipmap.ic_plate_bg_yellow
+//        plateBgMap[Constant.ORANGE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.BROWN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.GREEN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_green
+//        plateBgMap[Constant.PURPLE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.CYAN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.PINK] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.TRANSPARENT] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.OTHERS] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//
+//        plateTxtColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.white
+//        plateTxtColorMap[Constant.WHITE] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.GREY] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.RED] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.BLUE] = com.kernal.demo.base.R.color.white
+//        plateTxtColorMap[Constant.YELLOW] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.ORANGE] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.BROWN] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.GREEN] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.PURPLE] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.CYAN] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.PINK] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.YELLOW_GREEN] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.black
     }
 
     override fun convert(holder: VBViewHolder<ItemParkingLotBinding>, item: ParkingLotBean) {
         if (item.state == "01") {
-            holder.vb.llPlate.hide()
-            holder.vb.tvPlate.show()
-            holder.vb.llParkingLotBg.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_bg_grey)
-            holder.vb.tvParkingLotNum.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_num_bg_grey)
+            holder.vb.llPlateNum.hide()
+            holder.vb.llParkingLotBg.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    com.kernal.demo.base.R.color.color_ffefefef
+                )
+            )
+            holder.vb.rtvParkingLotNum.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    com.kernal.demo.base.R.color.color_ffc9c9c9
+                )
+            )
+            holder.vb.rtvParkingLotNum.delegate.init()
             holder.vb.tvPlate.text = i18n(com.kernal.demo.base.R.string.空闲)
-            holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.black))
             holder.vb.tvPlate.background = null
             holder.vb.rflParking.tag = item
             holder.vb.rflParking.setOnClickListener(onClickListener)
         } else {
-//            val value = Random.nextInt(10)
-//            if (value % 3 == 0) {
-////            if (item.deadLine > System.currentTimeMillis()) {
-//                holder.vb.llParkingLotBg.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_bg_green)
-//                holder.vb.tvParkingLotNum.setBackgroundResource(com.kernal.demo.common.R.mipmap.p_da)
-//            } else {
-//                holder.vb.llParkingLotBg.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_bg_red)
-//                holder.vb.tvParkingLotNum.setBackgroundResource(com.kernal.demo.common.R.mipmap.p_db)
-//            }
+            holder.vb.llPlateNum.show()
+            holder.vb.llParkingLotBg.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    com.kernal.demo.base.R.color.white
+                )
+            )
             if (item.deadLine > System.currentTimeMillis()) {
-                holder.vb.llParkingLotBg.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_bg_green)
-                holder.vb.tvParkingLotNum.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_num_bg_green)
+                holder.vb.rtvParkingLotNum.delegate.setBackgroundColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(),
+                        com.kernal.demo.base.R.color.color_ff02d28b
+                    )
+                )
             } else {
-                holder.vb.llParkingLotBg.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_bg_red)
-                holder.vb.tvParkingLotNum.setBackgroundResource(com.kernal.demo.common.R.mipmap.ic_parking_num_bg_red)
+                holder.vb.rtvParkingLotNum.delegate.setBackgroundColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(),
+                        com.kernal.demo.base.R.color.color_ffff4141
+                    )
+                )
             }
+            holder.vb.rtvParkingLotNum.delegate.init()
             if (item.carColor == "20") {
-                holder.vb.llPlate.show()
-                holder.vb.tvPlate.gone()
-                holder.vb.tvPlate1.text = item.carLicense.substring(0, 2)
-                holder.vb.tvPlate2.text = item.carLicense.substring(2, item.carLicense.length)
-                holder.vb.tvPlate1.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.black))
-                holder.vb.tvPlate2.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.black))
+                holder.vb.llCarColor.show()
+                holder.vb.rtvCarColor.delegate.setBackgroundColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(),
+                        com.kernal.demo.base.R.color.transparent
+                    )
+                )
+                holder.vb.rtvCarColor.delegate.init()
             } else {
-                holder.vb.llPlate.hide()
-                holder.vb.tvPlate.show()
-                if (item.carLicense.startsWith("WJ")) {
-                    val strings = arrayOf("WJ", item.carLicense.substring(2, item.carLicense.length))
-                    holder.vb.tvPlate.text = AppUtil.getSpan(strings, sizes, colors)
-                } else if (item.carLicense.contains("警")) {
-                    val strings = arrayOf(item.carLicense.substring(0, item.carLicense.length - 1), "警")
-                    holder.vb.tvPlate.text = AppUtil.getSpan(strings, sizes, colors2)
+                holder.vb.llCarColor.hide()
+                holder.vb.rtvCarColor.delegate.setBackgroundColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(),
+                        plateLogoColorMap[item.carColor]!!
+                    )
+                )
+                if (plateLogoColorMap[item.carColor]!! == com.kernal.demo.base.R.color.white) {
+                    holder.vb.rtvCarColor.delegate.setStrokeWidth(1)
+                    holder.vb.rtvCarColor.setTextColor(
+                        ContextCompat.getColor(
+                            BaseApplication.instance(),
+                            com.kernal.demo.base.R.color.black
+                        )
+                    )
                 } else {
-                    holder.vb.tvPlate.text = item.carLicense
-//                    holder.vb.tvPlate.text = item.carLicense.substring(0, 2) + "\n" + item.carLicense.substring(2, item.carLicense.length)
+                    holder.vb.rtvCarColor.delegate.setStrokeWidth(0)
+                    holder.vb.rtvCarColor.setTextColor(
+                        ContextCompat.getColor(
+                            BaseApplication.instance(),
+                            com.kernal.demo.base.R.color.white
+                        )
+                    )
                 }
-                holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), plateTxtColorMap[item.carColor]!!))
-                holder.vb.tvPlate.background = plateBgMap[item.carColor]?.let { ContextCompat.getDrawable(BaseApplication.instance(), it) }
-//                val value = Random.nextInt(10)
-//                if (value % 3 != 0 && item.carColor == "5") {
-//                    holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.white))
-//                    holder.vb.tvPlate.background = plateBgMap[item.carColor]?.let { ContextCompat.getDrawable(BaseApplication.instance(), it) }
-//                }else{
-//                    holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.black))
-//                    holder.vb.tvPlate.background =  ContextCompat.getDrawable(BaseApplication.instance(), com.kernal.demo.common.R.mipmap.ic_plate_bg_green)
-//                }
+                holder.vb.rtvCarColor.delegate.init()
             }
+            holder.vb.tvPlate.text = item.carLicense
             holder.vb.rflParking.tag = item
             holder.vb.rflParking.setOnClickListener(onClickListener)
         }
-        holder.vb.tvParkingLotNum.text = item.parkingNo.substring(item.parkingNo.length - 3, item.parkingNo.length)
+        holder.vb.rtvParkingLotNum.text = item.parkingNo.substring(item.parkingNo.length - 3, item.parkingNo.length)
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemParkingLotBinding {
