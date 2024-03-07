@@ -31,6 +31,7 @@ import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.bean.UpdateBean
 import com.kernal.demo.base.ext.startAct
+import com.kernal.demo.plateid.BuildConfig
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityLoginBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LoginViewModel
@@ -148,9 +149,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     override fun initData() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["version"] = AppUtils.getAppVersionName()
+        jsonobject["version"] = AppUtils.getAppVersionCode()
         param["attr"] = jsonobject
-//        mViewModel.checkUpdate(param)
+//        if (!BuildConfig.is_dev) {
+//            mViewModel.checkUpdate(param)
+//        }
 //        TODO（检查更新）
     }
 

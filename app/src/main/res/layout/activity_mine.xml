@@ -58,6 +58,7 @@
             android:layout_below="@+id/fl_baseInfo">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -72,11 +73,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
                 android:layout_toStartOf="@+id/iv_arrow"
+                android:layout_toEndOf="@+id/tv_update"
+                android:gravity="end|center_vertical"
                 android:textColor="@color/color_ff1a1a1a"
                 android:textSize="@dimen/sp_19"
-                tools:text="1.0.1" />
+                tools:text="v1.0.1_alpha_20010 Dev" />
 
             <ImageView
                 android:id="@+id/iv_arrow"
@@ -129,8 +133,8 @@
             android:id="@+id/fl_blueToothPrint"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_72"
-            android:visibility="gone"
-            android:layout_below="@+id/fl_feeRate">
+            android:layout_below="@+id/fl_feeRate"
+            android:visibility="gone">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"

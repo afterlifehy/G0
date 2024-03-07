@@ -59,9 +59,9 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
 
         mineBluePrint = intent.getIntExtra(ARouterMap.MINE_BLUE_PRINT, 0)
         if (BuildConfig.is_dev) {
-            binding.tvVersion.text = "v" + AppUtils.getAppVersionName() + "_" + AppUtils.getAppVersionCode() + " Dev"
+            binding.tvVersion.text = "v" + AppUtils.getAppVersionName() + "_\n" + AppUtils.getAppVersionCode() + " Dev"
         } else {
-            binding.tvVersion.text = "v" + AppUtils.getAppVersionName() + "_" + AppUtils.getAppVersionCode()
+            binding.tvVersion.text = "v" + AppUtils.getAppVersionName() + "_\n" + AppUtils.getAppVersionCode()
         }
     }
 
@@ -155,7 +155,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             R.id.fl_version -> {
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
-                jsonobject["version"] = AppUtils.getAppVersionName()
+                jsonobject["version"] = AppUtils.getAppVersionCode()
                 param["attr"] = jsonobject
                 mViewModel.checkUpdate(param)
             }
