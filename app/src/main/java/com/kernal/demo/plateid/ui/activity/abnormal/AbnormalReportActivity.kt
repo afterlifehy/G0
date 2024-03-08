@@ -572,9 +572,10 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         }
     }
 
-    fun updateColor(){
+    fun updateColor() {
         if (checkedColor == Constant.YELLOW_GREEN) {
             binding.llCarColor.show()
+            binding.flCarColor.show()
             binding.rtvCarColor.delegate.setBackgroundColor(
                 ContextCompat.getColor(
                     BaseApplication.instance(),
@@ -583,33 +584,40 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             )
             binding.rtvCarColor.delegate.init()
         } else {
-            binding.llCarColor.hide()
-            binding.rtvCarColor.delegate.setBackgroundColor(
-                ContextCompat.getColor(
-                    BaseApplication.instance(),
-                    plateLogoColorMap[checkedColor]!!
-                )
-            )
-            if (plateLogoColorMap[checkedColor]!! == com.kernal.demo.base.R.color.white) {
-                binding.rtvCarColor.delegate.setStrokeWidth(1)
-                binding.rtvCarColor.delegate.setTextColor(
-                    ContextCompat.getColor(
-                        BaseApplication.instance(),
-                        com.kernal.demo.base.R.color.black
-                    )
-                )
-            } else {
+            if (checkedColor.isNotEmpty()) {
+                binding.flCarColor.show()
+                binding.llCarColor.hide()
                 binding.rtvCarColor.delegate.setStrokeWidth(0)
-                binding.rtvCarColor.delegate.setTextColor(
+                binding.rtvCarColor.delegate.setBackgroundColor(
                     ContextCompat.getColor(
                         BaseApplication.instance(),
-                        com.kernal.demo.base.R.color.white
+                        plateLogoColorMap[checkedColor]!!
                     )
                 )
+                if (plateLogoColorMap[checkedColor]!! == com.kernal.demo.base.R.color.white) {
+                    binding.rtvCarColor.delegate.setStrokeWidth(1)
+                    binding.rtvCarColor.delegate.setTextColor(
+                        ContextCompat.getColor(
+                            BaseApplication.instance(),
+                            com.kernal.demo.base.R.color.black
+                        )
+                    )
+                } else {
+                    binding.rtvCarColor.delegate.setStrokeWidth(0)
+                    binding.rtvCarColor.delegate.setTextColor(
+                        ContextCompat.getColor(
+                            BaseApplication.instance(),
+                            com.kernal.demo.base.R.color.white
+                        )
+                    )
+                }
+                binding.rtvCarColor.delegate.init()
+            } else {
+                binding.flCarColor.hide()
             }
-            binding.rtvCarColor.delegate.init()
         }
     }
+
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {

@@ -132,6 +132,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
         if (carColor == Constant.YELLOW_GREEN) {
             binding.llCarColor.show()
+            binding.rtvCarColor.delegate.setStrokeWidth(0)
             binding.rtvCarColor.delegate.setBackgroundColor(
                 ContextCompat.getColor(
                     BaseApplication.instance(),
@@ -397,6 +398,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     }
 
     fun uploadImg(orderNo: String, photo: String, name: String) {
+        showProgressDialog(5000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["businessId"] = orderNo
@@ -485,6 +487,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             debtUploadLiveData.observe(this@ParkingSpaceActivity) {
             }
             picUploadLiveData.observe(this@ParkingSpaceActivity) {
+                dismissProgressDialog()
                 isUpload = true
             }
             inquiryTransactionByOrderNoLiveData.observe(this@ParkingSpaceActivity) {

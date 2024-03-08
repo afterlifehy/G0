@@ -177,6 +177,7 @@
                         app:rv_radius="@dimen/dp_7">
 
                         <FrameLayout
+                            android:id="@+id/fl_carColor"
                             android:layout_width="@dimen/dp_26"
                             android:layout_height="@dimen/dp_18"
                             android:layout_gravity="center_vertical">
@@ -217,7 +218,7 @@
                                 app:rv_backgroundColor="@color/color_ff0046de"
                                 app:rv_radius="@dimen/dp_3"
                                 app:rv_strokeColor="@color/black"
-                                app:rv_strokeWidth="@dimen/dp_1" />
+                                app:rv_strokeWidth="@dimen/dp_0" />
                         </FrameLayout>
 
                         <EditText

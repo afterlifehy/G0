@@ -96,6 +96,8 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     override fun initData() {
         streetList.clear()
         streetList = loginInfo?.result as MutableList<Street>
+        streetList.add(Street())
+        streetList.add(Street())
     }
 
     override fun onClick(v: View?) {
@@ -132,7 +134,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
 
             R.id.rfl_delete -> {
-                if(!AppUtil.isFastClick(500)){
+                if (!AppUtil.isFastClick(500)) {
                     val item = v.tag as Street
                     val position = streetChoosedList.indexOf(item)
                     streetChoosedList.remove(item)
@@ -176,7 +178,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
-            mException.observe(this@StreetChooseActivity){
+            mException.observe(this@StreetChooseActivity) {
                 dismissProgressDialog()
             }
         }

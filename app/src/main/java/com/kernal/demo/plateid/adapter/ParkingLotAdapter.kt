@@ -119,8 +119,9 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                 )
             }
             holder.vb.rtvParkingLotNum.delegate.init()
-            if (item.carColor == "20") {
+            if (item.carColor ==  Constant.YELLOW_GREEN) {
                 holder.vb.llCarColor.show()
+                holder.vb.rtvCarColor.delegate.setStrokeWidth(0)
                 holder.vb.rtvCarColor.delegate.setBackgroundColor(
                     ContextCompat.getColor(
                         BaseApplication.instance(),
