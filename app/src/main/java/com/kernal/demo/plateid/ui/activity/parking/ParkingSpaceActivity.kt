@@ -494,7 +494,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 dismissProgressDialog()
                 if (it.result != null && it.result.size > 0) {
                     performPrintTasks(it.result) {
-
+                        BluePrint.instance?.disConnect()
                     }
                 }
             }
@@ -548,7 +548,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 var connectResult = BluePrint.instance?.connet(device.address)
                 if (connectResult == 0) {
                     BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
-                    BluePrint.instance?.disConnect()
                 }
             }.start()
         }
