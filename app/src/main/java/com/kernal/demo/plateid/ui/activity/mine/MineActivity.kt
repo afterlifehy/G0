@@ -59,9 +59,9 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
 
         mineBluePrint = intent.getIntExtra(ARouterMap.MINE_BLUE_PRINT, 0)
         if (BuildConfig.is_dev) {
-            binding.tvVersion.text = "v" + AppUtils.getAppVersionName() + "_\n" + AppUtils.getAppVersionCode() + " Dev"
+            binding.tvVersion.text = "v" + AppUtils.getAppVersionName() + "_Dev"
         } else {
-            binding.tvVersion.text = "v" + AppUtils.getAppVersionName() + "_\n" + AppUtils.getAppVersionCode()
+            binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
         }
     }
 
