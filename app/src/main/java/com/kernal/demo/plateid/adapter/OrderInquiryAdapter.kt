@@ -69,7 +69,7 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
                 holder.vb.cbOrder.gone()
             }
             val strings = arrayOf(
-                i18n(com.kernal.demo.base.R.string.欠),
+                i18n(com.kernal.demo.base.R.string.未付),
                 AppUtil.keepNDecimals(BigDecimalManager.subtractionDoubleToString(item.amount.toDouble(), item.paidAmount.toDouble()), 2),
                 i18n(com.kernal.demo.base.R.string.元)
             )

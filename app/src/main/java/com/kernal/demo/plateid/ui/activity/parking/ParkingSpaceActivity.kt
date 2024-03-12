@@ -494,7 +494,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 dismissProgressDialog()
                 if (it.result != null && it.result.size > 0) {
                     performPrintTasks(it.result) {
-                        BluePrint.instance?.disConnect()
+//                        BluePrint.instance?.disConnect()
                     }
                 }
             }
@@ -552,7 +552,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }.start()
         }
         GlobalScope.launch {
-            delay(2000)
+            delay(3000)
             // 执行打印完成后的回调
             onComplete()
         }

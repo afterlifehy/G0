@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
@@ -69,6 +71,35 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
         binding.rflAppPay.setOnClickListener(this)
         binding.rflRefusePay.setOnClickListener(this)
         binding.rflScanPay.setOnClickListener(this)
+        binding.etPayableAmount.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                var value = s.toString()
+                if (value.isNotEmpty()) {
+                    if (value.length > 1 && value.startsWith("0")) {
+                        value = value.substring(1,value.length)
+                        binding.etPayableAmount.setText(value)
+                        binding.etPayableAmount.setSelection(value.length)
+                    }else{
+                        val amount = value.toDouble().toInt()
+                        if (amount > endOrderBean?.realtimeMoney!!.toDouble().toInt()) {
+                            binding.etPayableAmount.setText(endOrderBean?.realtimeMoney!!.toDouble().toInt().toString())
+                            binding.etPayableAmount.setSelection(endOrderBean?.realtimeMoney!!.toDouble().toInt().toString().length)
+                        }
+                    }
+                } else {
+                    binding.etPayableAmount.setText("0")
+                    binding.etPayableAmount.setSelection(1)
+                }
+            }
+
+        })
     }
 
     override fun initData() {
@@ -99,19 +130,35 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
             }
 
             R.id.rfl_scanPay -> {
-                if (!isOrderCreate) {
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["orderNo"] = orderNo
-                    jsonobject["totalAmount"] = totalAmount
-                    jsonobject["loginName"] = loginName
-                    jsonobject["simId"] = simId
-                    jsonobject["orderType"] = "2"
-                    param["attr"] = jsonobject
-                    mViewModel.endOrderQR(param)
-                } else {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.正在支付中))
-                }
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["orderNo"] = orderNo
+                jsonobject["totalAmount"] = binding.etPayableAmount.text.toString()
+                jsonobject["loginName"] = loginName
+                jsonobject["simId"] = simId
+                jsonobject["orderType"] = "2"
+                param["attr"] = jsonobject
+                mViewModel.endOrderQR(param)
+                binding.rflScanPay.delegate.setBackgroundColor(
+                    ContextCompat.getColor(
+                        BaseApplication.instance(),
+                        com.kernal.demo.base.R.color.color_ffc5dddb
+                    )
+                )
+                binding.rflScanPay.delegate.init()
+                binding.rflScanPay.setOnClickListener(null)
+                Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
+                    override fun run() {
+                        binding.rflScanPay.delegate.setBackgroundColor(
+                            ContextCompat.getColor(
+                                BaseApplication.instance(),
+                                com.kernal.demo.base.R.color.color_ff04a091
+                            )
+                        )
+                        binding.rflScanPay.delegate.init()
+                        binding.rflScanPay.setOnClickListener(this@OrderInfoActivity)
+                    }
+                }, 3000)
             }
         }
     }
@@ -137,7 +184,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                 val strings = arrayOf(endOrderBean?.orderMoney.toString(), "元")
                 binding.tvOrderAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)
                 binding.tvPaidAmount.text = endOrderBean?.havePayMoney
-                binding.rtvPayableAmount.text = endOrderBean?.realtimeMoney
+                binding.etPayableAmount.setText(endOrderBean?.realtimeMoney!!.toDouble().toInt().toString())
             }
             debtUploadLiveData.observe(this@OrderInfoActivity) {
                 dismissProgressDialog()

@@ -150,11 +150,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["version"] = AppUtils.getAppVersionCode()
+        jsonobject["softType"] = "14"
         param["attr"] = jsonobject
-//        if (!BuildConfig.is_dev) {
-//            mViewModel.checkUpdate(param)
-//        }
-//        TODO（检查更新）
+        mViewModel.checkUpdate(param)
     }
 
     @SuppressLint("CheckResult", "MissingPermission")

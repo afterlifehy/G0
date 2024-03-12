@@ -107,7 +107,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             binding.rtvTransactionRecord.setOnClickListener(null)
         } else {
             val strings = arrayOf(
-                i18n(com.kernal.demo.base.R.string.欠),
+                i18n(com.kernal.demo.base.R.string.未付),
                 AppUtil.keepNDecimals(
                     BigDecimalManager.subtractionDoubleToString(
                         order?.amount!!.toDouble(),
