@@ -263,7 +263,15 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             if (it) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     if (packageManager.canRequestPackageInstalls()) {
-                        UpdateUtil.instance?.downloadFileAndInstall()
+                        UpdateUtil.instance?.downloadFileAndInstall(object :UpdateUtil.UpdateInterface {
+                            override fun requestionPermission() {
+
+                            }
+
+                            override fun install(path: String) {
+                            }
+
+                        })
                     } else {
                         val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
                         val intent =
@@ -271,7 +279,15 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                         requestInstallPackageLauncher.launch(intent)
                     }
                 } else {
-                    UpdateUtil.instance?.downloadFileAndInstall()
+                    UpdateUtil.instance?.downloadFileAndInstall(object :UpdateUtil.UpdateInterface {
+                        override fun requestionPermission() {
+
+                        }
+
+                        override fun install(path: String) {
+                        }
+
+                    })
                 }
             } else {
 
@@ -281,7 +297,15 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
 
     val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            UpdateUtil.instance?.downloadFileAndInstall()
+            UpdateUtil.instance?.downloadFileAndInstall(object :UpdateUtil.UpdateInterface {
+                override fun requestionPermission() {
+
+                }
+
+                override fun install(path: String) {
+                }
+
+            })
         } else {
 
         }
@@ -297,6 +321,9 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                     UpdateUtil.instance?.checkNewVersion(updateBean!!, object : UpdateUtil.UpdateInterface {
                         override fun requestionPermission() {
                             requestPermissions()
+                        }
+
+                        override fun install(path: String) {
                         }
                     })
                 } else {

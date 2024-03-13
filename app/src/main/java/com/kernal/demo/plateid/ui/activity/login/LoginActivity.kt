@@ -19,6 +19,7 @@ import android.view.View.OnClickListener
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
@@ -36,6 +37,7 @@ import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityLoginBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LoginViewModel
 import com.kernal.demo.plateid.util.UpdateUtil
+import java.io.File
 
 @Route(path = ARouterMap.LOGIN)
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
@@ -54,7 +56,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA,
-            Manifest.permission.READ_PHONE_STATE
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.REQUEST_INSTALL_PACKAGES
         ).subscribe {
             if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -222,6 +225,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         override fun requestionPermission() {
                             requestPermissions()
                         }
+
+                        override fun install(path: String) {
+
+                        }
                     })
                 }
             }
@@ -241,18 +248,27 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         var rxPermissions = RxPermissions(this@LoginActivity)
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe {
             if (it) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (packageManager.canRequestPackageInstalls()) {
-                        UpdateUtil.instance?.downloadFileAndInstall()
-                    } else {
-                        val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
-                        val intent =
-                            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
-                        requestInstallPackageLauncher.launch(intent)
+                UpdateUtil.instance?.downloadFileAndInstall(object : UpdateUtil.UpdateInterface {
+                    override fun requestionPermission() {
+
                     }
-                } else {
-                    UpdateUtil.instance?.downloadFileAndInstall()
-                }
+
+                    override fun install(path: String) {
+                        if (packageManager.canRequestPackageInstalls()) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                val contentUri =
+                                    FileProvider.getUriForFile(this@LoginActivity, "com.kernal.demo.plateid.fileprovider", File(path))
+                                intent.setDataAndType(contentUri, "application/vnd.android.package-archive")
+                            } else {
+                                intent.setDataAndType(Uri.fromFile(File(path)), "application/vnd.android.package-archive")
+                            }
+                        } else {
+                            AppUtils.installApp(path)
+                        }
+                    }
+
+                })
             } else {
 
             }
@@ -261,7 +277,15 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            UpdateUtil.instance?.downloadFileAndInstall()
+            UpdateUtil.instance?.downloadFileAndInstall(object :UpdateUtil.UpdateInterface {
+                override fun requestionPermission() {
+
+                }
+
+                override fun install(path: String) {
+                }
+
+            })
         } else {
 
         }

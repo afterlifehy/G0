@@ -30,14 +30,13 @@
                 android:id="@+id/rtv_parkingLotNum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingStart="@dimen/dp_10"
+                android:gravity="center"
                 android:paddingTop="@dimen/dp_2"
                 android:paddingBottom="@dimen/dp_2"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 android:textStyle="bold"
-                app:rv_backgroundColor="@color/color_fffa2a3f"
+                app:rv_backgroundColor="@color/color_ffff5a41"
                 app:rv_radius="@dimen/dp_7"
                 tools:text="001" />
 

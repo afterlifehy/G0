@@ -260,7 +260,15 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             if (it) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     if (packageManager.canRequestPackageInstalls()) {
-                        UpdateUtil.instance?.downloadFileAndInstall()
+                        UpdateUtil.instance?.downloadFileAndInstall(object : UpdateUtil.UpdateInterface {
+                            override fun requestionPermission() {
+
+                            }
+
+                            override fun install(path: String) {
+                            }
+
+                        })
                     } else {
                         val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
                         val intent =
@@ -268,7 +276,15 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                         requestInstallPackageLauncher.launch(intent)
                     }
                 } else {
-                    UpdateUtil.instance?.downloadFileAndInstall()
+                    UpdateUtil.instance?.downloadFileAndInstall(object : UpdateUtil.UpdateInterface {
+                        override fun requestionPermission() {
+
+                        }
+
+                        override fun install(path: String) {
+                        }
+
+                    })
                 }
             } else {
 
@@ -278,7 +294,15 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            UpdateUtil.instance?.downloadFileAndInstall()
+            UpdateUtil.instance?.downloadFileAndInstall(object :UpdateUtil.UpdateInterface {
+                override fun requestionPermission() {
+
+                }
+
+                override fun install(path: String) {
+                }
+
+            })
         } else {
 
         }

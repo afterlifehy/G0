@@ -87,7 +87,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
             holder.vb.rtvParkingLotNum.delegate.setBackgroundColor(
                 ContextCompat.getColor(
                     BaseApplication.instance(),
-                    com.kernal.demo.base.R.color.color_ffc9c9c9
+                    com.kernal.demo.base.R.color.color_ffaaaaaa
                 )
             )
             holder.vb.rtvParkingLotNum.delegate.init()
@@ -114,7 +114,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                 holder.vb.rtvParkingLotNum.delegate.setBackgroundColor(
                     ContextCompat.getColor(
                         BaseApplication.instance(),
-                        com.kernal.demo.base.R.color.color_ffff5a41
+                        com.kernal.demo.base.R.color.color_fffa2a3f
                     )
                 )
             }

@@ -43,7 +43,7 @@ class UpdateUtil {
         }
     }
 
-    fun downloadFileAndInstall() {
+    fun downloadFileAndInstall(inter: UpdateInterface) {
         updateDialog?.downLoadUI()
         ToastUtil.showMiddleToast("开始下载更新")
         GlobalScope.launch(Dispatchers.IO) {
@@ -62,12 +62,12 @@ class UpdateUtil {
                     }
 
                     override fun completed(task: BaseDownloadTask?) {
-                        AppUtils.installApp(path)
                         if (updateBean?.force == "1") {
                             updateDialog?.updateUI()
                         } else if (updateBean?.force == "0") {
                             updateDialog?.dismiss()
                         }
+                        inter.install(path)
                     }
 
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -85,5 +85,6 @@ class UpdateUtil {
 
     interface UpdateInterface {
         fun requestionPermission()
+        fun install(path:String)
     }
 }
