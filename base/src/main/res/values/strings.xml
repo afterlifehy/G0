@@ -190,5 +190,5 @@
     <string name="正在支付中">正在支付中...</string>
     <string name="打印机状态异常请重新连接">打印机状态异常，请重新连接</string>
     <string name="车牌">车牌</string>
-    <string name="未付">未付</string>
+    <string name="未付">未付：</string>
 </resources>

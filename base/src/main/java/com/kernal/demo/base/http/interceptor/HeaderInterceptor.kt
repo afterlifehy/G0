@@ -60,9 +60,6 @@ class HeaderInterceptor : Interceptor {
                 .addHeader("version", AppUtils.getAppVersionName())
                 .addHeader("versionCode", AppUtils.getAppVersionCode().toString())
                 .addHeader("sign", EncryptUtils.encryptMD5ToString(sortParam + timeStamp + Constant.secret))
-            if (PermissionUtils.isGranted(Manifest.permission.READ_PHONE_STATE)) {
-                addHeader.addHeader("imei", PhoneUtils.getIMEI())
-            }
         }
         val request = addHeader.build()
         return chain.proceed(request)

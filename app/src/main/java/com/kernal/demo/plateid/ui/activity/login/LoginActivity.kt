@@ -24,6 +24,8 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.PermissionUtils
+import com.blankj.utilcode.util.PhoneUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.ext.i18N
@@ -167,7 +169,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
             R.id.rtv_login -> {
                 var rxPermissions = RxPermissions(this@LoginActivity)
-                rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
+                rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
                     if (it) {
                         if (locationManager == null) {
                             locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -197,6 +199,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             jsonobject["passWord"] = binding.etPw.text.toString()
                             jsonobject["longitude"] = lon
                             jsonobject["latitude"] = lat
+                            jsonobject["simId"] = PhoneUtils.getIMSI()
+                            jsonobject["imei"] = PhoneUtils.getIMEI()
+                            jsonobject["version"] = AppUtils.getAppVersionName()
                             param["attr"] = jsonobject
                             mViewModel.login(param)
                         } else {
@@ -277,7 +282,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            UpdateUtil.instance?.downloadFileAndInstall(object :UpdateUtil.UpdateInterface {
+            UpdateUtil.instance?.downloadFileAndInstall(object : UpdateUtil.UpdateInterface {
                 override fun requestionPermission() {
 
                 }

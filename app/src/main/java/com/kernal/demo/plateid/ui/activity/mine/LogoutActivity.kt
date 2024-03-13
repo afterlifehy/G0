@@ -11,6 +11,8 @@ import android.view.View
 import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.PhoneUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
@@ -112,7 +114,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
 
             R.id.tv_logout -> {
                 var rxPermissions = RxPermissions(this@LogoutActivity)
-                rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
+                rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
                     if (it) {
                         DialogHelp.Builder().setTitle(i18N(com.kernal.demo.base.R.string.确认签退))
                             .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
@@ -155,6 +157,9 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                             jsonobject["loginName"] = loginName
                                             jsonobject["longitude"] = lon
                                             jsonobject["latitude"] = lat
+                                            jsonobject["simId"] = PhoneUtils.getIMSI()
+                                            jsonobject["imei"] = PhoneUtils.getIMEI()
+                                            jsonobject["version"] = AppUtils.getAppVersionName()
                                             param["attr"] = jsonobject
                                             mViewModel.logout(param)
                                         }
@@ -184,7 +189,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
-            mException.observe(this@LogoutActivity){
+            mException.observe(this@LogoutActivity) {
                 dismissProgressDialog()
             }
         }
