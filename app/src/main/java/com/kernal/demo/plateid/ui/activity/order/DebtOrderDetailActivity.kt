@@ -64,7 +64,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
 
         debtCollectionBean = intent.getParcelableExtra(ARouterMap.DEBT_ORDER) as? DebtCollectionBean
         binding.tvPlate.text = debtCollectionBean!!.carLicense
-        val strings1 = arrayOf("${AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2)}", "元")
+        val strings1 = arrayOf("未付：${AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2)}", "元")
         binding.tvArrearsAmount.text = AppUtil.getSpan(strings1, sizes, colors)
         val strings2 = arrayOf(i18N(com.kernal.demo.base.R.string.订单) + "：", debtCollectionBean!!.orderNo)
         binding.tvOrderNo.text = AppUtil.getSpan(strings2, sizes2, colors2)
