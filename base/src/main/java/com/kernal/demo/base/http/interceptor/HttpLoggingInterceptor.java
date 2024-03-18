@@ -99,15 +99,15 @@ public class HttpLoggingInterceptor implements Interceptor {
             response = chain.proceed(request);
         } catch (SocketTimeoutException e) {
             log("<-- HTTP FAILED: " + e);
-            String errorMsg = "连接超时，请检查网络设置或优化网络环境";
+            String errorMsg = "连接超时，请检查网络";
             throw new IOException(errorMsg, e);
         } catch (ConnectException e) {
             log("<-- HTTP FAILED: " + e);
-            String errorMsg = "无法连接到服务器，请检查网络连接或稍后重试";
+            String errorMsg = "连接服务器错误，请检查网络";
             throw new IOException(errorMsg, e);
         } catch (UnknownHostException e) {
             log("<-- HTTP FAILED: " + e);
-            String errorMsg = "无法解析主机名，请检查网络连接或DNS设置";
+            String errorMsg = "网络错误，请检查网络";
             throw new IOException(errorMsg, e);
         } catch (Exception e) {
             log("<-- HTTP FAILED: " + e);

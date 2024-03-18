@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.ArrayMap
@@ -29,6 +30,7 @@ import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.gone
 import com.kernal.demo.base.ext.hide
+import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.i18n
 import com.kernal.demo.base.ext.show
 import com.kernal.demo.base.ext.startArouter
@@ -50,6 +52,7 @@ import com.kernal.demo.common.util.Constant
 import com.kernal.demo.common.util.FileUtil
 import com.kernal.demo.common.util.ImageCompressor
 import com.kernal.demo.common.util.ImageUtil
+import com.kernal.demo.plateid.dialog.PromptDialog
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -88,6 +91,8 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
     var panoramaFileName = ""
     var panoramaImageBitmap: Bitmap? = null
     var plateLogoColorMap: MutableMap<String, Int> = ArrayMap()
+
+    var promptDialog: PromptDialog? = null
 
     init {
         plateLogoColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.black
@@ -622,23 +627,37 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         super.startObserve()
         mViewModel.apply {
             inquiryOrderNoByParkingNoLiveData.observe(this@AbnormalReportActivity) {
+                dismissProgressDialog()
                 orderNo = it.orderNo
-                val param = HashMap<String, Any>()
-                val jsonobject = JSONObject()
-                jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
-                jsonobject["state"] = type
-                jsonobject["remark"] = binding.retRemarks.text.toString()
-                if (type == "03") {
-                    jsonobject["carLicenseNew"] = binding.etPlate.text.toString()
-                    jsonobject["carColor"] = checkedColor
-                } else {
-                    jsonobject["carLicenseNew"] = carLicense
-                    jsonobject["carColor"] = carColor
-                }
-                jsonobject["loginName"] = loginName
-                jsonobject["orderNo"] = orderNo
-                param["attr"] = jsonobject
-                mViewModel.abnormalReport(param)
+                promptDialog = PromptDialog(
+                    "车牌：${it.orderNo}\n开始：${it.orderNo}\n结束：${it.orderNo}",
+                    i18N(com.kernal.demo.base.R.string.否),
+                    i18N(com.kernal.demo.base.R.string.是),
+                    object : PromptDialog.PromptCallBack {
+                        override fun leftClick() {
+                        }
+
+                        override fun rightClick() {
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
+                            jsonobject["state"] = type
+                            jsonobject["remark"] = binding.retRemarks.text.toString()
+                            if (type == "03") {
+                                jsonobject["carLicenseNew"] = binding.etPlate.text.toString()
+                                jsonobject["carColor"] = checkedColor
+                            } else {
+                                jsonobject["carLicenseNew"] = carLicense
+                                jsonobject["carColor"] = carColor
+                            }
+                            jsonobject["loginName"] = loginName
+                            jsonobject["orderNo"] = orderNo
+                            param["attr"] = jsonobject
+                            mViewModel.abnormalReport(param)
+                        }
+
+                    })
+                promptDialog?.show()
             }
             abnormalReportLiveData.observe(this@AbnormalReportActivity) {
                 dismissProgressDialog()

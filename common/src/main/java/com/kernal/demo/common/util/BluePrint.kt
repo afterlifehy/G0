@@ -80,7 +80,7 @@ class BluePrint() {
             } else if (printResult == -2) {
                 ToastUtil.showMiddleToast("路段名称过长...")
             } else {
-                ToastUtil.showMiddleToast("打印失败")
+                ToastUtil.showMiddleToast("打印失败，请检查打印机连接状态")
             }
         }
     }
