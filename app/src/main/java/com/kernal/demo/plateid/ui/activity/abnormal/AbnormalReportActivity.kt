@@ -629,35 +629,24 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             inquiryOrderNoByParkingNoLiveData.observe(this@AbnormalReportActivity) {
                 dismissProgressDialog()
                 orderNo = it.orderNo
-                promptDialog = PromptDialog(
-                    "车牌：${it.orderNo}\n开始：${it.orderNo}\n结束：${it.orderNo}",
-                    i18N(com.kernal.demo.base.R.string.否),
-                    i18N(com.kernal.demo.base.R.string.是),
-                    object : PromptDialog.PromptCallBack {
-                        override fun leftClick() {
-                        }
-
-                        override fun rightClick() {
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-                            jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
-                            jsonobject["state"] = type
-                            jsonobject["remark"] = binding.retRemarks.text.toString()
-                            if (type == "03") {
-                                jsonobject["carLicenseNew"] = binding.etPlate.text.toString()
-                                jsonobject["carColor"] = checkedColor
-                            } else {
-                                jsonobject["carLicenseNew"] = carLicense
-                                jsonobject["carColor"] = carColor
+                if (type == "02") {
+                    promptDialog = PromptDialog(
+                        "车牌：${it.carLicense}\n开始：${it.startTime}\n结束：${it.endTime}",
+                        i18N(com.kernal.demo.base.R.string.否),
+                        i18N(com.kernal.demo.base.R.string.是),
+                        object : PromptDialog.PromptCallBack {
+                            override fun leftClick() {
                             }
-                            jsonobject["loginName"] = loginName
-                            jsonobject["orderNo"] = orderNo
-                            param["attr"] = jsonobject
-                            mViewModel.abnormalReport(param)
-                        }
 
-                    })
-                promptDialog?.show()
+                            override fun rightClick() {
+                                abnormalReport()
+                            }
+
+                        })
+                    promptDialog?.show()
+                } else {
+                    abnormalReport()
+                }
             }
             abnormalReportLiveData.observe(this@AbnormalReportActivity) {
                 dismissProgressDialog()
@@ -682,6 +671,25 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                 dismissProgressDialog()
             }
         }
+    }
+
+    fun abnormalReport() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
+        jsonobject["state"] = type
+        jsonobject["remark"] = binding.retRemarks.text.toString()
+        if (type == "03") {
+            jsonobject["carLicenseNew"] = binding.etPlate.text.toString()
+            jsonobject["carColor"] = checkedColor
+        } else {
+            jsonobject["carLicenseNew"] = carLicense
+            jsonobject["carColor"] = carColor
+        }
+        jsonobject["loginName"] = loginName
+        jsonobject["orderNo"] = orderNo
+        param["attr"] = jsonobject
+        mViewModel.abnormalReport(param)
     }
 
     override fun getVbBindingView(): ViewBinding {

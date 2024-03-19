@@ -11,7 +11,6 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -24,22 +23,22 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
-import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.PhoneUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
+import com.kernal.demo.base.bean.UpdateBean
 import com.kernal.demo.base.ext.i18N
+import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
-import com.tbruyelle.rxpermissions3.RxPermissions
-import com.kernal.demo.base.bean.UpdateBean
-import com.kernal.demo.base.ext.startAct
-import com.kernal.demo.plateid.BuildConfig
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityLoginBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LoginViewModel
 import com.kernal.demo.plateid.util.UpdateUtil
+import com.tbruyelle.rxpermissions3.RxPermissions
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @Route(path = ARouterMap.LOGIN)
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
@@ -83,6 +82,16 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
         }
         binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
+    }
+
+    fun changeTime() {
+        val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
+        var date = Date()
+        date = simpleDateFormat.parse("11:23:55");
+        val intent = Intent("com.seuic.settings.SETTIME_ACTION")
+        intent.setPackage("com.seuic.seuicserver")
+        intent.putExtra("time", date.time.toString())
+        sendBroadcast(intent)
     }
 
     override fun initListener() {
