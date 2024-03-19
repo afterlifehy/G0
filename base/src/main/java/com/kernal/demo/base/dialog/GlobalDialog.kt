@@ -2,8 +2,11 @@ package com.kernal.demo.base.dialog
 
 import android.content.Context
 import android.text.TextUtils
-import android.view.*
+import android.view.Gravity
+import android.view.View
+import android.view.WindowManager
 import androidx.viewbinding.ViewBinding
+import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.kernal.demo.base.R
 import com.kernal.demo.base.databinding.DialogContextLayoutBinding
@@ -24,6 +27,8 @@ class GlobalDialog(context: Context, mDialogHelp: DialogHelp) :
 
         binding.rtvLeft.setOnClickListener(this)
         binding.rtvRight.setOnClickListener(this)
+        ClickUtils.applyGlobalDebouncing(binding.rtvLeft, this)
+        ClickUtils.applyGlobalDebouncing(binding.rtvRight, this)
     }
 
     fun bindShowViewData() {
