@@ -366,10 +366,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 try {
                     dismissProgressDialog()
                     ToastUtil.showMiddleToast(it.msg)
-                    if (it.code == 1) {
+                    if (it.code == 2) {
                         DialogHelp.Builder().setTitle(it.msg)
-                            .setRightMsg(i18N(com.kernal.demo.base.R.string.确定))
-                            .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消)).setCancelable(true)
+                            .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).isAloneButton(true)
+                            .setCancelable(false)
                             .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
                                 override fun onLeftClickLinsener(msg: String) {
                                 }
