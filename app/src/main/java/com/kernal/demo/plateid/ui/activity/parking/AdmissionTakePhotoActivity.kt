@@ -446,6 +446,11 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
     val takePictureLauncher10 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
+            GlideUtils.instance?.loadImageFile(binding.rivPlate, imageFile10)
+            if (panoramaImageBitmap == null) {
+                photoType = 11
+                takePhoto()
+            }
             ImageCompressor.compress(this@AdmissionTakePhotoActivity, imageFile10!!, object : ImageCompressor.CompressResult {
                 override fun onSuccess(file: File) {
                     val waterContent1: String = street?.streetName + " " + parkingNo
@@ -459,14 +464,9 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                         this@AdmissionTakePhotoActivity
                     )
                     FileUtils.delete(imageFile10)
-                    GlideUtils.instance?.loadImage(binding.rivPlate, bitmapWater)
                     binding.rflTakePhoto.hide()
                     binding.rflPlateImg.show()
                     plateImageBitmap = bitmapWater
-                    if (panoramaImageBitmap == null) {
-                        photoType = 11
-                        takePhoto()
-                    }
                 }
 
                 override fun onError(e: Throwable) {
@@ -479,6 +479,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
     val takePictureLauncher11 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
+            GlideUtils.instance?.loadImageFile(binding.rivPanorama, imageFile11)
             ImageCompressor.compress(this@AdmissionTakePhotoActivity, imageFile11!!, object : ImageCompressor.CompressResult {
                 override fun onSuccess(file: File) {
                     val waterContent1: String = street?.streetName + " " + parkingNo
@@ -491,7 +492,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                         waterContent2,
                         this@AdmissionTakePhotoActivity
                     )
-                    GlideUtils.instance?.loadImage(binding.rivPanorama, bitmapWater)
                     binding.rflTakePhoto2.hide()
                     binding.rflPanoramaImg.show()
                     panoramaImageBitmap = bitmapWater

@@ -37,7 +37,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_20"
                 android:textStyle="bold"
-                app:rv_backgroundColor="@color/color_fffa2a3f"
+                app:rv_backgroundColor="@color/color_fffd4646"
                 app:rv_radius="@dimen/dp_7"
                 tools:text="001" />
 
