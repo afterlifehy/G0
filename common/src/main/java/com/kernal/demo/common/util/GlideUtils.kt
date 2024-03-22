@@ -78,7 +78,7 @@ class GlideUtils private constructor() {
         val options: RequestOptions = RequestOptions()
             .centerCrop()
             .format(DecodeFormat.PREFER_RGB_565)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
         Glide.with(BaseApplication.instance()).asBitmap().load(file).apply(options).into(imageView)
     }
 

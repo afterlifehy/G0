@@ -446,7 +446,8 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
     val takePictureLauncher10 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            GlideUtils.instance?.loadImageFile(binding.rivPlate, imageFile10)
+            val bitmap = ImageUtil.getCompressedImage(imageFile10?.absolutePath, 200f, 300f)
+            GlideUtils.instance?.loadImage(binding.rivPlate, bitmap)
             if (panoramaImageBitmap == null) {
                 photoType = 11
                 takePhoto()
@@ -479,7 +480,8 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
     val takePictureLauncher11 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            GlideUtils.instance?.loadImageFile(binding.rivPanorama, imageFile11)
+            val bitmap = ImageUtil.getCompressedImage(imageFile11?.absolutePath, 200f, 300f)
+            GlideUtils.instance?.loadImage(binding.rivPanorama, bitmap)
             ImageCompressor.compress(this@AdmissionTakePhotoActivity, imageFile11!!, object : ImageCompressor.CompressResult {
                 override fun onSuccess(file: File) {
                     val waterContent1: String = street?.streetName + " " + parkingNo
