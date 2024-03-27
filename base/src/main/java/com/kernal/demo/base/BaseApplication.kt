@@ -7,6 +7,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.kernal.demo.base.help.ActivityCacheManager
 import com.kernal.demo.base.http.OnAddOkhttpInterceptor
 import com.kernal.demo.base.proxy.OnAppBaseProxyLinsener
+import com.tencent.bugly.crashreport.CrashReport
 import okhttp3.OkHttpClient
 import kotlin.properties.Delegates
 
@@ -37,6 +38,7 @@ abstract class BaseApplication : Application(), Application.ActivityLifecycleCal
 //            .loadSkin()
         initClient()
         initArouter()
+        CrashReport.initCrashReport(this@BaseApplication,"5f44c9799e",false)
     }
 
     fun initArouter() {

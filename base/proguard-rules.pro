@@ -20,7 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 #----------------------------------------------------------------------------
-
+-keepattributes SourceFile,LineNumberTable
 #---------------------------------webview------------------------------------
 -keepclassmembers class fqcn.of.javascript.interface.for.webview {
 public *;
@@ -41,6 +41,10 @@ public void *(android.webkit.WebView, java.lang.String);
 #-------------------------------------------------------------------------
 
 #---------------------------------2.第三方包-------------------------------
+#bugly
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
+
 #umeng
 -keep class com.umeng.** { *; }
 -keep class com.uc.** { *; }

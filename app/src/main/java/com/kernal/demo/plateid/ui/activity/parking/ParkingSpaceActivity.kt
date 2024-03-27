@@ -197,7 +197,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         exitMethodList.add(ExitMethodBean("0", i18N(com.kernal.demo.base.R.string.正常关单)))
         exitMethodList.add(ExitMethodBean("4", i18N(com.kernal.demo.base.R.string.强制关单)))
         exitMethodList.add(ExitMethodBean("5", i18N(com.kernal.demo.base.R.string.线上支付)))
-        exitMethodList.add(ExitMethodBean("9", i18N(com.kernal.demo.base.R.string.其它)))
+        exitMethodList.add(ExitMethodBean("4", i18N(com.kernal.demo.base.R.string.其它)))
 
         currentMethod = exitMethodList[3]
         binding.tvExitMethod.text = currentMethod?.name

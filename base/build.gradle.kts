@@ -215,6 +215,8 @@ dependencies {
     api(ThirdPart.umeng_apm)
 
     api(ThirdPart.luban)
+
+    api(ThirdPart.bugly)
 //    {
 //        exclude(group = "androidx.appcompat")
 //        exclude(group = "androidx.core")

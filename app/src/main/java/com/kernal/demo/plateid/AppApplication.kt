@@ -8,6 +8,7 @@ import com.umeng.commonsdk.UMConfigure
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.http.interceptor.*
 import com.kernal.demo.base.network.NetWorkMonitorManager
+import com.kernal.demo.common.help.SmartRefreshHelp
 import com.kernal.demo.plateid.startup.OnAppBaseProxyManager
 import io.realm.Realm
 import okhttp3.Interceptor
@@ -31,7 +32,7 @@ class AppApplication : BaseApplication() {
             HttpResponseCache.install(cacheDir, 1024 * 1024 * 128)
             BaseApplication.instance().setOnAppBaseProxyLinsener(OnAppBaseProxyManager())
             //初始化全局的刷新
-            com.kernal.demo.common.help.SmartRefreshHelp.initRefHead()
+            SmartRefreshHelp.initRefHead()
             //初始化网络状态监听
 //            regNetWorkState(this)
         }.start()
