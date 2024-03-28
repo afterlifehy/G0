@@ -164,4 +164,6 @@ object ThirdPart {
     const val luban = "top.zibin:Luban:1.1.8"
 
     const val bugly = "com.tencent.bugly:crashreport:4.1.9.3"
+
+    const val baiduMapLocation = "com.baidu.lbsyun:BaiduMapSDK_Location:9.3.7"
 }

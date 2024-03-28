@@ -109,6 +109,8 @@ object PreferencesKeys {
 
     val lastCheckUpdateTime by longPreferencesKey()
 
+    val isUpdateLocation by booleanPreferencesKey()
+
     fun booleanPreferencesKey() =
         ReadOnlyProperty<Any, Preferences.Key<Boolean>> { _, property -> booleanPreferencesKey(property.name) }
 

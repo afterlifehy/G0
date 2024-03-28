@@ -217,6 +217,8 @@ dependencies {
     api(ThirdPart.luban)
 
     api(ThirdPart.bugly)
+
+    api(ThirdPart.baiduMapLocation)
 //    {
 //        exclude(group = "androidx.appcompat")
 //        exclude(group = "androidx.core")

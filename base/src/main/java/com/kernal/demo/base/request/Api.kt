@@ -154,4 +154,11 @@ interface Api {
      */
     @POST("S_OR4_0113")
     suspend fun debtPayQr(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
+
+    /**
+     * 轨迹上传
+     */
+    @POST("S_VO3_02")
+    suspend fun locationUpload(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
 }

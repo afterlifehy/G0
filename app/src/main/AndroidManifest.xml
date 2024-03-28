@@ -6,6 +6,7 @@
     <!--网络-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <!--定位-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -99,6 +100,13 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="2.1" />
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="SERp9borieII1yDvfEEECWXVoX4NYt1c" >
+        </meta-data>
+
+        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"> </service>
 
         <activity
             android:name=".ui.activity.SplashActivity"

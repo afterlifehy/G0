@@ -3,11 +3,7 @@ package com.kernal.demo.plateid.ui.activity.login
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -22,6 +18,7 @@ import androidx.core.content.FileProvider
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
+import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.PhoneUtils
 import com.kernal.demo.base.BaseApplication
@@ -31,6 +28,7 @@ import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
+import com.kernal.demo.common.util.BaiduLocationUtil
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityLoginBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LoginViewModel
@@ -42,7 +40,7 @@ import java.util.Date
 
 @Route(path = ARouterMap.LOGIN)
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
-    var locationManager: LocationManager? = null
+    lateinit var baiduLocationUtil: BaiduLocationUtil
     var lat = 121.445345
     var lon = 31.238665
     var updateBean: UpdateBean? = null
@@ -61,24 +59,28 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             Manifest.permission.REQUEST_INSTALL_PACKAGES
         ).subscribe {
             if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                val provider = LocationManager.NETWORK_PROVIDER
-                locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {
-                    override fun onLocationChanged(location: Location) {
-                        lat = location.latitude
-                        lon = location.longitude
-                        locationEnable = 1
+                baiduLocationUtil = BaiduLocationUtil()
+                baiduLocationUtil.initBaiduLocation()
+                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+                    override fun locationChange(
+                        lon: Double,
+                        lat: Double,
+                        location: LocationClientOption?,
+                        isSuccess: Boolean,
+                        address: String?
+                    ) {
+                        if (isSuccess) {
+                            this@LoginActivity.lat = lat
+                            this@LoginActivity.lon = lon
+                            locationEnable = 1
+                        } else {
+                            locationEnable = -1
+                        }
                     }
 
-                    override fun onProviderDisabled(provider: String) {
-                        locationEnable = -1
-                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
-                    }
-
-                    override fun onProviderEnabled(provider: String) {
-                        locationEnable = 1
-                    }
-                })
+                }
+                baiduLocationUtil.setBaiduLocationCallBack(callback)
+                baiduLocationUtil.startLocation()
             }
         }
         binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
@@ -180,27 +182,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 var rxPermissions = RxPermissions(this@LoginActivity)
                 rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
                     if (it) {
-                        if (locationManager == null) {
-                            locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                            val provider = LocationManager.NETWORK_PROVIDER
-                            locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {
-                                override fun onLocationChanged(location: Location) {
-                                    lat = location.latitude
-                                    lon = location.longitude
-                                    locationEnable = 1
-                                }
-
-                                override fun onProviderDisabled(provider: String) {
-                                    locationEnable = -1
-                                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
-                                }
-
-                                override fun onProviderEnabled(provider: String) {
-                                    locationEnable = 1
-                                }
-                            })
-                        }
-                        if (locationEnable != -1) {
+                        if (locationEnable == 1) {
                             showProgressDialog(20000)
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()

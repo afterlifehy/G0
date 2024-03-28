@@ -2,15 +2,12 @@ package com.kernal.demo.plateid.ui.activity.mine
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
 import com.alibaba.fastjson.JSONObject
+import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.PhoneUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -29,6 +26,7 @@ import com.kernal.demo.plateid.databinding.ActivityLogOutBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LogoutViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.ext.startArouter
+import com.kernal.demo.common.util.BaiduLocationUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -40,7 +38,7 @@ import kotlinx.coroutines.withContext
 
 class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(), OnClickListener {
     private var job: Job? = null
-    var locationManager: LocationManager? = null
+    lateinit var baiduLocationUtil: BaiduLocationUtil
     var lat = 0.00
     var lon = 0.00
     var locationEnable = 0
@@ -67,25 +65,28 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         var rxPermissions = RxPermissions(this@LogoutActivity)
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
             if (it) {
-                locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                val provider = LocationManager.NETWORK_PROVIDER
-                locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {
-                    override fun onLocationChanged(location: Location) {
-                        lat = location.latitude
-                        lon = location.longitude
-                        locationEnable = 1
+                baiduLocationUtil = BaiduLocationUtil()
+                baiduLocationUtil.initBaiduLocation()
+                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+                    override fun locationChange(
+                        lon: Double,
+                        lat: Double,
+                        location: LocationClientOption?,
+                        isSuccess: Boolean,
+                        address: String?
+                    ) {
+                        if (isSuccess) {
+                            this@LogoutActivity.lat = lat
+                            this@LogoutActivity.lon = lon
+                            locationEnable = 1
+                        } else {
+                            locationEnable = -1
+                        }
                     }
 
-                    override fun onProviderDisabled(provider: String) {
-                        locationEnable = -1
-                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
-                    }
-
-                    override fun onProviderEnabled(provider: String) {
-                        locationEnable = 1
-                    }
-
-                })
+                }
+                baiduLocationUtil.setBaiduLocationCallBack(callback)
+                baiduLocationUtil.startLocation()
             }
         }
     }
@@ -124,26 +125,6 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                 }
 
                                 override fun onRightClickLinsener(msg: String) {
-                                    if (locationManager == null) {
-                                        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                                        val provider = LocationManager.NETWORK_PROVIDER
-                                        locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {
-                                            override fun onLocationChanged(location: Location) {
-                                                lat = location.latitude
-                                                lon = location.longitude
-                                                locationEnable = 1
-                                            }
-
-                                            override fun onProviderDisabled(provider: String) {
-                                                locationEnable = -1
-                                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
-                                            }
-
-                                            override fun onProviderEnabled(provider: String) {
-                                                locationEnable = 1
-                                            }
-                                        })
-                                    }
                                     if (locationEnable != -1) {
                                         showProgressDialog(20000)
                                         runBlocking {

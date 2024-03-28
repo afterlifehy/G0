@@ -14,10 +14,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.fastjson.JSONObject
+import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PathUtils
-import com.blankj.utilcode.util.TimeUtils
+import com.blankj.utilcode.util.PermissionUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
 import com.kernal.demo.base.BaseApplication
@@ -35,8 +37,11 @@ import com.kernal.demo.plateid.databinding.ActivityMainBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.MainViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.bean.BlueToothDeviceBean
+import com.kernal.demo.base.ds.PreferencesDataStore
+import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.ext.startArouter
+import com.kernal.demo.common.util.BaiduLocationUtil
 import com.kernal.demo.plateid.ui.activity.abnormal.AbnormalReportActivity
 import com.kernal.demo.plateid.ui.activity.income.IncomeCountingActivity
 import com.kernal.demo.plateid.ui.activity.login.LoginActivity
@@ -45,9 +50,17 @@ import com.kernal.demo.plateid.ui.activity.mine.LogoutActivity
 import com.kernal.demo.plateid.ui.activity.order.OrderMainActivity
 import com.kernal.demo.plateid.ui.activity.parking.ParkingLotActivity
 import com.kernal.demo.plateid.util.UpdateUtil
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
+    lateinit var baiduLocationUtil: BaiduLocationUtil
+    var lat = 121.445345
+    var lon = 31.238665
+    var locationEnable = 0
 
     override fun onSaveInstanceState(outState: Bundle) {
         // super.onSaveInstanceState(outState)
@@ -56,6 +69,57 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun initView() {
         delete7DayPic()
         initHyperLPR()
+        repeatCheckLocation {
+            runOnUiThread {
+                PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION).callback(object : PermissionUtils.FullCallback {
+                    override fun onGranted(granted: MutableList<String>) {
+                        baiduLocationUtil = BaiduLocationUtil()
+                        baiduLocationUtil.initBaiduLocation()
+                        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+                            override fun locationChange(
+                                lon: Double,
+                                lat: Double,
+                                location: LocationClientOption?,
+                                isSuccess: Boolean,
+                                address: String?
+                            ) {
+                                if (isSuccess) {
+                                    this@MainActivity.lat = lat
+                                    this@MainActivity.lon = lon
+                                    locationEnable = 1
+                                } else {
+                                    locationEnable = -1
+                                }
+                            }
+
+                        }
+                        baiduLocationUtil.setBaiduLocationCallBack(callback)
+                        baiduLocationUtil.startLocation()
+                        if (locationEnable == 1) {
+                            runBlocking {
+                                val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.phone)
+                                if (loginName.isNotEmpty()) {
+                                    val param = HashMap<String, Any>()
+                                    val jsonobject = JSONObject()
+                                    jsonobject["loginName"] = loginName
+                                    jsonobject["longitude"] = lon
+                                    jsonobject["latitude"] = lat
+                                    param["attr"] = jsonobject
+                                    mViewModel.locationUpload(param)
+                                }
+                            }
+                        } else {
+                            ToastUtil.showMiddleToast("请打开位置信息")
+                        }
+                    }
+
+                    override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
+
+                    }
+
+                }).request()
+            }
+        }
     }
 
     fun delete7DayPic() {
@@ -294,7 +358,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            UpdateUtil.instance?.downloadFileAndInstall(object :UpdateUtil.UpdateInterface {
+            UpdateUtil.instance?.downloadFileAndInstall(object : UpdateUtil.UpdateInterface {
                 override fun requestionPermission() {
 
                 }
@@ -305,6 +369,18 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             })
         } else {
 
+        }
+    }
+
+    fun repeatCheckLocation(action: () -> Unit) {
+        runBlocking {
+            PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, true)
+            GlobalScope.launch {
+                while (PreferencesDataStore(BaseApplication.instance()).getBoolean(PreferencesKeys.isUpdateLocation)) {
+                    delay(1000 * 10)
+                    action.invoke()
+                }
+            }
         }
     }
 

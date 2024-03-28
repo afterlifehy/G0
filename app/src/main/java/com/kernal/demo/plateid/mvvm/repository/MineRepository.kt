@@ -27,4 +27,11 @@ class MineRepository : BaseRepository() {
     suspend fun feeRate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<FeeRateResultBean> {
         return mServer.feeRate(param)
     }
+
+    /**
+     * 上传经纬度
+     */
+    suspend fun locationUpload(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.locationUpload(param)
+    }
 }
