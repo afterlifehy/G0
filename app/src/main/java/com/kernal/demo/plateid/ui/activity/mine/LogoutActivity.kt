@@ -3,6 +3,7 @@ package com.kernal.demo.plateid.ui.activity.mine
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.telephony.TelephonyManager
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
@@ -138,7 +139,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                             jsonobject["loginName"] = loginName
                                             jsonobject["longitude"] = lon
                                             jsonobject["latitude"] = lat
-                                            jsonobject["simId"] = PhoneUtils.getIMSI()
+                                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
                                             jsonobject["imei"] = PhoneUtils.getIMEI()
                                             jsonobject["version"] = AppUtils.getAppVersionName()
                                             param["attr"] = jsonobject

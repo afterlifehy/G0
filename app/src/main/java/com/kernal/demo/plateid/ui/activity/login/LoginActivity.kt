@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -190,7 +191,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             jsonobject["passWord"] = binding.etPw.text.toString()
                             jsonobject["longitude"] = lon
                             jsonobject["latitude"] = lat
-                            jsonobject["simId"] = PhoneUtils.getIMSI()
+                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
                             jsonobject["imei"] = PhoneUtils.getIMEI()
                             jsonobject["version"] = AppUtils.getAppVersionName()
                             param["attr"] = jsonobject
