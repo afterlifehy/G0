@@ -191,6 +191,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                     }
                 }
                 runBlocking {
+                    PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, false)
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
