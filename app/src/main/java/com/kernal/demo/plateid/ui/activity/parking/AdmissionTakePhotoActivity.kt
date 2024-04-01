@@ -20,6 +20,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -125,9 +126,9 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         binding.ivPanoramaDelete.setOnClickListener(this)
         binding.rivPlate.setOnClickListener(this)
         binding.rivPanorama.setOnClickListener(this)
-        binding.rflStartBilling.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
+        ClickUtils.applySingleDebouncing(binding.rflStartBilling, 3000, this@AdmissionTakePhotoActivity)
     }
 
     override fun initData() {

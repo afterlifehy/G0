@@ -27,8 +27,8 @@ class GlobalDialog(context: Context, mDialogHelp: DialogHelp) :
 
         binding.rtvLeft.setOnClickListener(this)
         binding.rtvRight.setOnClickListener(this)
-        ClickUtils.applyGlobalDebouncing(binding.rtvLeft, this)
-        ClickUtils.applyGlobalDebouncing(binding.rtvRight, this)
+        ClickUtils.applySingleDebouncing(binding.rtvLeft, 3000, this)
+        ClickUtils.applySingleDebouncing(binding.rtvRight, 3000, this)
     }
 
     fun bindShowViewData() {
