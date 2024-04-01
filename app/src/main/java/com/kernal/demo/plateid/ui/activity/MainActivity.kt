@@ -61,6 +61,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     var lat = 121.445345
     var lon = 31.238665
     var locationEnable = 0
+    var loginName = ""
 
     override fun onSaveInstanceState(outState: Bundle) {
         // super.onSaveInstanceState(outState)
@@ -69,55 +70,76 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun initView() {
         delete7DayPic()
         initHyperLPR()
+        runBlocking {
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+        }
         repeatCheckLocation {
             runOnUiThread {
-                PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION).callback(object : PermissionUtils.FullCallback {
-                    override fun onGranted(granted: MutableList<String>) {
-                        baiduLocationUtil = BaiduLocationUtil()
-                        baiduLocationUtil.initBaiduLocation()
-                        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                            override fun locationChange(
-                                lon: Double,
-                                lat: Double,
-                                location: LocationClientOption?,
-                                isSuccess: Boolean,
-                                address: String?
-                            ) {
-                                if (isSuccess) {
-                                    this@MainActivity.lat = lat
-                                    this@MainActivity.lon = lon
-                                    locationEnable = 1
-                                } else {
-                                    locationEnable = -1
-                                }
-                            }
-
-                        }
-                        baiduLocationUtil.setBaiduLocationCallBack(callback)
-                        baiduLocationUtil.startLocation()
-                        if (locationEnable == 1) {
-                            runBlocking {
-                                val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
-                                if (loginName.isNotEmpty()) {
-                                    val param = HashMap<String, Any>()
-                                    val jsonobject = JSONObject()
-                                    jsonobject["loginName"] = loginName
-                                    jsonobject["longitude"] = lon
-                                    jsonobject["latitude"] = lat
-                                    param["attr"] = jsonobject
-                                    mViewModel.locationUpload(param)
-                                }
-                            }
-                        } else {
-                            ToastUtil.showMiddleToast("请打开位置信息")
-                        }
+                if (locationEnable == 1) {
+                    if (loginName.isNotEmpty()) {
+                        val param = HashMap<String, Any>()
+                        val jsonobject = JSONObject()
+                        jsonobject["loginName"] = loginName
+                        jsonobject["longitude"] = lon
+                        jsonobject["latitude"] = lat
+                        param["attr"] = jsonobject
+                        mViewModel.locationUpload(param)
                     }
+                } else {
+                    if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
+                    } else {
+                        PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION)
+                            .callback(object : PermissionUtils.FullCallback {
+                                override fun onGranted(granted: MutableList<String>) {
+                                    baiduLocationUtil = BaiduLocationUtil()
+                                    baiduLocationUtil.initBaiduLocation()
+                                    val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+                                        override fun locationChange(
+                                            lon: Double,
+                                            lat: Double,
+                                            location: LocationClientOption?,
+                                            isSuccess: Boolean,
+                                            address: String?
+                                        ) {
+                                            if (isSuccess) {
+                                                this@MainActivity.lat = lat
+                                                this@MainActivity.lon = lon
+                                                locationEnable = 1
+                                            } else {
+                                                locationEnable = -1
+                                            }
+                                        }
 
-                    override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
+                                    }
+                                    baiduLocationUtil.setBaiduLocationCallBack(callback)
+                                    baiduLocationUtil.startLocation()
+                                    if (locationEnable == 1) {
+                                        runBlocking {
+                                            val loginName =
+                                                PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                                            if (loginName.isNotEmpty()) {
+                                                val param = HashMap<String, Any>()
+                                                val jsonobject = JSONObject()
+                                                jsonobject["loginName"] = loginName
+                                                jsonobject["longitude"] = lon
+                                                jsonobject["latitude"] = lat
+                                                param["attr"] = jsonobject
+                                                mViewModel.locationUpload(param)
+                                            }
+                                        }
+                                    } else {
+                                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
+                                    }
+                                }
 
+                                override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
+                                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                                }
+
+                            }).request()
                     }
-
-                }).request()
+                }
             }
         }
     }
