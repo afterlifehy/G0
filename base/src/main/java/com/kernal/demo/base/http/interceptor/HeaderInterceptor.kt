@@ -7,14 +7,10 @@ import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.EncryptUtils
-import com.blankj.utilcode.util.PermissionUtils
-import com.blankj.utilcode.util.PhoneUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
-import com.kernal.demo.base.help.ActivityCacheManager
 import com.kernal.demo.base.util.Constant
-import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response

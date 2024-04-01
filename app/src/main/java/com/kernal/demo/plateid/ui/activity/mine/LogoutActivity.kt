@@ -62,34 +62,6 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                 delay(1000)
             }
         }
-
-        var rxPermissions = RxPermissions(this@LogoutActivity)
-        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
-            if (it) {
-                baiduLocationUtil = BaiduLocationUtil()
-                baiduLocationUtil.initBaiduLocation()
-                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                    override fun locationChange(
-                        lon: Double,
-                        lat: Double,
-                        location: LocationClientOption?,
-                        isSuccess: Boolean,
-                        address: String?
-                    ) {
-                        if (isSuccess) {
-                            this@LogoutActivity.lat = lat
-                            this@LogoutActivity.lon = lon
-                            locationEnable = 1
-                        } else {
-                            locationEnable = -1
-                        }
-                    }
-
-                }
-                baiduLocationUtil.setBaiduLocationCallBack(callback)
-                baiduLocationUtil.startLocation()
-            }
-        }
     }
 
     override fun initListener() {
@@ -115,46 +87,79 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             }
 
             R.id.tv_logout -> {
-                var rxPermissions = RxPermissions(this@LogoutActivity)
-                rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
-                    if (it) {
-                        DialogHelp.Builder().setTitle(i18N(com.kernal.demo.base.R.string.确认签退))
-                            .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
-                            .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).setCancelable(true)
-                            .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                override fun onLeftClickLinsener(msg: String) {
-                                }
-
-                                override fun onRightClickLinsener(msg: String) {
-                                    if (locationEnable != -1) {
-                                        showProgressDialog(20000)
-                                        runBlocking {
-                                            val simId =
-                                                PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.simId)
-                                            val loginName =
-                                                PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.loginName)
-                                            val param = HashMap<String, Any>()
-                                            val jsonobject = JSONObject()
-                                            jsonobject["simId"] = simId
-                                            jsonobject["loginName"] = loginName
-                                            jsonobject["longitude"] = lon
-                                            jsonobject["latitude"] = lat
-                                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                                            jsonobject["imei"] = PhoneUtils.getIMEI()
-                                            jsonobject["version"] = AppUtils.getAppVersionName()
-                                            param["attr"] = jsonobject
-                                            mViewModel.logout(param)
+                if (locationEnable == 1) {
+                    logout()
+                } else {
+                    var rxPermissions = RxPermissions(this@LogoutActivity)
+                    if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
+                    } else {
+                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
+                            if (it) {
+                                baiduLocationUtil = BaiduLocationUtil()
+                                baiduLocationUtil.initBaiduLocation()
+                                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+                                    override fun locationChange(
+                                        lon: Double,
+                                        lat: Double,
+                                        location: LocationClientOption?,
+                                        isSuccess: Boolean,
+                                        address: String?
+                                    ) {
+                                        if (isSuccess) {
+                                            this@LogoutActivity.lat = lat
+                                            this@LogoutActivity.lon = lon
+                                            locationEnable = 1
+                                        } else {
+                                            locationEnable = -1
                                         }
-                                    } else {
-                                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
                                     }
-                                }
 
-                            }).build(this@LogoutActivity).showDailog()
+                                }
+                                baiduLocationUtil.setBaiduLocationCallBack(callback)
+                                baiduLocationUtil.startLocation()
+                            } else {
+                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                            }
+                        }
                     }
                 }
+
             }
         }
+    }
+
+    fun logout() {
+        DialogHelp.Builder().setTitle(i18N(com.kernal.demo.base.R.string.确认签退))
+            .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
+            .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).setCancelable(true)
+            .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                override fun onLeftClickLinsener(msg: String) {
+                }
+
+                @SuppressLint("MissingPermission")
+                override fun onRightClickLinsener(msg: String) {
+                    showProgressDialog(20000)
+                    runBlocking {
+                        val simId =
+                            PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.simId)
+                        val loginName =
+                            PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.loginName)
+                        val param = HashMap<String, Any>()
+                        val jsonobject = JSONObject()
+                        jsonobject["simId"] = simId
+                        jsonobject["loginName"] = loginName
+                        jsonobject["longitude"] = lon
+                        jsonobject["latitude"] = lat
+                        jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                        jsonobject["imei"] = PhoneUtils.getIMEI()
+                        jsonobject["version"] = AppUtils.getAppVersionName()
+                        param["attr"] = jsonobject
+                        mViewModel.logout(param)
+                    }
+                }
+
+            }).build(this@LogoutActivity).showDailog()
     }
 
     override fun startObserve() {

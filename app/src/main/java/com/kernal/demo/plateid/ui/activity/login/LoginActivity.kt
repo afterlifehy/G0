@@ -180,29 +180,61 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
 
             R.id.rtv_login -> {
-                var rxPermissions = RxPermissions(this@LoginActivity)
-                rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
-                    if (it) {
-                        if (locationEnable == 1) {
-                            showProgressDialog(20000)
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-                            jsonobject["loginName"] = binding.etAccount.text.toString()
-                            jsonobject["passWord"] = binding.etPw.text.toString()
-                            jsonobject["longitude"] = lon
-                            jsonobject["latitude"] = lat
-                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                            jsonobject["imei"] = PhoneUtils.getIMEI()
-                            jsonobject["version"] = AppUtils.getAppVersionName()
-                            param["attr"] = jsonobject
-                            mViewModel.login(param)
-                        } else {
-                            ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                if (locationEnable == 1) {
+                    login()
+                } else {
+                    var rxPermissions = RxPermissions(this@LoginActivity)
+                    if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
+                    } else {
+                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
+                            if (it) {
+                                baiduLocationUtil = BaiduLocationUtil()
+                                baiduLocationUtil.initBaiduLocation()
+                                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+                                    override fun locationChange(
+                                        lon: Double,
+                                        lat: Double,
+                                        location: LocationClientOption?,
+                                        isSuccess: Boolean,
+                                        address: String?
+                                    ) {
+                                        if (isSuccess) {
+                                            this@LoginActivity.lat = lat
+                                            this@LoginActivity.lon = lon
+                                            locationEnable = 1
+                                        } else {
+                                            locationEnable = -1
+                                        }
+                                    }
+
+                                }
+                                baiduLocationUtil.setBaiduLocationCallBack(callback)
+                                baiduLocationUtil.startLocation()
+                            } else {
+                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun login() {
+        showProgressDialog(20000)
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["loginName"] = binding.etAccount.text.toString()
+        jsonobject["passWord"] = binding.etPw.text.toString()
+        jsonobject["longitude"] = lon
+        jsonobject["latitude"] = lat
+        jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+        jsonobject["imei"] = PhoneUtils.getIMEI()
+        jsonobject["version"] = AppUtils.getAppVersionName()
+        param["attr"] = jsonobject
+        mViewModel.login(param)
     }
 
     @SuppressLint("NewApi")

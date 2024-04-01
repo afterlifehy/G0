@@ -12,6 +12,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.baidu.location.LocationClientOption
+import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.BaseApplication
@@ -119,18 +120,26 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
 
             R.id.rtv_enterWorkBench -> {
-                if (streetChoosedList.isNotEmpty()) {
-                    showProgressDialog(20000)
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["loginName"] = loginInfo?.loginName
-                    jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
-                    jsonobject["longitude"] = lon
-                    jsonobject["latitude"] = lat
-                    param["attr"] = jsonobject
-                    mViewModel.checkOnWork(param)
+                if (locationEnable == 1) {
+                    if (streetChoosedList.isNotEmpty()) {
+                        checkonWork()
+                    } else {
+                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请添加路段))
+                    }
                 } else {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请添加路段))
+                    if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
+                    } else {
+                        PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION)
+                            .callback(object : PermissionUtils.FullCallback {
+                                override fun onGranted(granted: MutableList<String>) {
+                                }
+
+                                override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
+                                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                                }
+                            }).request()
+                    }
                 }
             }
 
@@ -143,6 +152,18 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 }
             }
         }
+    }
+
+    private fun checkonWork() {
+        showProgressDialog(20000)
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["loginName"] = loginInfo?.loginName
+        jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
+        jsonobject["longitude"] = lon
+        jsonobject["latitude"] = lat
+        param["attr"] = jsonobject
+        mViewModel.checkOnWork(param)
     }
 
     override fun startObserve() {

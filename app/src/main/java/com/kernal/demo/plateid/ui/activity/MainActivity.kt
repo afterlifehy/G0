@@ -97,7 +97,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                         baiduLocationUtil.startLocation()
                         if (locationEnable == 1) {
                             runBlocking {
-                                val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.phone)
+                                val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
                                 if (loginName.isNotEmpty()) {
                                     val param = HashMap<String, Any>()
                                     val jsonobject = JSONObject()
@@ -377,7 +377,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, true)
             GlobalScope.launch {
                 while (PreferencesDataStore(BaseApplication.instance()).getBoolean(PreferencesKeys.isUpdateLocation)) {
-                    delay(1000 * 60 * 5)
+                    delay(1000 * 10)
                     action.invoke()
                 }
             }
