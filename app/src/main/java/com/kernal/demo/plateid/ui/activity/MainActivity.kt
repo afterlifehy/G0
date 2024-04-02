@@ -83,8 +83,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                         val param = HashMap<String, Any>()
                         val jsonobject = JSONObject()
                         jsonobject["loginName"] = loginName
-                        jsonobject["longitude"] = lon
-                        jsonobject["latitude"] = lat
+                        jsonobject["longitude"] = lon.toString()
+                        jsonobject["latitude"] = lat.toString()
                         param["attr"] = jsonobject
                         mViewModel.locationUpload(param)
                     }
@@ -107,8 +107,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                                                 val param = HashMap<String, Any>()
                                                 val jsonobject = JSONObject()
                                                 jsonobject["loginName"] = loginName
-                                                jsonobject["longitude"] = lon
-                                                jsonobject["latitude"] = lat
+                                                jsonobject["longitude"] = lon.toString()
+                                                jsonobject["latitude"] = lat.toString()
                                                 param["attr"] = jsonobject
                                                 mViewModel.locationUpload(param)
                                             }
@@ -441,5 +441,10 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         } else {
             ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.再按一次退出程序))
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        baiduLocationUtil.stopLocation()
     }
 }

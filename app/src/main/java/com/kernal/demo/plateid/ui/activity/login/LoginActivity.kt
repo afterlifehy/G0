@@ -228,8 +228,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         val jsonobject = JSONObject()
         jsonobject["loginName"] = binding.etAccount.text.toString()
         jsonobject["passWord"] = binding.etPw.text.toString()
-        jsonobject["longitude"] = lon
-        jsonobject["latitude"] = lat
+        jsonobject["longitude"] = lon.toString()
+        jsonobject["latitude"] = lat.toString()
         jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
         jsonobject["imei"] = PhoneUtils.getIMEI()
         jsonobject["version"] = AppUtils.getAppVersionName()

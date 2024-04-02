@@ -174,8 +174,8 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                         val jsonobject = JSONObject()
                         jsonobject["simId"] = simId
                         jsonobject["loginName"] = loginName
-                        jsonobject["longitude"] = lon
-                        jsonobject["latitude"] = lat
+                        jsonobject["longitude"] = lon.toString()
+                        jsonobject["latitude"] = lat.toString()
                         jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
                         jsonobject["imei"] = PhoneUtils.getIMEI()
                         jsonobject["version"] = AppUtils.getAppVersionName()

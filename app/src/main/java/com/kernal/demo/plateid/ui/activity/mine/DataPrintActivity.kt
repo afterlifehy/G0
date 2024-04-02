@@ -81,6 +81,14 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
         when (v?.id) {
             R.id.fl_back,
             R.id.rtv_noPrint -> {
+                runBlocking {
+                    PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, false)
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+                }
+                RealmUtil.instance?.deleteAllStreet()
                 onBackPressedSupport()
             }
 
