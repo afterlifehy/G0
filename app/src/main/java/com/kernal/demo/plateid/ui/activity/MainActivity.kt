@@ -73,6 +73,9 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         runBlocking {
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
         }
+        if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            startBadiMapLocation()
+        }
         repeatCheckLocation {
             runOnUiThread {
                 if (locationEnable == 1) {
@@ -88,32 +91,14 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 } else {
                     if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
+                        if (baiduLocationUtil == null) {
+                            startBadiMapLocation()
+                        }
                     } else {
                         PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION)
                             .callback(object : PermissionUtils.FullCallback {
                                 override fun onGranted(granted: MutableList<String>) {
-                                    baiduLocationUtil = BaiduLocationUtil()
-                                    baiduLocationUtil.initBaiduLocation()
-                                    val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                                        override fun locationChange(
-                                            lon: Double,
-                                            lat: Double,
-                                            location: LocationClientOption?,
-                                            isSuccess: Boolean,
-                                            address: String?
-                                        ) {
-                                            if (isSuccess) {
-                                                this@MainActivity.lat = lat
-                                                this@MainActivity.lon = lon
-                                                locationEnable = 1
-                                            } else {
-                                                locationEnable = -1
-                                            }
-                                        }
-
-                                    }
-                                    baiduLocationUtil.setBaiduLocationCallBack(callback)
-                                    baiduLocationUtil.startLocation()
+                                    startBadiMapLocation()
                                     if (locationEnable == 1) {
                                         runBlocking {
                                             val loginName =
@@ -142,6 +127,31 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 }
             }
         }
+    }
+
+    fun startBadiMapLocation() {
+        baiduLocationUtil = BaiduLocationUtil()
+        baiduLocationUtil.initBaiduLocation()
+        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+            override fun locationChange(
+                lon: Double,
+                lat: Double,
+                location: LocationClientOption?,
+                isSuccess: Boolean,
+                address: String?
+            ) {
+                if (isSuccess) {
+                    this@MainActivity.lat = lat
+                    this@MainActivity.lon = lon
+                    locationEnable = 1
+                } else {
+                    locationEnable = -1
+                }
+            }
+
+        }
+        baiduLocationUtil.setBaiduLocationCallBack(callback)
+        baiduLocationUtil.startLocation()
     }
 
     fun delete7DayPic() {

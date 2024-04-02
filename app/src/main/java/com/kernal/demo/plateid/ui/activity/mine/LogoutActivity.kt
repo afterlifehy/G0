@@ -62,6 +62,31 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                 delay(1000)
             }
         }
+        var rxPermissions = RxPermissions(this@LogoutActivity)
+        if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            baiduLocationUtil = BaiduLocationUtil()
+            baiduLocationUtil.initBaiduLocation()
+            val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+                override fun locationChange(
+                    lon: Double,
+                    lat: Double,
+                    location: LocationClientOption?,
+                    isSuccess: Boolean,
+                    address: String?
+                ) {
+                    if (isSuccess) {
+                        this@LogoutActivity.lat = lat
+                        this@LogoutActivity.lon = lon
+                        locationEnable = 1
+                    } else {
+                        locationEnable = -1
+                    }
+                }
+
+            }
+            baiduLocationUtil.setBaiduLocationCallBack(callback)
+            baiduLocationUtil.startLocation()
+        }
     }
 
     override fun initListener() {
