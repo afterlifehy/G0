@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.activity.result.contract.ActivityResultContracts
@@ -71,6 +72,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         address: String?
                     ) {
                         if (isSuccess) {
+                            Log.v("1234","${lat},${lon}")
                             this@LoginActivity.lat = lat
                             this@LoginActivity.lon = lon
                             locationEnable = 1
@@ -228,9 +230,13 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         val jsonobject = JSONObject()
         jsonobject["loginName"] = binding.etAccount.text.toString()
         jsonobject["passWord"] = binding.etPw.text.toString()
-        jsonobject["longitude"] = lon.toString()
-        jsonobject["latitude"] = lat.toString()
-        jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+        jsonobject["longitude"] = lon
+        jsonobject["latitude"] = lat
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            jsonobject["simId"] = PhoneUtils.getIMSI()
+        } else {
+            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+        }
         jsonobject["imei"] = PhoneUtils.getIMEI()
         jsonobject["version"] = AppUtils.getAppVersionName()
         param["attr"] = jsonobject

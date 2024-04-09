@@ -19,12 +19,7 @@ import android.util.Log;
 
 import com.blankj.utilcode.util.ConvertUtils;
 
-import org.apache.http.conn.ConnectTimeoutException;
-
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
@@ -97,18 +92,6 @@ public class HttpLoggingInterceptor implements Interceptor {
         Response response;
         try {
             response = chain.proceed(request);
-        } catch (SocketTimeoutException e) {
-            log("<-- HTTP FAILED: " + e);
-            String errorMsg = "连接超时，请检查网络";
-            throw new IOException(errorMsg, e);
-        } catch (ConnectException e) {
-            log("<-- HTTP FAILED: " + e);
-            String errorMsg = "连接服务器错误，请检查网络";
-            throw new IOException(errorMsg, e);
-        } catch (UnknownHostException e) {
-            log("<-- HTTP FAILED: " + e);
-            String errorMsg = "网络错误，请检查网络";
-            throw new IOException(errorMsg, e);
         } catch (Exception e) {
             log("<-- HTTP FAILED: " + e);
             throw e;
