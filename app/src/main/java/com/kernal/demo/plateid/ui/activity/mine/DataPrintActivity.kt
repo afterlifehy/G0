@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.BaseApplication
@@ -57,7 +58,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.rtvNoPrint.setOnClickListener(this)
-        binding.rtvPrint.setOnClickListener(this)
+        ClickUtils.applySingleDebouncing(binding.rtvPrint, 3000, this)
     }
 
     override fun initData() {

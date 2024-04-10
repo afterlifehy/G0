@@ -21,6 +21,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.BaseApplication
@@ -161,14 +162,14 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         binding.cbLotName.setOnClickListener(this)
         binding.cbAbnormalClassification.setOnClickListener(this)
         binding.rflAbnormalClassification.setOnClickListener(this)
-        binding.rflRecognize.setOnClickListener(this)
-        binding.rflTakePhoto.setOnClickListener(this)
-        binding.rflTakePhoto2.setOnClickListener(this)
+        ClickUtils.applySingleDebouncing(binding.rflRecognize, 3000, this)
+        ClickUtils.applySingleDebouncing(binding.rflTakePhoto, 3000, this)
+        ClickUtils.applySingleDebouncing(binding.rflTakePhoto2, 3000, this)
         binding.ivPlateDelete.setOnClickListener(this)
         binding.ivPanoramaDelete.setOnClickListener(this)
-        binding.rivPlate.setOnClickListener(this)
-        binding.rivPanorama.setOnClickListener(this)
-        binding.rflReport.setOnClickListener(this)
+        ClickUtils.applySingleDebouncing(binding.rivPlate, 3000, this)
+        ClickUtils.applySingleDebouncing(binding.rivPanorama, 3000, this)
+        ClickUtils.applySingleDebouncing(binding.rflReport, 3000, this)
         binding.root.setOnClickListener(this)
         binding.llBerthAbnormal2.setOnClickListener(this)
     }

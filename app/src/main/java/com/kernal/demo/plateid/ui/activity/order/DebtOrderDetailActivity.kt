@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -88,7 +89,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         binding.rivPic1.setOnClickListener(this)
         binding.rivPic2.setOnClickListener(this)
         binding.rivPic3.setOnClickListener(this)
-        binding.rflPay.setOnClickListener(this)
+        ClickUtils.applySingleDebouncing(binding.rflPay,3000, this)
     }
 
     override fun initData() {

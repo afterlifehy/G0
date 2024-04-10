@@ -21,6 +21,7 @@ import androidx.core.content.FileProvider
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.FileUtils
@@ -181,11 +182,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.rrlArrears.setOnClickListener(this)
         binding.rrlExitMethod.setOnClickListener(this)
-        binding.rlCamera.setOnClickListener(this)
-        binding.rflNotification.setOnClickListener(this)
+        ClickUtils.applySingleDebouncing(binding.rlCamera,1000,this)
+        ClickUtils.applySingleDebouncing(binding.rflNotification, 3000, this)
         binding.rflReport.setOnClickListener(this)
         binding.rflRenewal.setOnClickListener(this)
-        binding.rflFinish.setOnClickListener(this)
+        ClickUtils.applySingleDebouncing(binding.rflFinish, 3000, this)
     }
 
     override fun initData() {

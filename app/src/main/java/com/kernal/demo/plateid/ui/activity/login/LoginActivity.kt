@@ -22,6 +22,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.PhoneUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
@@ -72,7 +73,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         address: String?
                     ) {
                         if (isSuccess) {
-                            Log.v("1234","${lat},${lon}")
+                            Log.v("1234", "${lat},${lon}")
                             this@LoginActivity.lat = lat
                             this@LoginActivity.lon = lon
                             locationEnable = 1
@@ -117,7 +118,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             com.kernal.demo.base.R.color.color_ff04a091
                         )
                     )
-                    binding.rtvLogin.setOnClickListener(this@LoginActivity)
+                    ClickUtils.applySingleDebouncing(binding.rtvLogin, 3000, this@LoginActivity)
                 } else {
                     binding.rtvLogin.delegate.setBackgroundColor(
                         ContextCompat.getColor(
@@ -149,7 +150,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             com.kernal.demo.base.R.color.color_ff04a091
                         )
                     )
-                    binding.rtvLogin.setOnClickListener(this@LoginActivity)
+                    ClickUtils.applySingleDebouncing(binding.rtvLogin, 3000, this@LoginActivity)
                 } else {
                     binding.rtvLogin.delegate.setBackgroundColor(
                         ContextCompat.getColor(

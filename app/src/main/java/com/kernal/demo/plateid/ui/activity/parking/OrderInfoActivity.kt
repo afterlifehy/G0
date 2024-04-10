@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.ClickUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
 import com.kernal.demo.base.BaseApplication
@@ -68,9 +69,9 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
 
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
-        binding.rflAppPay.setOnClickListener(this)
-        binding.rflRefusePay.setOnClickListener(this)
-        binding.rflScanPay.setOnClickListener(this)
+        ClickUtils.applySingleDebouncing(binding.rflAppPay, 3000, this)
+        ClickUtils.applySingleDebouncing(binding.rflRefusePay, 3000, this)
+        ClickUtils.applySingleDebouncing(binding.rflScanPay, 3000, this@OrderInfoActivity)
         binding.etPayableAmount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -83,10 +84,10 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                 var value = s.toString()
                 if (value.isNotEmpty()) {
                     if (value.length > 1 && value.startsWith("0")) {
-                        value = value.substring(1,value.length)
+                        value = value.substring(1, value.length)
                         binding.etPayableAmount.setText(value)
                         binding.etPayableAmount.setSelection(value.length)
-                    }else{
+                    } else {
                         val amount = value.toDouble().toInt()
                         if (amount > endOrderBean?.realtimeMoney!!.toDouble().toInt()) {
                             binding.etPayableAmount.setText(endOrderBean?.realtimeMoney!!.toDouble().toInt().toString())
@@ -156,7 +157,8 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                             )
                         )
                         binding.rflScanPay.delegate.init()
-                        binding.rflScanPay.setOnClickListener(this@OrderInfoActivity)
+                        ClickUtils.applySingleDebouncing(binding.rflScanPay, 3000, this@OrderInfoActivity)
+
                     }
                 }, 3000)
             }

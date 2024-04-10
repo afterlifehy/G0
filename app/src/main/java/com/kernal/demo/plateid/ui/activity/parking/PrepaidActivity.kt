@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.ClickUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
@@ -135,7 +136,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.rflAdd.setOnClickListener(this)
         binding.rflMinus.setOnClickListener(this)
-        binding.rflScanPay.setOnClickListener(this)
+        ClickUtils.applySingleDebouncing(binding.rflScanPay, 3000, this)
         binding.etTimeDuration.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 

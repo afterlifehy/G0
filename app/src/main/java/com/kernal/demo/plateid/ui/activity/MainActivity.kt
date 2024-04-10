@@ -17,6 +17,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PathUtils
 import com.blankj.utilcode.util.PermissionUtils
@@ -168,12 +169,15 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     }
 
     override fun initListener() {
-        binding.ivHead.setOnClickListener(this)
-        binding.llParkingLot.setOnClickListener(this)
-        binding.flIncomeCounting.setOnClickListener(this)
-        binding.flOrder.setOnClickListener(this)
-        binding.flBerthAbnormal.setOnClickListener(this)
-        binding.flLogout.setOnClickListener(this)
+        val views = arrayOf(
+            binding.ivHead,
+            binding.llParkingLot,
+            binding.flIncomeCounting,
+            binding.flOrder,
+            binding.flBerthAbnormal,
+            binding.flLogout
+        )
+        ClickUtils.applySingleDebouncing(views, 1000, this)
     }
 
     @SuppressLint("SetTextI18n")

@@ -13,6 +13,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
@@ -97,8 +98,8 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
-        binding.rflUpload.setOnClickListener(this)
-        binding.ivCamera.setOnClickListener(this)
+        ClickUtils.applySingleDebouncing(binding.rflUpload, 3000, this)
+        ClickUtils.applySingleDebouncing(binding.ivCamera, 3000, this)
         binding.srlOrder.setOnRefreshListener {
             pageIndex = 1
             binding.srlOrder.finishRefresh(5000)
@@ -260,7 +261,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
-            mException.observe(this@OrderInquiryActivity){
+            mException.observe(this@OrderInquiryActivity) {
                 dismissProgressDialog()
             }
         }

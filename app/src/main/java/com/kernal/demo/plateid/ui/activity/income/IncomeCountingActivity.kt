@@ -10,6 +10,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.constant.TimeConstants
+import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
@@ -59,7 +60,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.tvTotalIncomeTitle.setOnClickListener(this)
-        binding.rtvPrint.setOnClickListener(this)
+        ClickUtils.applySingleDebouncing(binding.rtvPrint, 3000, this)
     }
 
     override fun initData() {

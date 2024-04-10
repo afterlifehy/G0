@@ -10,6 +10,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.ClickUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.bean.OrderBean
@@ -73,7 +74,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                             BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
                         )
                     )
-                    binding.rtvUpload.setOnClickListener(this)
+                    ClickUtils.applyGlobalDebouncing(binding.rtvUpload,3000,this)
                     binding.rtvUpload.delegate.init()
                 } else {
                     binding.rtvUpload.delegate.setBackgroundColor(
@@ -131,7 +132,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                         BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
                     )
                 )
-                binding.rtvUpload.setOnClickListener(this)
+                ClickUtils.applyGlobalDebouncing(binding.rtvUpload,3000,this)
                 binding.rtvUpload.delegate.init()
             } else {
                 binding.rtvUpload.delegate.setBackgroundColor(

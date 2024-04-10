@@ -3,6 +3,7 @@ package com.kernal.demo.plateid.adapter
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import com.blankj.utilcode.util.ClickUtils
 import com.kernal.demo.base.adapter.BaseBindingAdapter
 import com.kernal.demo.base.adapter.VBViewHolder
 import com.kernal.demo.base.bean.TransactionBean
@@ -14,8 +15,16 @@ import com.zrq.spanbuilder.TextStyle
 
 class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val onClickListener: OnClickListener) :
     BaseBindingAdapter<TransactionBean, ItemTransactionQueryBinding>(data) {
-    val colors = intArrayOf(com.kernal.demo.base.R.color.color_ff04a091, com.kernal.demo.base.R.color.color_ff04a091, com.kernal.demo.base.R.color.color_ff04a091)
-    val colors2 = intArrayOf(com.kernal.demo.base.R.color.color_ffe92404, com.kernal.demo.base.R.color.color_ffe92404, com.kernal.demo.base.R.color.color_ffe92404)
+    val colors = intArrayOf(
+        com.kernal.demo.base.R.color.color_ff04a091,
+        com.kernal.demo.base.R.color.color_ff04a091,
+        com.kernal.demo.base.R.color.color_ff04a091
+    )
+    val colors2 = intArrayOf(
+        com.kernal.demo.base.R.color.color_ffe92404,
+        com.kernal.demo.base.R.color.color_ffe92404,
+        com.kernal.demo.base.R.color.color_ffe92404
+    )
     val sizes = intArrayOf(16, 20, 16)
     val styles = arrayOf(TextStyle.NORMAL, TextStyle.BOLD, TextStyle.NORMAL)
 
@@ -31,14 +40,14 @@ class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val 
             holder.vb.flNotification.show()
             holder.vb.flPaymentInquiry.gone()
             holder.vb.flNotification.tag = item
-            holder.vb.flNotification.setOnClickListener(onClickListener)
+            ClickUtils.applySingleDebouncing(holder.vb.flNotification, 3000, onClickListener)
         } else {
             val strings = arrayOf("未付：", item.oweMoney, "元")
             holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colors2, styles)
             holder.vb.flNotification.gone()
             holder.vb.flPaymentInquiry.show()
             holder.vb.flPaymentInquiry.tag = item
-            holder.vb.flPaymentInquiry.setOnClickListener(onClickListener)
+            ClickUtils.applyGlobalDebouncing(holder.vb.flPaymentInquiry, 3000, onClickListener)
         }
     }
 
