@@ -231,8 +231,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         val jsonobject = JSONObject()
         jsonobject["loginName"] = binding.etAccount.text.toString()
         jsonobject["passWord"] = binding.etPw.text.toString()
-        jsonobject["longitude"] = lon
-        jsonobject["latitude"] = lat
+        jsonobject["longitude"] = lon.toString()
+        jsonobject["latitude"] = lat.toString()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             jsonobject["simId"] = PhoneUtils.getIMSI()
         } else {

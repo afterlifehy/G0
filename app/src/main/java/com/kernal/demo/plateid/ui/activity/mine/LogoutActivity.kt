@@ -63,29 +63,33 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             }
         }
         var rxPermissions = RxPermissions(this@LogoutActivity)
-        if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            baiduLocationUtil = BaiduLocationUtil()
-            baiduLocationUtil.initBaiduLocation()
-            val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                override fun locationChange(
-                    lon: Double,
-                    lat: Double,
-                    location: LocationClientOption?,
-                    isSuccess: Boolean,
-                    address: String?
-                ) {
-                    if (isSuccess) {
-                        this@LogoutActivity.lat = lat
-                        this@LogoutActivity.lon = lon
-                        locationEnable = 1
-                    } else {
-                        locationEnable = -1
+        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
+            if (it) {
+                baiduLocationUtil = BaiduLocationUtil()
+                baiduLocationUtil.initBaiduLocation()
+                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+                    override fun locationChange(
+                        lon: Double,
+                        lat: Double,
+                        location: LocationClientOption?,
+                        isSuccess: Boolean,
+                        address: String?
+                    ) {
+                        if (isSuccess) {
+                            this@LogoutActivity.lat = lat
+                            this@LogoutActivity.lon = lon
+                            locationEnable = 1
+                        } else {
+                            locationEnable = -1
+                        }
                     }
-                }
 
+                }
+                baiduLocationUtil.setBaiduLocationCallBack(callback)
+                baiduLocationUtil.startLocation()
+            } else {
+                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
             }
-            baiduLocationUtil.setBaiduLocationCallBack(callback)
-            baiduLocationUtil.startLocation()
         }
     }
 
@@ -112,11 +116,18 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             }
 
             R.id.tv_logout -> {
+                var rxPermissions = RxPermissions(this@LogoutActivity)
                 if (locationEnable == 1) {
-                    logout()
+                    rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
+                        if (it) {
+                            logout()
+                        } else {
+                            ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
+                        }
+                    }
+
                 } else {
-                    var rxPermissions = RxPermissions(this@LogoutActivity)
-                    if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION) && rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
                         ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
                     } else {
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
@@ -143,8 +154,10 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                 }
                                 baiduLocationUtil.setBaiduLocationCallBack(callback)
                                 baiduLocationUtil.startLocation()
-                            } else {
+                            } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                                 ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                            } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
                             }
                         }
                     }
