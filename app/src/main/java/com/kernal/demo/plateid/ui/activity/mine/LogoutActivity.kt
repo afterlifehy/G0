@@ -118,7 +118,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             R.id.tv_logout -> {
                 var rxPermissions = RxPermissions(this@LogoutActivity)
                 if (locationEnable == 1) {
-                    rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
+                    rxPermissions.request(Manifest.permission.READ_PHONE_STATE).subscribe {
                         if (it) {
                             logout()
                         } else {

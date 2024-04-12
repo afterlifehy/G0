@@ -183,10 +183,16 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
 
             R.id.rtv_login -> {
+                var rxPermissions = RxPermissions(this@LoginActivity)
                 if (locationEnable == 1) {
-                    login()
+                    rxPermissions.request(Manifest.permission.READ_PHONE_STATE).subscribe {
+                        if (it) {
+                            login()
+                        } else {
+                            ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
+                        }
+                    }
                 } else {
-                    var rxPermissions = RxPermissions(this@LoginActivity)
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
                     } else {
@@ -214,8 +220,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                                 }
                                 baiduLocationUtil.setBaiduLocationCallBack(callback)
                                 baiduLocationUtil.startLocation()
-                            } else {
+                            } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                                 ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                            } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
                             }
                         }
                     }
