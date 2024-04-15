@@ -73,7 +73,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         address: String?
                     ) {
                         if (isSuccess) {
-                            Log.v("1234", "${lat},${lon}")
                             this@LoginActivity.lat = lat
                             this@LoginActivity.lon = lon
                             locationEnable = 1

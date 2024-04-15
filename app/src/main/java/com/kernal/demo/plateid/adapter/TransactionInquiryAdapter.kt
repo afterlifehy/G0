@@ -3,7 +3,10 @@ package com.kernal.demo.plateid.adapter
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import com.aries.ui.view.radius.RadiusTextView
 import com.blankj.utilcode.util.ClickUtils
+import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.adapter.BaseBindingAdapter
 import com.kernal.demo.base.adapter.VBViewHolder
 import com.kernal.demo.base.bean.TransactionBean
@@ -49,6 +52,51 @@ class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val 
             holder.vb.flPaymentInquiry.tag = item
             ClickUtils.applyGlobalDebouncing(holder.vb.flPaymentInquiry, 3000, onClickListener)
         }
+        when (item.orderType) {
+            "0" -> {
+                showOrderType(
+                    holder.vb.rtvOrderType,
+                    "预付费",
+                    com.kernal.demo.base.R.color.color_ffd6b25a,
+                    com.kernal.demo.base.R.color.color_ffd6b25a
+                )
+            }
+
+            "1" -> {
+                showOrderType(
+                    holder.vb.rtvOrderType,
+                    "补缴费",
+                    com.kernal.demo.base.R.color.color_ffd6b25a,
+                    com.kernal.demo.base.R.color.color_ffd6b25a
+                )
+            }
+
+            "2" -> {
+                showOrderType(
+                    holder.vb.rtvOrderType,
+                    "欠费追缴",
+                    com.kernal.demo.base.R.color.color_ffd6b25a,
+                    com.kernal.demo.base.R.color.color_ffd6b25a
+                )
+            }
+        }
+    }
+
+    fun showOrderType(rtvOrderType: RadiusTextView, content: String, color1: Int, color2: Int) {
+        rtvOrderType.show()
+        rtvOrderType.text = content
+        rtvOrderType.delegate.setTextColor(
+            ContextCompat.getColor(
+                BaseApplication.instance(),
+                color1
+            )
+        )
+        rtvOrderType.delegate.setBackgroundColor(
+            ContextCompat.getColor(
+                BaseApplication.instance(),
+                color2
+            )
+        )
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemTransactionQueryBinding {
