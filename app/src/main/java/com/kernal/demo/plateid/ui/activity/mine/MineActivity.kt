@@ -2,15 +2,12 @@ package com.kernal.demo.plateid.ui.activity.mine
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
@@ -42,6 +39,7 @@ import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.ext.startArouter
 import com.kernal.demo.plateid.BuildConfig
 import kotlinx.coroutines.runBlocking
+import java.io.File
 
 @Route(path = ARouterMap.MINE)
 class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnClickListener {
@@ -262,53 +260,19 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         var rxPermissions = RxPermissions(this@MineActivity)
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe {
             if (it) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (packageManager.canRequestPackageInstalls()) {
-                        UpdateUtil.instance?.downloadFileAndInstall(object :UpdateUtil.UpdateInterface {
-                            override fun requestionPermission() {
+                UpdateUtil.instance?.downloadFileAndInstall(object : UpdateUtil.UpdateInterface {
+                    override fun requestionPermission() {
 
-                            }
-
-                            override fun install(path: String) {
-                            }
-
-                        })
-                    } else {
-                        val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
-                        val intent =
-                            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
-                        requestInstallPackageLauncher.launch(intent)
                     }
-                } else {
-                    UpdateUtil.instance?.downloadFileAndInstall(object :UpdateUtil.UpdateInterface {
-                        override fun requestionPermission() {
 
-                        }
+                    override fun install(path: String) {
+                        AppUtils.installApp(path)
+                    }
 
-                        override fun install(path: String) {
-                        }
-
-                    })
-                }
+                })
             } else {
 
             }
-        }
-    }
-
-    val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            UpdateUtil.instance?.downloadFileAndInstall(object :UpdateUtil.UpdateInterface {
-                override fun requestionPermission() {
-
-                }
-
-                override fun install(path: String) {
-                }
-
-            })
-        } else {
-
         }
     }
 

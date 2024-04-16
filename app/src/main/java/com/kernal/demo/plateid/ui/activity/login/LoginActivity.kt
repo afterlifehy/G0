@@ -2,21 +2,16 @@ package com.kernal.demo.plateid.ui.activity.login
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
@@ -37,7 +32,6 @@ import com.kernal.demo.plateid.databinding.ActivityLoginBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LoginViewModel
 import com.kernal.demo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -297,40 +291,12 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     }
 
                     override fun install(path: String) {
-                        if (packageManager.canRequestPackageInstalls()) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                val contentUri =
-                                    FileProvider.getUriForFile(this@LoginActivity, "com.kernal.demo.plateid.fileprovider", File(path))
-                                intent.setDataAndType(contentUri, "application/vnd.android.package-archive")
-                            } else {
-                                intent.setDataAndType(Uri.fromFile(File(path)), "application/vnd.android.package-archive")
-                            }
-                        } else {
-                            AppUtils.installApp(path)
-                        }
+                        AppUtils.installApp(path)
                     }
-
                 })
             } else {
 
             }
-        }
-    }
-
-    val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            UpdateUtil.instance?.downloadFileAndInstall(object : UpdateUtil.UpdateInterface {
-                override fun requestionPermission() {
-
-                }
-
-                override fun install(path: String) {
-                }
-
-            })
-        } else {
-
         }
     }
 

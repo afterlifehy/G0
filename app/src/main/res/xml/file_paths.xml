@@ -25,6 +25,9 @@
         name="beta_external_files_path"
         path="Android/data/" />
     <external-path
+        name="external_files"
+        path="." />
+    <external-path
         name="files_root"
         path="Android/data/com.kernal.demo.plateid/" />
     <external-path

@@ -50,7 +50,6 @@ import com.kernal.demo.plateid.ui.activity.login.StreetChooseActivity
 import com.kernal.demo.plateid.ui.activity.mine.LogoutActivity
 import com.kernal.demo.plateid.ui.activity.order.OrderMainActivity
 import com.kernal.demo.plateid.ui.activity.parking.ParkingLotActivity
-import com.kernal.demo.plateid.util.UpdateUtil
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -349,62 +348,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("CheckResult")
-    fun requestPermissions() {
-        var rxPermissions = RxPermissions(this@MainActivity)
-        rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe {
-            if (it) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (packageManager.canRequestPackageInstalls()) {
-                        UpdateUtil.instance?.downloadFileAndInstall(object : UpdateUtil.UpdateInterface {
-                            override fun requestionPermission() {
-
-                            }
-
-                            override fun install(path: String) {
-                            }
-
-                        })
-                    } else {
-                        val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
-                        val intent =
-                            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
-                        requestInstallPackageLauncher.launch(intent)
-                    }
-                } else {
-                    UpdateUtil.instance?.downloadFileAndInstall(object : UpdateUtil.UpdateInterface {
-                        override fun requestionPermission() {
-
-                        }
-
-                        override fun install(path: String) {
-                        }
-
-                    })
-                }
-            } else {
-
-            }
-        }
-    }
-
-    val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            UpdateUtil.instance?.downloadFileAndInstall(object : UpdateUtil.UpdateInterface {
-                override fun requestionPermission() {
-
-                }
-
-                override fun install(path: String) {
-                }
-
-            })
-        } else {
-
         }
     }
 

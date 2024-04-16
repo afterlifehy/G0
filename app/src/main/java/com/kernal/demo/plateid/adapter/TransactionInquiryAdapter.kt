@@ -58,7 +58,7 @@ class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val 
                     holder.vb.rtvOrderType,
                     "预付费",
                     com.kernal.demo.base.R.color.color_ffd6b25a,
-                    com.kernal.demo.base.R.color.color_ffd6b25a
+                    com.kernal.demo.base.R.color.color_fffef3d5
                 )
             }
 
@@ -67,7 +67,7 @@ class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val 
                     holder.vb.rtvOrderType,
                     "补缴费",
                     com.kernal.demo.base.R.color.color_ffd6b25a,
-                    com.kernal.demo.base.R.color.color_ffd6b25a
+                    com.kernal.demo.base.R.color.color_fffef3d5
                 )
             }
 
@@ -76,8 +76,12 @@ class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val 
                     holder.vb.rtvOrderType,
                     "欠费追缴",
                     com.kernal.demo.base.R.color.color_ffd6b25a,
-                    com.kernal.demo.base.R.color.color_ffd6b25a
+                    com.kernal.demo.base.R.color.color_fffef3d5
                 )
+            }
+
+            else -> {
+                holder.vb.rtvOrderType.gone()
             }
         }
     }
