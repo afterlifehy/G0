@@ -50,7 +50,7 @@ class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val 
             holder.vb.flNotification.gone()
             holder.vb.flPaymentInquiry.show()
             holder.vb.flPaymentInquiry.tag = item
-            ClickUtils.applyGlobalDebouncing(holder.vb.flPaymentInquiry, 3000, onClickListener)
+            ClickUtils.applySingleDebouncing(holder.vb.flPaymentInquiry, 3000, onClickListener)
         }
         when (item.orderType) {
             "0" -> {

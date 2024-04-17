@@ -99,7 +99,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
         ClickUtils.applySingleDebouncing(binding.rflUpload, 3000, this)
-        ClickUtils.applySingleDebouncing(binding.ivCamera, 3000, this)
+        ClickUtils.applySingleDebouncing(binding.ivCamera, 1000, this)
         binding.srlOrder.setOnRefreshListener {
             pageIndex = 1
             binding.srlOrder.finishRefresh(5000)

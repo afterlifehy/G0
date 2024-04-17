@@ -94,7 +94,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
-        ClickUtils.applySingleDebouncing(binding.ivCamera,3000,this)
+        ClickUtils.applySingleDebouncing(binding.ivCamera,1000,this)
         binding.srlTransaction.setOnRefreshListener {
             pageIndex = 1
             binding.srlTransaction.finishRefresh(5000)

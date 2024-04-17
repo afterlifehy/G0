@@ -74,7 +74,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                             BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
                         )
                     )
-                    ClickUtils.applyGlobalDebouncing(binding.rtvUpload,3000,this)
+                    ClickUtils.applySingleDebouncing(binding.rtvUpload,3000,this)
                     binding.rtvUpload.delegate.init()
                 } else {
                     binding.rtvUpload.delegate.setBackgroundColor(
@@ -132,7 +132,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                         BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
                     )
                 )
-                ClickUtils.applyGlobalDebouncing(binding.rtvUpload,3000,this)
+                ClickUtils.applySingleDebouncing(binding.rtvUpload,3000,this)
                 binding.rtvUpload.delegate.init()
             } else {
                 binding.rtvUpload.delegate.setBackgroundColor(
