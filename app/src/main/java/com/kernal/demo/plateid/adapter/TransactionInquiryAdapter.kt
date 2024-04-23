@@ -53,7 +53,7 @@ class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val 
             ClickUtils.applySingleDebouncing(holder.vb.flPaymentInquiry, 3000, onClickListener)
         }
         when (item.orderType) {
-            "0" -> {
+            "1" -> {
                 showOrderType(
                     holder.vb.rtvOrderType,
                     "预付费",
@@ -62,7 +62,7 @@ class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val 
                 )
             }
 
-            "1" -> {
+            "2" -> {
                 showOrderType(
                     holder.vb.rtvOrderType,
                     "补缴费",
@@ -71,7 +71,7 @@ class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val 
                 )
             }
 
-            "2" -> {
+            "3" -> {
                 showOrderType(
                     holder.vb.rtvOrderType,
                     "欠费追缴",

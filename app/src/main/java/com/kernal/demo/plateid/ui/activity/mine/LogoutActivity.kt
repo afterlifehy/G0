@@ -185,7 +185,6 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                             PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.loginName)
                         val param = HashMap<String, Any>()
                         val jsonobject = JSONObject()
-                        jsonobject["simId"] = simId
                         jsonobject["loginName"] = loginName
                         jsonobject["longitude"] = lon.toString()
                         jsonobject["latitude"] = lat.toString()

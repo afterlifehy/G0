@@ -7,7 +7,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +23,7 @@ import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PathUtils
 import com.blankj.utilcode.util.PermissionUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
 import com.kernal.demo.base.BaseApplication
@@ -50,6 +53,7 @@ import com.kernal.demo.plateid.ui.activity.login.StreetChooseActivity
 import com.kernal.demo.plateid.ui.activity.mine.LogoutActivity
 import com.kernal.demo.plateid.ui.activity.order.OrderMainActivity
 import com.kernal.demo.plateid.ui.activity.parking.ParkingLotActivity
+import com.kernal.demo.plateid.util.NetTimeUtil
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -356,7 +360,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, true)
             GlobalScope.launch {
                 while (PreferencesDataStore(BaseApplication.instance()).getBoolean(PreferencesKeys.isUpdateLocation)) {
-                    delay(1000 * 60 * 5)
+                    delay(1000 * 60)
                     action.invoke()
                 }
             }

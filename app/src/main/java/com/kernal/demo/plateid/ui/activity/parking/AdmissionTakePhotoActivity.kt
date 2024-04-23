@@ -128,7 +128,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         binding.rivPanorama.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
-        ClickUtils.applySingleDebouncing(binding.rflStartBilling, 3000, this@AdmissionTakePhotoActivity)
+        ClickUtils.applySingleDebouncing(binding.rflStartBilling, 1000, this@AdmissionTakePhotoActivity)
     }
 
     override fun initData() {

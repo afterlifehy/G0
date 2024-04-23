@@ -186,7 +186,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         ClickUtils.applySingleDebouncing(binding.rflNotification, 3000, this)
         binding.rflReport.setOnClickListener(this)
         binding.rflRenewal.setOnClickListener(this)
-        ClickUtils.applySingleDebouncing(binding.rflFinish, 3000, this)
+        ClickUtils.applySingleDebouncing(binding.rflFinish, 1000, this)
     }
 
     override fun initData() {

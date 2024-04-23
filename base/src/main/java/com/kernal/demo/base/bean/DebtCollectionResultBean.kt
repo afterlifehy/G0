@@ -11,7 +11,7 @@ data class DebtCollectionResultBean(
 data class DebtCollectionBean @JvmOverloads constructor(
     var carLicense: String? = "",
     var companyName: String = "",
-    var companyPhone: String = "",
+    var companyPhone: String? = "",
     var districtId: String = "",
     var dueMoney: Int,
     var endTime: String = "",
