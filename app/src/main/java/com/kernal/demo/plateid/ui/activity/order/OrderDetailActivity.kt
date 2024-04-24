@@ -244,8 +244,8 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
         mViewModel.apply {
             picInquiryLiveData.observe(this@OrderDetailActivity) {
                 dismissProgressDialog()
-                picList.add(it.inPicture11)
                 picList.add(it.inPicture10)
+                picList.add(it.inPicture11)
                 picList.add(it.inPicture20)
                 GlideUtils.instance?.loadImage(binding.rivPic1, picList[0], com.kernal.demo.common.R.mipmap.ic_placeholder)
                 GlideUtils.instance?.loadImage(binding.rivPic2, picList[1], com.kernal.demo.common.R.mipmap.ic_placeholder)
