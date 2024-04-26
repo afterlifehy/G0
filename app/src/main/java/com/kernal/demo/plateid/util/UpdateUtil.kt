@@ -1,7 +1,6 @@
 package com.kernal.demo.plateid.util
 
 import android.os.Build
-import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.PathUtils
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener

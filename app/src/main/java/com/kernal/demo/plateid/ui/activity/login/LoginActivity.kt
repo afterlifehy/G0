@@ -245,7 +245,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         mViewModel.login(param)
     }
 
-    @SuppressLint("NewApi")
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
@@ -279,7 +278,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CheckResult")
     fun requestPermissions() {
         var rxPermissions = RxPermissions(this@LoginActivity)

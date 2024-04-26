@@ -254,7 +254,6 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CheckResult")
     fun requestPermissions() {
         var rxPermissions = RxPermissions(this@MineActivity)
@@ -276,7 +275,6 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
