@@ -57,6 +57,7 @@ class AppApplication : BaseApplication() {
         list.add(HostInterceptor())
         list.add(TokenInterceptor())
         list.add(ExceptionInterceptor())
+        list.add(RetryInterceptor())
         if (BuildConfig.is_debug) {
             list.add(LogInterceptor(BuildConfig.is_debug))
             val mHttpLoggingInterceptor = HttpLoggingInterceptor("G0_http")
