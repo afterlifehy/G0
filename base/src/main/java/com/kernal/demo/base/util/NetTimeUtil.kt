@@ -1,4 +1,4 @@
-package com.kernal.demo.plateid.util
+package com.kernal.demo.base.util
 
 import okhttp3.OkHttpClient
 import okhttp3.Request

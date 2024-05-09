@@ -1,14 +1,21 @@
 package com.kernal.demo.base.http.interceptor
 
+import com.kernal.demo.base.util.NetTimeUtil
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.io.IOException
+import kotlin.math.abs
 
 class TokenInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
 
-        val response = chain.proceed(chain.request())
-
+        val request = chain.request()
+        val netTime = NetTimeUtil.getNetTime()
+        if (netTime > 0 && abs(netTime - System.currentTimeMillis()) > 1000 * 60) {
+            throw IOException("本机时间有误，请联系后台客服人员处理")
+        }
+        val response = chain.proceed(request)
         //   if (response.code() == 401) {
 
 //            val url = chain.request().url().toString()

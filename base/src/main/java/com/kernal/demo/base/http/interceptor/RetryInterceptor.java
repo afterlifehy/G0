@@ -14,7 +14,6 @@ import okhttp3.Response;
  */
 public final class RetryInterceptor implements Interceptor {
     private volatile int maxRetries = 2;
-    private volatile int retryNum = 0;
     private volatile long retryInterval = 2000L;
 
     @Override

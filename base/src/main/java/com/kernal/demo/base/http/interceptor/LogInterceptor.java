@@ -32,12 +32,12 @@ public class LogInterceptor implements Interceptor {
             String content = response.body().string();
             if (isDebug) {
 //                String[] url = response.request().url().url().toString().split("/");
-//                String metoh = url[url.length - 1];
-//                if (metoh.contains("?")) {
-//                    metoh = metoh.split("?")[0];
+//                String method = url[url.length - 1];
+//                if (method.contains("?")) {
+//                    method = method.split("?")[0];
 //                }
-//                Log.i("keey", "url:" + metoh);
-//                Log.i("metoh:", "request:" + request.toString() + "==" + "response body:" + content);//输出返回信息
+//                Log.i("keey", "url:" + method);
+//                Log.i("method:", "request:" + request.toString() + "==" + "response body:" + content);//输出返回信息
 
                 Log.i("HttpResponse:", "request:" + request.toString() + "==" + "response body:" + content);//输出返回信息
             }

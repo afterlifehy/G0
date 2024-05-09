@@ -2,28 +2,20 @@ package com.kernal.demo.plateid.ui.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.baidu.location.LocationClientOption
-import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PathUtils
 import com.blankj.utilcode.util.PermissionUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
 import com.kernal.demo.base.BaseApplication
@@ -53,7 +45,6 @@ import com.kernal.demo.plateid.ui.activity.login.StreetChooseActivity
 import com.kernal.demo.plateid.ui.activity.mine.LogoutActivity
 import com.kernal.demo.plateid.ui.activity.order.OrderMainActivity
 import com.kernal.demo.plateid.ui.activity.parking.ParkingLotActivity
-import com.kernal.demo.plateid.util.NetTimeUtil
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
