@@ -65,7 +65,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         var rxPermissions = RxPermissions(this@LogoutActivity)
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
             if (it) {
-                baiduLocationUtil = BaiduLocationUtil()
+                baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
                 baiduLocationUtil.initBaiduLocation()
                 val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
                     override fun locationChange(
@@ -86,7 +86,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
 
                 }
                 baiduLocationUtil.setBaiduLocationCallBack(callback)
-                baiduLocationUtil.startLocation()
+//                baiduLocationUtil.startLocation()
             } else {
                 ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
             }
@@ -132,7 +132,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     } else {
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
                             if (it) {
-                                baiduLocationUtil = BaiduLocationUtil()
+                                baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
                                 baiduLocationUtil.initBaiduLocation()
                                 val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
                                     override fun locationChange(
@@ -153,7 +153,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
 
                                 }
                                 baiduLocationUtil.setBaiduLocationCallBack(callback)
-                                baiduLocationUtil.startLocation()
+//                                baiduLocationUtil.startLocation()
                             } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                                 ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
                             } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
@@ -219,13 +219,6 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        GlobalScope.launch(Dispatchers.IO) {
-            job?.cancelAndJoin()
-        }
-    }
-
     override fun getVbBindingView(): ViewBinding {
         return ActivityLogOutBinding.inflate(layoutInflater)
     }
@@ -244,4 +237,23 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         return LogoutViewModel::class.java
     }
 
+    override fun onResume() {
+        super.onResume()
+//        if (baiduLocationUtil != null) {
+//            baiduLocationUtil.startLocation()
+//        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        GlobalScope.launch(Dispatchers.IO) {
+            job?.cancelAndJoin()
+        }
+//        baiduLocationUtil.stopLocation()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        baiduLocationUtil.unregisterListener()
+    }
 }

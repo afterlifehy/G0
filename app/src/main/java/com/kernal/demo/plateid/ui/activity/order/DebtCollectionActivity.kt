@@ -90,6 +90,17 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
         binding.root.setOnClickListener {
             keyboardUtil.hideKeyboard()
         }
+        keyboardUtil.setCallBack(object : KeyboardUtil.KeyInputCallBack {
+            override fun keyInput(value: String) {
+            }
+
+            override fun keyDelete() {
+            }
+
+            override fun enterKey() {
+                query()
+            }
+        })
     }
 
     override fun initListener() {
@@ -119,15 +130,6 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             }
 
             R.id.tv_search -> {
-                carLicense = binding.etSearch.text.toString()
-                if (carLicense.isEmpty()) {
-                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请输入车牌号))
-                    return
-                }
-                if (carLicense.length != 7 && carLicense.length != 8) {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
-                    return
-                }
                 query()
             }
 
@@ -148,6 +150,15 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     fun query() {
         keyboardUtil.hideKeyboard()
         showProgressDialog(20000)
+        carLicense = binding.etSearch.text.toString()
+        if (carLicense.isEmpty()) {
+            ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请输入车牌号))
+            return
+        }
+        if (carLicense.length != 7 && carLicense.length != 8) {
+            ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
+            return
+        }
         runBlocking {
             simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             val param = HashMap<String, Any>()

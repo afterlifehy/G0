@@ -171,6 +171,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 override fun keyDelete() {
                     binding.pvPlate.keyDelete()
                 }
+
+                override fun enterKey() {
+
+                }
             })
             true
         }

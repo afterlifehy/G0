@@ -63,7 +63,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         var rxPermissions = RxPermissions(this@StreetChooseActivity)
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
             if (it) {
-                baiduLocationUtil = BaiduLocationUtil()
+                baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
                 baiduLocationUtil.initBaiduLocation()
                 val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
                     override fun locationChange(
@@ -84,7 +84,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
                 }
                 baiduLocationUtil.setBaiduLocationCallBack(callback)
-                baiduLocationUtil.startLocation()
+//                baiduLocationUtil.startLocation()
             }
         }
     }
@@ -129,7 +129,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 } else {
                     if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
-                        baiduLocationUtil = BaiduLocationUtil()
+                        baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
                         baiduLocationUtil.initBaiduLocation()
                         val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
                             override fun locationChange(
@@ -150,7 +150,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
                         }
                         baiduLocationUtil.setBaiduLocationCallBack(callback)
-                        baiduLocationUtil.startLocation()
+//                        baiduLocationUtil.startLocation()
                     } else {
                         PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION)
                             .callback(object : PermissionUtils.FullCallback {
@@ -159,7 +159,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
                                 override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
                                     ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
-                                    baiduLocationUtil = BaiduLocationUtil()
+                                    baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
                                     baiduLocationUtil.initBaiduLocation()
                                     val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
                                         override fun locationChange(
@@ -180,7 +180,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
                                     }
                                     baiduLocationUtil.setBaiduLocationCallBack(callback)
-                                    baiduLocationUtil.startLocation()
+//                                    baiduLocationUtil.startLocation()
                                 }
                             }).request()
                     }
@@ -239,6 +239,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     RealmUtil.instance?.addRealm(WorkingHoursBean(loginInfo!!.loginName, System.currentTimeMillis()))
                 }
                 ARouter.getInstance().build(ARouterMap.MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                finish()
             }
             errMsg.observe(this@StreetChooseActivity) {
                 dismissProgressDialog()
@@ -266,5 +267,22 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
     override fun marginStatusBarView(): View {
         return binding.layoutToolbar.ablToolbar
+    }
+
+    override fun onResume() {
+        super.onResume()
+//        if (baiduLocationUtil != null) {
+//            baiduLocationUtil.startLocation()
+//        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+//        baiduLocationUtil.stopLocation()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        baiduLocationUtil.unregisterListener()
     }
 }

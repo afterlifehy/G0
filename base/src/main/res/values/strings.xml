@@ -193,4 +193,10 @@
     <string name="未付">未付：</string>
     <string name="未获取到位置信息">未获取到位置信息</string>
     <string name="请授权电话权限">请授权电话权限</string>
+    <string name="黄绿">黄绿</string>
+    <string name="黑牌">黑牌</string>
+    <string name="白牌">白牌</string>
+    <string name="蓝牌">蓝牌</string>
+    <string name="黄牌">黄牌</string>
+    <string name="绿牌">绿牌</string>
 </resources>

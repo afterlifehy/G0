@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.ArrayMap
@@ -92,6 +91,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
     var panoramaFileName = ""
     var panoramaImageBitmap: Bitmap? = null
     var plateLogoColorMap: MutableMap<String, Int> = ArrayMap()
+    var plateColorTxtMap: MutableMap<String, String> = ArrayMap()
 
     var promptDialog: PromptDialog? = null
 
@@ -110,6 +110,21 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
         plateLogoColorMap[Constant.PINK] = com.kernal.demo.base.R.color.white
         plateLogoColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.white
         plateLogoColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.white
+
+        plateColorTxtMap[Constant.BLACK] = i18n(com.kernal.demo.base.R.string.黑牌)
+        plateColorTxtMap[Constant.WHITE] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.GREY] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.RED] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.BLUE] = i18n(com.kernal.demo.base.R.string.蓝牌)
+        plateColorTxtMap[Constant.YELLOW] = i18n(com.kernal.demo.base.R.string.黄牌)
+        plateColorTxtMap[Constant.ORANGE] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.BROWN] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.GREEN] = i18n(com.kernal.demo.base.R.string.绿牌)
+        plateColorTxtMap[Constant.PURPLE] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.CYAN] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.PINK] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.TRANSPARENT] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.OTHERS] = i18n(com.kernal.demo.base.R.string.白牌)
     }
 
     override fun initView() {
@@ -588,6 +603,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     com.kernal.demo.base.R.color.transparent
                 )
             )
+            binding.rtvCarColor.text = i18n(com.kernal.demo.base.R.string.黄绿)
             binding.rtvCarColor.delegate.init()
         } else {
             if (checkedColor.isNotEmpty()) {
@@ -600,6 +616,7 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                         plateLogoColorMap[checkedColor]!!
                     )
                 )
+                binding.rtvCarColor.text = plateColorTxtMap[checkedColor]
                 if (plateLogoColorMap[checkedColor]!! == com.kernal.demo.base.R.color.white) {
                     binding.rtvCarColor.delegate.setStrokeWidth(1)
                     binding.rtvCarColor.delegate.setTextColor(

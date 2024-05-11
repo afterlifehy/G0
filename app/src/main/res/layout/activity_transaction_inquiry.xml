@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_ffe8eef6">
@@ -15,11 +16,23 @@
         android:id="@+id/layout_toolbar"
         layout="@layout/layout_comment_toolbar" />
 
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_toolbar"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginBottom="@dimen/dp_13"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_19"
+        android:textStyle="bold"
+        tools:text="日期：2024-01-01~2024-01-09" />
+
     <RelativeLayout
         android:id="@+id/rl_search"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_47"
-        android:layout_below="@+id/layout_toolbar">
+        android:layout_below="@+id/tv_date">
 
         <com.aries.ui.view.radius.RadiusRelativeLayout
             android:id="@+id/rrl_search"

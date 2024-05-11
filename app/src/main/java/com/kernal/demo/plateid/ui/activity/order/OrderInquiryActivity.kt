@@ -74,6 +74,8 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         orderInquiryAdapter = OrderInquiryAdapter(orderList, this)
         binding.rvOrders.adapter = orderInquiryAdapter
 
+        binding.tvDate.text = "日期：${startDate}~${endDate}"
+
         initKeyboard()
 
     }
@@ -90,6 +92,19 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         binding.root.setOnClickListener {
             keyboardUtil.hideKeyboard()
         }
+        keyboardUtil.setCallBack(object : KeyboardUtil.KeyInputCallBack {
+            override fun keyInput(value: String) {
+            }
+
+            override fun keyDelete() {
+            }
+
+            override fun enterKey() {
+                pageIndex = 1
+                showProgressDialog(20000)
+                query()
+            }
+        })
     }
 
     override fun initListener() {
@@ -158,6 +173,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                     override fun selectDate(startTime: String, endTime: String) {
                         startDate = startTime
                         endDate = endTime
+                        binding.tvDate.text = "日期：${startDate}~${endDate}"
                         pageIndex = 1
                         showProgressDialog(20000)
                         query()

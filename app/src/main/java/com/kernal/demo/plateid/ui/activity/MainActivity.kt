@@ -62,6 +62,11 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         // super.onSaveInstanceState(outState)
     }
 
+    override fun onResume() {
+        super.onResume()
+        startBadiMapLocation()
+    }
+
     override fun initView() {
         delete7DayPic()
         initHyperLPR()
@@ -125,7 +130,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     }
 
     fun startBadiMapLocation() {
-        baiduLocationUtil = BaiduLocationUtil()
+        baiduLocationUtil = BaiduLocationUtil.getInstance(1000 * 60)
         baiduLocationUtil.initBaiduLocation()
         val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
             override fun locationChange(
@@ -146,7 +151,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
         }
         baiduLocationUtil.setBaiduLocationCallBack(callback)
-        baiduLocationUtil.startLocation()
     }
 
     fun delete7DayPic() {
@@ -351,7 +355,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, true)
             GlobalScope.launch {
                 while (PreferencesDataStore(BaseApplication.instance()).getBoolean(PreferencesKeys.isUpdateLocation)) {
-                    delay(1000 * 60)
+                    delay(1000 * 60 * 5)
                     action.invoke()
                 }
             }
@@ -387,6 +391,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     override fun onDestroy() {
         super.onDestroy()
-        baiduLocationUtil.stopLocation()
+//        baiduLocationUtil.stopLocation()
+//        baiduLocationUtil.unregisterListener()
     }
 }

@@ -2,7 +2,6 @@ package com.kernal.demo.plateid.ui.activity.login
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.telephony.TelephonyManager
@@ -10,7 +9,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -32,16 +30,19 @@ import com.kernal.demo.plateid.databinding.ActivityLoginBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LoginViewModel
 import com.kernal.demo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
-import java.text.SimpleDateFormat
-import java.util.Date
 
 @Route(path = ARouterMap.LOGIN)
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
-    lateinit var baiduLocationUtil: BaiduLocationUtil
+    var baiduLocationUtil: BaiduLocationUtil? = null
     var lat = 121.445345
     var lon = 31.238665
     var updateBean: UpdateBean? = null
     var locationEnable = 0
+
+    override fun onResume() {
+        super.onResume()
+        startBadiMapLocation()
+    }
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
@@ -56,41 +57,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             Manifest.permission.REQUEST_INSTALL_PACKAGES
         ).subscribe {
             if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                baiduLocationUtil = BaiduLocationUtil()
-                baiduLocationUtil.initBaiduLocation()
-                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                    override fun locationChange(
-                        lon: Double,
-                        lat: Double,
-                        location: LocationClientOption?,
-                        isSuccess: Boolean,
-                        address: String?
-                    ) {
-                        if (isSuccess) {
-                            this@LoginActivity.lat = lat
-                            this@LoginActivity.lon = lon
-                            locationEnable = 1
-                        } else {
-                            locationEnable = -1
-                        }
-                    }
-
-                }
-                baiduLocationUtil.setBaiduLocationCallBack(callback)
-                baiduLocationUtil.startLocation()
+                startBadiMapLocation()
+                baiduLocationUtil?.startLocation()
             }
         }
         binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
-    }
-
-    fun changeTime() {
-        val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
-        var date = Date()
-        date = simpleDateFormat.parse("11:23:55");
-        val intent = Intent("com.seuic.settings.SETTIME_ACTION")
-        intent.setPackage("com.seuic.seuicserver")
-        intent.putExtra("time", date.time.toString())
-        sendBroadcast(intent)
     }
 
     override fun initListener() {
@@ -168,6 +139,30 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         mViewModel.checkUpdate(param)
     }
 
+    fun startBadiMapLocation() {
+        baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
+        baiduLocationUtil?.initBaiduLocation()
+        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+            override fun locationChange(
+                lon: Double,
+                lat: Double,
+                location: LocationClientOption?,
+                isSuccess: Boolean,
+                address: String?
+            ) {
+                if (isSuccess) {
+                    this@LoginActivity.lat = lat
+                    this@LoginActivity.lon = lon
+                    locationEnable = 1
+                } else {
+                    locationEnable = -1
+                }
+            }
+
+        }
+        baiduLocationUtil?.setBaiduLocationCallBack(callback)
+    }
+
     @SuppressLint("CheckResult", "MissingPermission")
     override fun onClick(v: View?) {
         when (v?.id) {
@@ -191,8 +186,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     } else {
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
                             if (it) {
-                                baiduLocationUtil = BaiduLocationUtil()
-                                baiduLocationUtil.initBaiduLocation()
+                                baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
+                                baiduLocationUtil?.initBaiduLocation()
                                 val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
                                     override fun locationChange(
                                         lon: Double,
@@ -211,8 +206,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                                     }
 
                                 }
-                                baiduLocationUtil.setBaiduLocationCallBack(callback)
-                                baiduLocationUtil.startLocation()
+                                baiduLocationUtil?.setBaiduLocationCallBack(callback)
+                                baiduLocationUtil?.startLocation()
                             } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                                 ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
                             } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
@@ -312,4 +307,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     override val isFullScreen: Boolean
         get() = false
 
+    override fun onStop() {
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 }

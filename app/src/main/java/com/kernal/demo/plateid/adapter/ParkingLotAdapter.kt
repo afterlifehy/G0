@@ -16,12 +16,13 @@ import com.kernal.demo.base.ext.show
 import com.kernal.demo.plateid.databinding.ItemParkingLotBinding
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.Constant
+import com.kernal.demo.plateid.R
 import kotlin.random.Random
 
 class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickListener: OnClickListener) :
     BaseBindingAdapter<ParkingLotBean, ItemParkingLotBinding>(data) {
     var plateBgMap: MutableMap<String, Int> = ArrayMap()
-    var plateTxtColorMap: MutableMap<String, Int> = ArrayMap()
+    var plateColorTxtMap: MutableMap<String, String> = ArrayMap()
     var plateLogoColorMap: MutableMap<String, Int> = ArrayMap()
 //    var colors = intArrayOf(com.kernal.demo.base.R.color.color_ffeb0000, com.kernal.demo.base.R.color.black)
 //    var colors2 = intArrayOf(com.kernal.demo.base.R.color.black, com.kernal.demo.base.R.color.color_ffeb0000)
@@ -43,36 +44,20 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
         plateLogoColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.white
         plateLogoColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.white
 
-//        plateBgMap[Constant.BLACK] = com.kernal.demo.common.R.mipmap.ic_plate_bg_black
-//        plateBgMap[Constant.WHITE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-//        plateBgMap[Constant.GREY] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-//        plateBgMap[Constant.RED] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-//        plateBgMap[Constant.BLUE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_blue
-//        plateBgMap[Constant.YELLOW] = com.kernal.demo.common.R.mipmap.ic_plate_bg_yellow
-//        plateBgMap[Constant.ORANGE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-//        plateBgMap[Constant.BROWN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-//        plateBgMap[Constant.GREEN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_green
-//        plateBgMap[Constant.PURPLE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-//        plateBgMap[Constant.CYAN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-//        plateBgMap[Constant.PINK] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-//        plateBgMap[Constant.TRANSPARENT] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-//        plateBgMap[Constant.OTHERS] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
-//
-//        plateTxtColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.white
-//        plateTxtColorMap[Constant.WHITE] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.GREY] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.RED] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.BLUE] = com.kernal.demo.base.R.color.white
-//        plateTxtColorMap[Constant.YELLOW] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.ORANGE] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.BROWN] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.GREEN] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.PURPLE] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.CYAN] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.PINK] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.YELLOW_GREEN] = com.kernal.demo.base.R.color.black
-//        plateTxtColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.black
+        plateColorTxtMap[Constant.BLACK] = i18n(com.kernal.demo.base.R.string.黑牌)
+        plateColorTxtMap[Constant.WHITE] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.GREY] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.RED] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.BLUE] = i18n(com.kernal.demo.base.R.string.蓝牌)
+        plateColorTxtMap[Constant.YELLOW] = i18n(com.kernal.demo.base.R.string.黄牌)
+        plateColorTxtMap[Constant.ORANGE] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.BROWN] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.GREEN] = i18n(com.kernal.demo.base.R.string.绿牌)
+        plateColorTxtMap[Constant.PURPLE] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.CYAN] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.PINK] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.TRANSPARENT] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.OTHERS] = i18n(com.kernal.demo.base.R.string.白牌)
     }
 
     override fun convert(holder: VBViewHolder<ItemParkingLotBinding>, item: ParkingLotBean) {
@@ -119,8 +104,9 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                 )
             }
             holder.vb.rtvParkingLotNum.delegate.init()
-            if (item.carColor ==  Constant.YELLOW_GREEN) {
+            if (item.carColor == Constant.YELLOW_GREEN) {
                 holder.vb.llCarColor.show()
+                holder.vb.rtvCarColor.text = i18n(com.kernal.demo.base.R.string.黄绿)
                 holder.vb.rtvCarColor.delegate.setStrokeWidth(0)
                 holder.vb.rtvCarColor.delegate.setBackgroundColor(
                     ContextCompat.getColor(
@@ -131,6 +117,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                 holder.vb.rtvCarColor.delegate.init()
             } else {
                 holder.vb.llCarColor.hide()
+                holder.vb.rtvCarColor.text = plateColorTxtMap[item.carColor]
                 holder.vb.rtvCarColor.delegate.setBackgroundColor(
                     ContextCompat.getColor(
                         BaseApplication.instance(),
@@ -167,3 +154,34 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
         return ItemParkingLotBinding.inflate(inflater)
     }
 }
+
+//        plateBgMap[Constant.BLACK] = com.kernal.demo.common.R.mipmap.ic_plate_bg_black
+//        plateBgMap[Constant.WHITE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.GREY] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.RED] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.BLUE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_blue
+//        plateBgMap[Constant.YELLOW] = com.kernal.demo.common.R.mipmap.ic_plate_bg_yellow
+//        plateBgMap[Constant.ORANGE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.BROWN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.GREEN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_green
+//        plateBgMap[Constant.PURPLE] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.CYAN] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.PINK] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.TRANSPARENT] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//        plateBgMap[Constant.OTHERS] = com.kernal.demo.common.R.mipmap.ic_plate_bg_white
+//
+//        plateTxtColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.white
+//        plateTxtColorMap[Constant.WHITE] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.GREY] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.RED] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.BLUE] = com.kernal.demo.base.R.color.white
+//        plateTxtColorMap[Constant.YELLOW] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.ORANGE] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.BROWN] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.GREEN] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.PURPLE] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.CYAN] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.PINK] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.YELLOW_GREEN] = com.kernal.demo.base.R.color.black
+//        plateTxtColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.black

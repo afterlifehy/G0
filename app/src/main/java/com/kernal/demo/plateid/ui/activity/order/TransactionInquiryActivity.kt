@@ -71,6 +71,8 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
         transactionInquiryAdapter = TransactionInquiryAdapter(transactionInquiryList, this)
         binding.rvTransaction.adapter = transactionInquiryAdapter
 
+        binding.tvDate.text = "日期：${startDate}~${endDate}"
+
         initKeyboard()
     }
 
@@ -86,6 +88,19 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
         binding.root.setOnClickListener {
             keyboardUtil.hideKeyboard()
         }
+        keyboardUtil.setCallBack(object : KeyboardUtil.KeyInputCallBack {
+            override fun keyInput(value: String) {
+            }
+
+            override fun keyDelete() {
+            }
+
+            override fun enterKey() {
+                pageIndex = 1
+                showProgressDialog(20000)
+                query()
+            }
+        })
     }
 
     override fun initListener() {
@@ -94,7 +109,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
-        ClickUtils.applySingleDebouncing(binding.ivCamera,1000,this)
+        ClickUtils.applySingleDebouncing(binding.ivCamera, 1000, this)
         binding.srlTransaction.setOnRefreshListener {
             pageIndex = 1
             binding.srlTransaction.finishRefresh(5000)
@@ -149,6 +164,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                     override fun selectDate(startTime: String, endTime: String) {
                         startDate = startTime
                         endDate = endTime
+                        binding.tvDate.text = "日期：${startDate}~${endDate}"
                         pageIndex = 1
                         showProgressDialog(20000)
                         query()
