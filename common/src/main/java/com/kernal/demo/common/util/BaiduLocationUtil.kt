@@ -38,7 +38,6 @@ class BaiduLocationUtil private constructor(private var internal: Int) {
             LocationClient.setAgreePrivacy(true);
             mLocationClient = LocationClient(BaseApplication.instance())
         }
-        Log.v("1234", internal.toString())
         mLocationClient?.locOption = locationOption(internal)
         if (bdListener == null) {
             bdListener = object : BDAbstractLocationListener() {

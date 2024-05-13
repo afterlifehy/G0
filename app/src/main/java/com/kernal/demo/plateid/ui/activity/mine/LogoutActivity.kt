@@ -65,32 +65,35 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         var rxPermissions = RxPermissions(this@LogoutActivity)
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
             if (it) {
-                baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
-                baiduLocationUtil.initBaiduLocation()
-                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                    override fun locationChange(
-                        lon: Double,
-                        lat: Double,
-                        location: LocationClientOption?,
-                        isSuccess: Boolean,
-                        address: String?
-                    ) {
-                        if (isSuccess) {
-                            this@LogoutActivity.lat = lat
-                            this@LogoutActivity.lon = lon
-                            locationEnable = 1
-                        } else {
-                            locationEnable = -1
-                        }
-                    }
-
-                }
-                baiduLocationUtil.setBaiduLocationCallBack(callback)
-//                baiduLocationUtil.startLocation()
+                startBadiMapLocation()
             } else {
                 ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
             }
         }
+    }
+
+    fun startBadiMapLocation() {
+        baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
+        baiduLocationUtil.initBaiduLocation()
+        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+            override fun locationChange(
+                lon: Double,
+                lat: Double,
+                location: LocationClientOption?,
+                isSuccess: Boolean,
+                address: String?
+            ) {
+                if (isSuccess) {
+                    this@LogoutActivity.lat = lat
+                    this@LogoutActivity.lon = lon
+                    locationEnable = 1
+                } else {
+                    locationEnable = -1
+                }
+            }
+
+        }
+        baiduLocationUtil.setBaiduLocationCallBack(callback)
     }
 
     override fun initListener() {
@@ -132,28 +135,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     } else {
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
                             if (it) {
-                                baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
-                                baiduLocationUtil.initBaiduLocation()
-                                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                                    override fun locationChange(
-                                        lon: Double,
-                                        lat: Double,
-                                        location: LocationClientOption?,
-                                        isSuccess: Boolean,
-                                        address: String?
-                                    ) {
-                                        if (isSuccess) {
-                                            this@LogoutActivity.lat = lat
-                                            this@LogoutActivity.lon = lon
-                                            locationEnable = 1
-                                        } else {
-                                            locationEnable = -1
-                                        }
-                                    }
-
-                                }
-                                baiduLocationUtil.setBaiduLocationCallBack(callback)
-//                                baiduLocationUtil.startLocation()
+                                startBadiMapLocation()
                             } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                                 ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
                             } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
@@ -237,23 +219,14 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         return LogoutViewModel::class.java
     }
 
-    override fun onResume() {
-        super.onResume()
-//        if (baiduLocationUtil != null) {
-//            baiduLocationUtil.startLocation()
-//        }
-    }
-
     override fun onStop() {
         super.onStop()
         GlobalScope.launch(Dispatchers.IO) {
             job?.cancelAndJoin()
         }
-//        baiduLocationUtil.stopLocation()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//        baiduLocationUtil.unregisterListener()
     }
 }

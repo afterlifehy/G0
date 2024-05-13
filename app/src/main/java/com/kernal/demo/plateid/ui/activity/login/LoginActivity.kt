@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
@@ -38,11 +39,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     var lon = 31.238665
     var updateBean: UpdateBean? = null
     var locationEnable = 0
-
-    override fun onResume() {
-        super.onResume()
-        startBadiMapLocation()
-    }
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
@@ -186,27 +182,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     } else {
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
                             if (it) {
-                                baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
-                                baiduLocationUtil?.initBaiduLocation()
-                                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                                    override fun locationChange(
-                                        lon: Double,
-                                        lat: Double,
-                                        location: LocationClientOption?,
-                                        isSuccess: Boolean,
-                                        address: String?
-                                    ) {
-                                        if (isSuccess) {
-                                            this@LoginActivity.lat = lat
-                                            this@LoginActivity.lon = lon
-                                            locationEnable = 1
-                                        } else {
-                                            locationEnable = -1
-                                        }
-                                    }
-
-                                }
-                                baiduLocationUtil?.setBaiduLocationCallBack(callback)
+                                startBadiMapLocation()
                                 baiduLocationUtil?.startLocation()
                             } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                                 ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
@@ -306,10 +282,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     override val isFullScreen: Boolean
         get() = false
-
-    override fun onStop() {
-        super.onStop()
-    }
 
     override fun onDestroy() {
         super.onDestroy()

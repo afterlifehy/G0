@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.RequiresApi
@@ -84,7 +85,6 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
                 }
                 baiduLocationUtil.setBaiduLocationCallBack(callback)
-//                baiduLocationUtil.startLocation()
             }
         }
     }
@@ -267,13 +267,6 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
     override fun marginStatusBarView(): View {
         return binding.layoutToolbar.ablToolbar
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        if (baiduLocationUtil != null) {
-//            baiduLocationUtil.startLocation()
-//        }
     }
 
     override fun onStop() {

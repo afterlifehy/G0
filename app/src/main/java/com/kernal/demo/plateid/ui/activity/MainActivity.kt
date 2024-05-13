@@ -62,11 +62,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         // super.onSaveInstanceState(outState)
     }
 
-    override fun onResume() {
-        super.onResume()
-        startBadiMapLocation()
-    }
-
     override fun initView() {
         delete7DayPic()
         initHyperLPR()
@@ -100,18 +95,14 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                                 override fun onGranted(granted: MutableList<String>) {
                                     startBadiMapLocation()
                                     if (locationEnable == 1) {
-                                        runBlocking {
-                                            val loginName =
-                                                PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
-                                            if (loginName.isNotEmpty()) {
-                                                val param = HashMap<String, Any>()
-                                                val jsonobject = JSONObject()
-                                                jsonobject["loginName"] = loginName
-                                                jsonobject["longitude"] = lon.toString()
-                                                jsonobject["latitude"] = lat.toString()
-                                                param["attr"] = jsonobject
-                                                mViewModel.locationUpload(param)
-                                            }
+                                        if (loginName.isNotEmpty()) {
+                                            val param = HashMap<String, Any>()
+                                            val jsonobject = JSONObject()
+                                            jsonobject["loginName"] = loginName
+                                            jsonobject["longitude"] = lon.toString()
+                                            jsonobject["latitude"] = lat.toString()
+                                            param["attr"] = jsonobject
+                                            mViewModel.locationUpload(param)
                                         }
                                     } else {
                                         ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
