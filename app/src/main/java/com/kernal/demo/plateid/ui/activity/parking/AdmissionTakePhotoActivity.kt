@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -53,6 +54,7 @@ import com.kernal.demo.common.util.FileUtil
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.common.util.ImageCompressor
 import com.kernal.demo.common.util.ImageUtil
+import com.kernal.demo.common.view.PlateView
 import com.kernal.demo.common.view.keyboard.KeyboardUtil
 import com.kernal.demo.plateid.ui.activity.login.LoginActivity
 import kotlinx.coroutines.runBlocking
@@ -119,11 +121,11 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.rflMultipleSeats.setOnClickListener(this)
-        ClickUtils.applySingleDebouncing(binding.ivRecognize,1000,this@AdmissionTakePhotoActivity)
-        ClickUtils.applySingleDebouncing(binding.rflTakePhoto,1000,this@AdmissionTakePhotoActivity)
-        ClickUtils.applySingleDebouncing(binding.rflTakePhoto2,1000,this@AdmissionTakePhotoActivity)
-        ClickUtils.applySingleDebouncing(binding.rivPlate,1000,this@AdmissionTakePhotoActivity)
-        ClickUtils.applySingleDebouncing(binding.rivPanorama,1000,this@AdmissionTakePhotoActivity)
+        ClickUtils.applySingleDebouncing(binding.ivRecognize, 1000, this@AdmissionTakePhotoActivity)
+        ClickUtils.applySingleDebouncing(binding.rflTakePhoto, 1000, this@AdmissionTakePhotoActivity)
+        ClickUtils.applySingleDebouncing(binding.rflTakePhoto2, 1000, this@AdmissionTakePhotoActivity)
+        ClickUtils.applySingleDebouncing(binding.rivPlate, 1000, this@AdmissionTakePhotoActivity)
+        ClickUtils.applySingleDebouncing(binding.rivPanorama, 1000, this@AdmissionTakePhotoActivity)
         binding.rivPlate.setOnClickListener(this)
         binding.rivPanorama.setOnClickListener(this)
         binding.root.setOnClickListener(this)
@@ -145,39 +147,40 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             keyboardUtil.changeKeyboard(true)
         }
 
-        binding.pvPlate.setOnTouchListener { v, p1 ->
-            v.requestFocus()
-            keyboardUtil.showKeyboard(show = {
-                val location = IntArray(2)
-                v.getLocationOnScreen(location)
-                val editTextPosY = location[1]
+        binding.pvPlate.setNumClickCallback(object : PlateView.NumClickCallback {
+            override fun numberClick() {
+                binding.pvPlate.requestFocus()
+                keyboardUtil.showKeyboard(show = {
+                    val location = IntArray(2)
+                    binding.pvPlate.getLocationOnScreen(location)
+                    val editTextPosY = location[1]
 
-                val screenHeight = window!!.windowManager.defaultDisplay.height
-                val distanceToBottom: Int = screenHeight - editTextPosY - v.getHeight()
+                    val screenHeight = window!!.windowManager.defaultDisplay.height
+                    val distanceToBottom: Int = screenHeight - editTextPosY - binding.pvPlate.getHeight()
 
-                if (binding.kvKeyBoard.height > distanceToBottom) {
-                    // 当键盘高度超过输入框到屏幕底部的距离时，向上移动布局
-                    binding.flPlate.translationY = (-(binding.kvKeyBoard.height - distanceToBottom)).toFloat()
-                }
-            }, hide = {
-                binding.flPlate.translationY = 0f
-            })
-            keyboardUtil.changeKeyboard(true)
-            keyboardUtil.setCallBack(object : KeyboardUtil.KeyInputCallBack {
-                override fun keyInput(value: String) {
-                    binding.pvPlate.setOnePlate(value)
-                }
+                    if (binding.kvKeyBoard.height > distanceToBottom) {
+                        // 当键盘高度超过输入框到屏幕底部的距离时，向上移动布局
+                        binding.flPlate.translationY = (-(binding.kvKeyBoard.height - distanceToBottom)).toFloat()
+                    }
+                }, hide = {
+                    binding.flPlate.translationY = 0f
+                    binding.pvPlate.stopAnimation()
+                })
+                keyboardUtil.changeKeyboard(true)
+                keyboardUtil.setCallBack(object : KeyboardUtil.KeyInputCallBack {
+                    override fun keyInput(value: String) {
+                        binding.pvPlate.setOnePlate(value)
+                    }
 
-                override fun keyDelete() {
-                    binding.pvPlate.keyDelete()
-                }
+                    override fun keyDelete() {
+                        binding.pvPlate.keyDelete()
+                    }
 
-                override fun enterKey() {
-
-                }
-            })
-            true
-        }
+                    override fun enterKey() {
+                    }
+                })
+            }
+        })
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

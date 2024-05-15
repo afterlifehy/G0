@@ -296,5 +296,5 @@
         android:paddingBottom="@dimen/dp_10"
         android:shadowColor="@color/white"
         android:shadowRadius="0.0"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 </RelativeLayout>
