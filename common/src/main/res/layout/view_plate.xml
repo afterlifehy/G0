@@ -89,7 +89,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@mipmap/ic_plate_blue_bg_end"
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_27"
