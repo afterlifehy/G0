@@ -154,9 +154,6 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
         return ActivityTransactionRecordBinding.inflate(layoutInflater)
     }
 
-    override fun onReloadData() {
-    }
-
     override val isFullScreen: Boolean
         get() = true
 

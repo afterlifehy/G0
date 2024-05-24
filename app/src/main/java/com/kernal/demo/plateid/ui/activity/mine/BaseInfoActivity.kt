@@ -25,7 +25,6 @@ class BaseInfoActivity : VbBaseActivity<BaseInfoViewModel, ActivityBaseInfoBindi
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.基本信息)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.white))
-
     }
 
     override fun initListener() {
@@ -74,9 +73,6 @@ class BaseInfoActivity : VbBaseActivity<BaseInfoViewModel, ActivityBaseInfoBindi
 
     override fun getVbBindingView(): ViewBinding {
         return ActivityBaseInfoBinding.inflate(layoutInflater)
-    }
-
-    override fun onReloadData() {
     }
 
     override val isFullScreen: Boolean

@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 对话框
  */
 
-
 public abstract class BaseLibDialog extends BackgroundDarkDialog {
 
     private AtomicBoolean hideInput = new AtomicBoolean(false);

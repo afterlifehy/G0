@@ -7,7 +7,6 @@ import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.http.interceptor.*
-import com.kernal.demo.base.network.NetWorkMonitorManager
 import com.kernal.demo.common.help.SmartRefreshHelp
 import com.kernal.demo.plateid.startup.OnAppBaseProxyManager
 import io.realm.Realm
@@ -40,14 +39,6 @@ class AppApplication : BaseApplication() {
         // 选用AUTO页面采集模式
         MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.LEGACY_MANUAL)
         UMConfigure.setProcessEvent(true)
-    }
-
-
-    /**
-     * 注册全局的网络状态广播
-     */
-    private fun regNetWorkState(application: Application) {
-        NetWorkMonitorManager.getInstance().init(application)
     }
 
     override fun onAddOkHttpInterceptor(): List<Interceptor> {

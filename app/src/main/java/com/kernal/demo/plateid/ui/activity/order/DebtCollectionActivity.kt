@@ -252,9 +252,6 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
         return ActivityDebtCollectionBinding.inflate(layoutInflater)
     }
 
-    override fun onReloadData() {
-    }
-
     override val isFullScreen: Boolean
         get() = true
 

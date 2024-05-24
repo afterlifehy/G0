@@ -37,7 +37,6 @@ class FeeRateActivity : VbBaseActivity<FeeRateViewModel, ActivityFeeRateBinding>
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.费率列表)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.white))
-
     }
     
     override fun initListener() {
@@ -119,9 +118,6 @@ class FeeRateActivity : VbBaseActivity<FeeRateViewModel, ActivityFeeRateBinding>
 
     override fun getVbBindingView(): ViewBinding {
         return ActivityFeeRateBinding.inflate(layoutInflater)
-    }
-
-    override fun onReloadData() {
     }
 
     override val isFullScreen: Boolean

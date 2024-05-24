@@ -335,9 +335,6 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
         return ActivityTransactionInquiryBinding.inflate(layoutInflater)
     }
 
-    override fun onReloadData() {
-    }
-
     override val isFullScreen: Boolean
         get() = true
 

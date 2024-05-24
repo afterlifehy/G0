@@ -357,10 +357,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         return ActivityMainBinding.inflate(layoutInflater)
     }
 
-    override fun onReloadData() {
-
-    }
-
     override fun providerVMClass(): Class<MainViewModel> {
         return MainViewModel::class.java
     }

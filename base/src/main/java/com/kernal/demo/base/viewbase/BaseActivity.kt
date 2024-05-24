@@ -12,29 +12,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.BarUtils
 import com.kernal.demo.base.R
 import com.kernal.demo.base.base.mvvm.BaseViewModel
-import com.kernal.demo.base.base.mvvm.OnNetWorkCallLinsener
-import com.kernal.demo.base.bean.NetWorkRequestData
 import com.kernal.demo.base.dialog.IOSLoadingDialog
 import com.kernal.demo.base.event.BaseEvent
-import com.kernal.demo.base.network.NetWorkMonitorManager
-import com.kernal.demo.base.network.NetWorkState
-import com.kernal.demo.base.network.ViewNetWorkStateManager
-import com.kernal.demo.base.viewbase.inter.NetWorkRequestLinsener
-import com.kernal.demo.base.viewbase.inter.OnNetWorkViewShowLinsener
 import me.yokeyword.fragmentation.ISupportActivity
 import me.yokeyword.fragmentation.SupportActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportActivity,
-    OnNetWorkViewShowLinsener, NetWorkRequestLinsener,
-    OnNetWorkCallLinsener {
+abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportActivity{
     protected lateinit var mViewModel: VM
     private var mFragment: Fragment? = null
     private var isLoadContentView = true
-
-    private var mNewWorkStateManager: ViewNetWorkStateManager? = null
 
     //用来存储需要监听的网络错误
     private var networkErrorTagList = ArrayList<String>()
@@ -73,15 +62,12 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
         if (isRegEventBus()) {
             EventBus.getDefault().register(this)
         }
-        mNewWorkStateManager = ViewNetWorkStateManager(this, true)
-        lifecycle.addObserver(mNewWorkStateManager!!)
     }
 
     fun initVM() {
         providerVMClass()?.let {
             mViewModel = ViewModelProvider(this).get(it)
             mViewModel.let(lifecycle::addObserver)
-            mViewModel.regNetWorkRequestLinsener(this)
         }
     }
 
@@ -147,35 +133,6 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
 
     fun dismissProgressDialog() {
         mProgressDialog.dismiss()
-    }
-
-    /**
-     * 需要响应调用方法出现网络错误时候，需要添加一个
-     */
-    fun addNetWorkErrorTag(tag: String) {
-        networkErrorTagList.add(tag)
-    }
-
-    /**
-     * 如果需在要当前界面知道是否有网络，就可以实现这个类
-     */
-    open fun currentNewWorkState(isNetWork: Boolean) {
-
-    }
-
-    override fun onCurrentNewWorkState(isNetWork: Boolean) {
-        currentNewWorkState(isNetWork)
-    }
-
-    override fun onNewWorkErrorCall(tag: String, ext: java.lang.Exception?) {
-        if (networkErrorTagList.contains(tag)) {
-            val info = NetWorkRequestData(1, ext?.message!!, tag)
-            if (NetWorkMonitorManager.getInstance().currNetWorkState == NetWorkState.NONE) {
-                onNoNetWorkErrror(info)
-            } else {
-                onNetWorkRequestError(info)
-            }
-        }
     }
 
     override fun onDestroy() {

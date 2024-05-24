@@ -273,9 +273,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         return ActivityLoginBinding.inflate(layoutInflater)
     }
 
-    override fun onReloadData() {
-    }
-
     override fun providerVMClass(): Class<LoginViewModel> {
         return LoginViewModel::class.java
     }

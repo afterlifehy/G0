@@ -27,27 +27,6 @@ class PagerStatesView : FrameLayout {
 
     }
 
-    /**
-     * 添加一个暂无网络数据
-     */
-    fun addErrorNetWorkView(
-        isShow: Boolean,
-        mOnNotNetWorkClickLinsener: OnPagerClickLinsener? = null
-    ) {
-        removeViewws()
-        if (isShow) {
-            visibility = View.VISIBLE
-            val net_work_view = BaseViewAddFactory.getInsten().getNewWorkErrorView(context)
-            net_work_view.setOnClickListener {
-                mOnNotNetWorkClickLinsener?.onPagerClick()
-            }
-            addView(net_work_view)
-        } else {
-            visibility = View.GONE
-        }
-
-    }
-
     fun removeViewws() {
         if (getChildAt(0) != null) {
             removeAllViews()
@@ -61,20 +40,20 @@ class PagerStatesView : FrameLayout {
         isShow: Boolean,
         iconId: Int = 0,
         notStr: String = "暂无数据",
-        mOnNotNetWorkClickLinsener: OnPagerClickLinsener? = null
+        mOnNotNetWorkClickLinsener: OnPagerClickListener? = null
     ) {
         removeViewws()
         if (isShow) {
-            visibility = View.VISIBLE
-            val not_data_view = BaseViewAddFactory.getInsten().getNotDataView(context)
-            not_data_view.setOnClickListener {
-                mOnNotNetWorkClickLinsener?.onPagerClick()
-            }
-            val iv_no_data_icon = not_data_view.findViewById<ImageView>(R.id.iv_no_data_icon)
-            val tv_no_data_text = not_data_view.findViewById<TextView>(R.id.tv_no_data_text)
-            tv_no_data_text.setText(notStr)
-            iv_no_data_icon.setImageResource(iconId)
-            addView(not_data_view)
+//            visibility = View.VISIBLE
+//            val not_data_view = BaseViewAddFactory.getInsten().getNotDataView(context)
+//            not_data_view.setOnClickListener {
+//                mOnNotNetWorkClickLinsener?.onPagerClick()
+//            }
+//            val iv_no_data_icon = not_data_view.findViewById<ImageView>(R.id.iv_no_data_icon)
+//            val tv_no_data_text = not_data_view.findViewById<TextView>(R.id.tv_no_data_text)
+//            tv_no_data_text.setText(notStr)
+//            iv_no_data_icon.setImageResource(iconId)
+//            addView(not_data_view)
         } else {
             visibility = View.GONE
         }
@@ -86,20 +65,20 @@ class PagerStatesView : FrameLayout {
     fun addLoadProgress(isShow: Boolean) {
         removeViewws()
         if (isShow) {
-            visibility = View.VISIBLE
-            val no_data_view = BaseViewAddFactory.getInsten().getLoadProgressView(context)
-            val pager_load_progress =
-                no_data_view.findViewById<LottieAnimationView>(R.id.pager_load_progress)
-            pager_load_progress.setAnimation("load/load.json")
-            pager_load_progress.repeatCount = -1
-            pager_load_progress.playAnimation()
-            addView(no_data_view)
+//            visibility = View.VISIBLE
+//            val no_data_view = BaseViewAddFactory.getInsten().getLoadProgressView(context)
+//            val pager_load_progress =
+//                no_data_view.findViewById<LottieAnimationView>(R.id.pager_load_progress)
+//            pager_load_progress.setAnimation("load/load.json")
+//            pager_load_progress.repeatCount = -1
+//            pager_load_progress.playAnimation()
+//            addView(no_data_view)
         } else {
             visibility = View.GONE
         }
     }
 
-    interface OnPagerClickLinsener {
+    interface OnPagerClickListener {
         fun onPagerClick()
     }
 }
