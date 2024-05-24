@@ -6,15 +6,16 @@ import android.os.Bundle
 import com.alibaba.android.arouter.launcher.ARouter
 import com.kernal.demo.base.help.ActivityCacheManager
 import com.kernal.demo.base.http.OnAddOkhttpInterceptor
-import com.kernal.demo.base.proxy.OnAppBaseProxyLinsener
+import com.kernal.demo.base.proxy.OnAppBaseProxyListener
 import com.tencent.bugly.crashreport.CrashReport
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import kotlin.properties.Delegates
 
 
 abstract class BaseApplication : Application(), Application.ActivityLifecycleCallbacks,
     OnAddOkhttpInterceptor {
-    private var mOnAppBaseProxyLinsener: OnAppBaseProxyLinsener? = null
+    private var mOnAppBaseProxyListener: OnAppBaseProxyListener? = null
 
     companion object {
         var baseApplication: BaseApplication by Delegates.notNull()
@@ -60,12 +61,12 @@ abstract class BaseApplication : Application(), Application.ActivityLifecycleCal
     /**
      * 用来获取子类和父类直接的交互
      */
-    fun setOnAppBaseProxyLinsener(mOnAppBaseProxyLinsener: OnAppBaseProxyLinsener?) {
-        this.mOnAppBaseProxyLinsener = mOnAppBaseProxyLinsener
+    fun setOnAppBaseProxyListener(mOnAppBaseProxyListener: OnAppBaseProxyListener?) {
+        this.mOnAppBaseProxyListener = mOnAppBaseProxyListener
     }
 
-    fun getOnAppBaseProxyLinsener(): OnAppBaseProxyLinsener? {
-        return mOnAppBaseProxyLinsener
+    fun getOnAppBaseProxyListener(): OnAppBaseProxyListener? {
+        return mOnAppBaseProxyListener
     }
 
     override fun onActivityPaused(activity: Activity) {

@@ -72,7 +72,7 @@ object HttpBuilder {
             .writeTimeout(20L, TimeUnit.SECONDS)
 //            .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)//证书
 //            .sslSocketFactory(RetrofitUtils.getSSLSocketFactory(), sslParams.trustManager)
-        BaseApplication.instance().getOnAppBaseProxyLinsener()?.let {
+        BaseApplication.instance().getOnAppBaseProxyListener()?.let {
             if (!it.onIsProxy()) {//设置不允许抓包
                 mBuilder.proxy(Proxy.NO_PROXY)
             }

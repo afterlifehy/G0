@@ -1,6 +1,6 @@
 package com.kernal.demo.base.proxy
 
-interface OnAppBaseProxyLinsener {
+interface OnAppBaseProxyListener {
     fun onIsProxy(): Boolean
     fun onIsDebug(): Boolean
 }

@@ -23,7 +23,7 @@ class BaseStartUpManager private constructor() : AppInitManager() {
 
     override fun delayInit(application: Application) {
         //只有测试才开启
-        BaseApplication.instance().getOnAppBaseProxyLinsener()?.let {
+        BaseApplication.instance().getOnAppBaseProxyListener()?.let {
             if (it.onIsDebug()) {
 
             }

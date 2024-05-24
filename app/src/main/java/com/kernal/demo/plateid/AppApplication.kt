@@ -1,6 +1,5 @@
 package com.kernal.demo.plateid
 
-import android.app.Application
 import android.content.Context
 import android.net.http.HttpResponseCache
 import com.umeng.analytics.MobclickAgent
@@ -29,7 +28,7 @@ class AppApplication : BaseApplication() {
             Realm.init(this)
             val cacheDir = File(BaseApplication.instance().cacheDir, "http")
             HttpResponseCache.install(cacheDir, 1024 * 1024 * 128)
-            BaseApplication.instance().setOnAppBaseProxyLinsener(OnAppBaseProxyManager())
+            BaseApplication.instance().setOnAppBaseProxyListener(OnAppBaseProxyManager())
             //初始化全局的刷新
             SmartRefreshHelp.initRefHead()
             //初始化网络状态监听
