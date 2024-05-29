@@ -76,11 +76,11 @@ class BluePrint() {
         ActivityCacheManager.instance().getCurrentActivity()!!.runOnUiThread {
             if (printResult == 0) {
             } else if (printResult == -1) {
-                ToastUtil.showMiddleToast("蓝牙未连接")
+                ToastUtil.showBottomToast("蓝牙未连接")
             } else if (printResult == -2) {
-                ToastUtil.showMiddleToast("路段名称过长...")
+                ToastUtil.showBottomToast("路段名称过长...")
             } else {
-                ToastUtil.showMiddleToast("打印失败，请检查打印机连接状态")
+                ToastUtil.showBottomToast("打印失败，请检查打印机连接状态")
             }
         }
     }
@@ -90,18 +90,18 @@ class BluePrint() {
         mAddress = address
         zpSDK = zp_cpcl_BluetoothPrinter(BaseApplication.instance())
         Handler(Looper.getMainLooper()).post {
-            ToastUtil.showMiddleToast("打印机开始连接")
+            ToastUtil.showBottomToast("打印机开始连接")
         }
 
         if (!zpSDK!!.connect(mAddress)) {
             Handler(Looper.getMainLooper()).post {
-                ToastUtil.showMiddleToast("打印机连接失败")
+                ToastUtil.showBottomToast("打印机连接失败")
             }
             printResult = -1
             return printResult
         }
         Handler(Looper.getMainLooper()).post {
-            ToastUtil.showMiddleToast("打印机连接成功")
+            ToastUtil.showBottomToast("打印机连接成功")
         }
         return 0
     }
@@ -367,7 +367,7 @@ class BluePrint() {
 
                     1 -> {
                         Handler(Looper.getMainLooper()).post {
-                            ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.打印机缺纸))
+                            ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.打印机缺纸))
                         }
                         disConnect()
                         return@Thread
@@ -375,7 +375,7 @@ class BluePrint() {
 
                     2 -> {
                         Handler(Looper.getMainLooper()).post {
-                            ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.打印机开盖))
+                            ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.打印机开盖))
                         }
                         disConnect()
                         return@Thread

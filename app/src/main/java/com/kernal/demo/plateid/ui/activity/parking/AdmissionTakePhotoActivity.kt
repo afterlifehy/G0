@@ -253,23 +253,23 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
             R.id.rfl_startBilling -> {
                 if (binding.pvPlate.getPvTxt().isEmpty()) {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请输入车牌号))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请输入车牌号))
                     return
                 }
                 if (binding.pvPlate.getPvTxt().length != 7 && binding.pvPlate.getPvTxt().length != 8) {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
                     return
                 }
                 if (checkedColor.isEmpty()) {
-                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请选择车牌颜色))
+                    ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.请选择车牌颜色))
                     return
                 }
                 if (plateImageBitmap == null) {
-                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请上传车牌照))
+                    ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.请上传车牌照))
                     return
                 }
                 if (panoramaImageBitmap == null) {
-                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请上传全景照))
+                    ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.请上传全景照))
                     return
                 }
                 DialogHelp.Builder().setTitle(i18N(com.kernal.demo.base.R.string.是否确认下单))
@@ -373,7 +373,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             errMsg.observe(this@AdmissionTakePhotoActivity) {
                 try {
                     dismissProgressDialog()
-                    ToastUtil.showMiddleToast(it.msg)
+                    ToastUtil.showBottomToast(it.msg)
                     if (it.code == 2) {
                         DialogHelp.Builder().setTitle(it.msg)
                             .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).isAloneButton(true)

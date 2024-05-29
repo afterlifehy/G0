@@ -173,21 +173,21 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         if (it) {
                             login()
                         } else {
-                            ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
+                            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
                         }
                     }
                 } else {
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
+                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
                     } else {
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
                             if (it) {
                                 startBadiMapLocation()
                                 baiduLocationUtil?.startLocation()
                             } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
                             } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
-                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
+                                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
                             }
                         }
                     }
@@ -241,7 +241,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             errMsg.observe(this@LoginActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@LoginActivity) {
                 dismissProgressDialog()

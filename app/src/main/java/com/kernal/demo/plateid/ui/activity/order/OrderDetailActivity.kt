@@ -254,7 +254,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             debtUploadLiveData.observe(this@OrderDetailActivity) {
                 dismissProgressDialog()
                 if (it.result) {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.上传成功))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.上传成功))
                     EventBus.getDefault().post(RefreshIsPrintEvent())
                     binding.rtvUpload.delegate.setBackgroundColor(
                         ContextCompat.getColor(
@@ -264,12 +264,12 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                     binding.rtvUpload.setOnClickListener(null)
                     binding.rtvUpload.delegate.init()
                 } else {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.上传失败))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.上传失败))
                 }
             }
             errMsg.observe(this@OrderDetailActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@OrderDetailActivity){
                 dismissProgressDialog()

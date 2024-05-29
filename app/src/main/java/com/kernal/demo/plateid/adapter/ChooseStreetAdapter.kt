@@ -31,7 +31,7 @@ class ChooseStreetAdapter(data: MutableList<Street>? = null, var streetChoosedLi
                 if (holder.vb.cbStreet.isChecked) {
                     if (streetChoosedList.size == 5) {
                         holder.vb.cbStreet.isChecked = false
-                        ToastUtil.showMiddleToast("最多选择5条路段")
+                        ToastUtil.showBottomToast("最多选择5条路段")
                     } else {
                         streetChoosedList.add(item)
                     }
@@ -44,7 +44,7 @@ class ChooseStreetAdapter(data: MutableList<Street>? = null, var streetChoosedLi
                     item.ischeck = true
                     if (streetChoosedList.size == 5) {
                         holder.vb.cbStreet.isChecked = false
-                        ToastUtil.showMiddleToast("最多选择5条路段")
+                        ToastUtil.showBottomToast("最多选择5条路段")
                     } else {
                         streetChoosedList.add(item)
                     }

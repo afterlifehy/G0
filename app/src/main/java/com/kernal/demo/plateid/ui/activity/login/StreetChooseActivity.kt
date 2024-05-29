@@ -124,11 +124,11 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     if (streetChoosedList.isNotEmpty()) {
                         checkonWork()
                     } else {
-                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请添加路段))
+                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请添加路段))
                     }
                 } else {
                     if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
+                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
                         baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
                         baiduLocationUtil.initBaiduLocation()
                         val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
@@ -158,7 +158,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                                 }
 
                                 override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
-                                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
                                     baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
                                     baiduLocationUtil.initBaiduLocation()
                                     val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
@@ -243,7 +243,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
             errMsg.observe(this@StreetChooseActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@StreetChooseActivity) {
                 dismissProgressDialog()

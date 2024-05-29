@@ -256,7 +256,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                         putString(ARouterMap.DEBT_CAR_LICENSE, carLicense)
                     })
                 } else {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.当前车辆没有欠费记录))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.当前车辆没有欠费记录))
                 }
             }
 
@@ -334,12 +334,12 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
             R.id.rfl_finish -> {
                 if (currentMethod == null) {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请选择离场方式))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请选择离场方式))
                     return
                 }
                 type = currentMethod!!.id
                 if (type == "3" && !isUpload) {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请先拍摄在场照片))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请先拍摄在场照片))
                     return
                 }
                 DialogHelp.Builder().setTitle(i18N(com.kernal.demo.base.R.string.是否确定结束订单))
@@ -520,7 +520,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()

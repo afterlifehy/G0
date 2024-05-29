@@ -67,7 +67,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             if (it) {
                 startBadiMapLocation()
             } else {
-                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
             }
         }
     }
@@ -125,21 +125,21 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                         if (it) {
                             logout()
                         } else {
-                            ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
+                            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
                         }
                     }
 
                 } else {
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION) && rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
-                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
+                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
                     } else {
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
                             if (it) {
                                 startBadiMapLocation()
                             } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
                             } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
-                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
+                                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
                             }
                         }
                     }
@@ -189,11 +189,11 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                 startArouter(ARouterMap.DATA_PRINT, data = Bundle().apply {
                     putString(ARouterMap.DATA_PRINT_LOGIN_NAME, loginName)
                 })
-                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.签退成功))
+                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.签退成功))
             }
             errMsg.observe(this@LogoutActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@LogoutActivity) {
                 dismissProgressDialog()

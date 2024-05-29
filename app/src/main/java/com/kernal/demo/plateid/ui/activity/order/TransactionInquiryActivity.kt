@@ -137,7 +137,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
         val searchContent = binding.etSearch.text.toString()
         if (searchContent.isNotEmpty() && (searchContent.length != 7 && searchContent.length != 8)) {
             dismissProgressDialog()
-            ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
+            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
             return
         }
         val param = HashMap<String, Any>()
@@ -283,7 +283,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                         var connectResult = BluePrint.instance?.connet(device.address)
                         if (connectResult == 0) {
                             runOnUiThread {
-                                ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                                ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                             }
                             BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
                         }
@@ -293,7 +293,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
             payResultInquiryLiveData.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()
                 if (it != null) {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.支付成功))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
                     currentTransactionBean?.hasPayed = "1"
                     currentTransactionBean?.payedAmount = currentTransactionBean!!.oweMoney
                     transactionInquiryAdapter?.notifyItemChanged(transactionInquiryList.indexOf(currentTransactionBean))
@@ -302,10 +302,10 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
             errMsg.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()
                 if (isQueryResult) {
-                    ToastUtil.showMiddleToast("未查询到支付结果")
+                    ToastUtil.showBottomToast("未查询到支付结果")
                     isQueryResult = false
                 }
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()

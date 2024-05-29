@@ -338,33 +338,33 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
             R.id.rfl_report -> {
                 type = AppUtil.fillZero((classificationList.indexOf(binding.tvAbnormalClassification.text.toString()) + 1).toString())
                 if (binding.retParkingNo.text.toString().isEmpty()) {
-                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请填写泊位号))
+                    ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.请填写泊位号))
                     return
                 }
                 if (type == "00") {
-                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请选择异常分类))
+                    ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.请选择异常分类))
                     return
                 }
                 if (type == "03" && binding.etPlate.text.toString().isEmpty()) {
-                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请填写车牌))
+                    ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.请填写车牌))
                     return
                 }
                 if (type == "03") {
                     if (binding.etPlate.text.toString().length != 7 && binding.etPlate.text.toString().length != 8) {
-                        ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
+                        ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
                         return
                     }
                 }
                 if (type == "03" && checkedColor.isEmpty()) {
-                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请选择车牌颜色))
+                    ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.请选择车牌颜色))
                     return
                 }
                 if (type == "03" && plateImageBitmap == null) {
-                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请上传车牌照))
+                    ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.请上传车牌照))
                     return
                 }
                 if (type == "03" && panoramaImageBitmap == null) {
-                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.请上传全景照))
+                    ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.请上传全景照))
                     return
                 }
                 val param = HashMap<String, Any>()
@@ -677,13 +677,13 @@ class AbnormalReportActivity : VbBaseActivity<AbnormalReportViewModel, ActivityA
                     panoramaBase64 = FileUtil.fileToBase64(panoramaSavedFile).toString()
                     uploadImg(orderNo, panoramaBase64, "${orderNo}_11.png", 11)
                 }
-                ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.上报成功))
+                ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.上报成功))
                 EventBus.getDefault().post(AbnormalReportEvent())
                 onBackPressedSupport()
             }
             errMsg.observe(this@AbnormalReportActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@AbnormalReportActivity) {
                 dismissProgressDialog()

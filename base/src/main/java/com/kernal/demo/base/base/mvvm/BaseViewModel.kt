@@ -85,7 +85,7 @@ open class BaseViewModel : ViewModel(), LifecycleObserver {
                 if (e !is CancellationException || handleCancellationExceptionManually) {
                     if (!e.toString().contains("JobCancellationException")) {
                         //提示报错信息
-                        ToastUtil.showMiddleToast(e.toString())
+                        ToastUtil.showBottomToast(e.toString())
                     }
                     traverseExpMsg(e)
                     catchBlock(e)

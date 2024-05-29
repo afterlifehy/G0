@@ -141,7 +141,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         val searchContent = binding.etSearch.text.toString()
         if (searchContent.isNotEmpty() && (searchContent.length != 7 && searchContent.length != 8)) {
             dismissProgressDialog()
-            ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
+            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
             return
         }
         val param = HashMap<String, Any>()
@@ -202,7 +202,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             R.id.rfl_upload -> {
                 val orderList = orderInquiryAdapter?.getUploadOrderList()
                 if (orderList?.size == 0) {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请选择需要上传的订单))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请选择需要上传的订单))
                     return
                 }
                 DialogHelp.Builder().setTitle(i18N(com.kernal.demo.base.R.string.是否立即上传))
@@ -262,7 +262,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             debtUploadLiveData.observe(this@OrderInquiryActivity) {
                 dismissProgressDialog()
                 if (it.result) {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.上传成功))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.上传成功))
                     orderInquiryAdapter?.clearUploadOrderList()
                     pageIndex = 1
                     orderList.clear()
@@ -270,12 +270,12 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                 } else {
                     orderInquiryAdapter?.clearUploadOrderList()
                     orderInquiryAdapter?.notifyDataSetChanged()
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.上传失败))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.上传失败))
                 }
             }
             errMsg.observe(this@OrderInquiryActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@OrderInquiryActivity) {
                 dismissProgressDialog()

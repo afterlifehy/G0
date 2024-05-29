@@ -87,7 +87,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                             endDate = endTime
                             val difference = TimeUtils.getTimeSpan(endTime, startTime, SimpleDateFormat("yyyy-MM-dd"), TimeConstants.DAY)
                             if (difference > 90) {
-                                ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.查询时间间隔不得超过90天))
+                                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.查询时间间隔不得超过90天))
                                 return
                             }
                             binding.rtvDateRange.text = "统计时间：${startDate}~${endDate}"
@@ -135,7 +135,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                                     var connectResult = BluePrint.instance?.connet(device.address)
                                     if (connectResult == 0) {
                                         runOnUiThread {
-                                            ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                                            ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                                         }
                                         BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                                     }
@@ -151,7 +151,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                             var connectResult = BluePrint.instance?.connet(device.address)
                             if (connectResult == 0) {
                                 runOnUiThread {
-                                    ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                                    ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                                 }
                                 BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                             }
@@ -213,7 +213,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
             }
             errMsg.observe(this@IncomeCountingActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@IncomeCountingActivity) {
                 dismissProgressDialog()

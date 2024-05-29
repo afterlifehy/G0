@@ -85,7 +85,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                     }
                 } else {
                     if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
+                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
                         if (baiduLocationUtil == null) {
                             startBadiMapLocation()
                         }
@@ -105,12 +105,12 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                                             mViewModel.locationUpload(param)
                                         }
                                     } else {
-                                        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
+                                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
                                     }
                                 }
 
                                 override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
-                                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
                                 }
 
                             }).request()
@@ -372,7 +372,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 }
             }
         } else {
-            ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.再按一次退出程序))
+            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.再按一次退出程序))
         }
     }
 

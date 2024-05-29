@@ -175,7 +175,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
             }
             errMsg.observe(this@ParkingLotActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@ParkingLotActivity){
                 dismissProgressDialog()

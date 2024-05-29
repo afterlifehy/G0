@@ -175,7 +175,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                                         var connectResult = BluePrint.instance?.connet(device.address)
                                         if (connectResult == 0) {
                                             runOnUiThread {
-                                                ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                                                ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                                             }
                                             BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                                         }
@@ -191,7 +191,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                                 var connectResult = BluePrint.instance?.connet(device.address)
                                 if (connectResult == 0) {
                                     runOnUiThread {
-                                        ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                                        ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                                     }
                                     BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                                 }
@@ -211,7 +211,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
             }
             errMsg.observe(this@DataPrintActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@DataPrintActivity) {
                 dismissProgressDialog()

@@ -241,7 +241,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                     param["attr"] = jsonobject
                     mViewModel.prePayFeeInquiry(param)
                 } else {
-                    ToastUtil.showMiddleToast("时长过短")
+                    ToastUtil.showBottomToast("时长过短")
                     return
                 }
             }
@@ -265,7 +265,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                 dismissProgressDialog()
                 if (it != null) {
                     handler.removeCallbacks(runnable)
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.支付成功))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
                     if (paymentQrDialog != null) {
                         paymentQrDialog?.dismiss()
                     }
@@ -286,7 +286,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
             errMsg.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
@@ -334,7 +334,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                 var connectResult = BluePrint.instance?.connet(device.address)
                 if (connectResult == 0) {
                     runOnUiThread {
-                        ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                        ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                     }
                     BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
                 }

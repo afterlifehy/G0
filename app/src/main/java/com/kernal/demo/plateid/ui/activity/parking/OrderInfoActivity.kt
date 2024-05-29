@@ -126,7 +126,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                 if (!isOrderCreate) {
                     upload()
                 } else {
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.正在支付无法上传欠费))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.正在支付无法上传欠费))
                 }
             }
 
@@ -206,7 +206,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                 dismissProgressDialog()
                 if (it != null) {
                     handler.removeCallbacks(runnable)
-                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.支付成功))
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
                     if (paymentQrDialog != null) {
                         paymentQrDialog?.dismiss()
                     }
@@ -226,7 +226,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
             }
             errMsg.observe(this@OrderInfoActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@OrderInfoActivity) {
                 dismissProgressDialog()
@@ -274,7 +274,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                 var connectResult = BluePrint.instance?.connet(device.address)
                 if (connectResult == 0) {
                     runOnUiThread {
-                        ToastUtil.showMiddleToast(i18n(com.kernal.demo.base.R.string.开始打印))
+                        ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                     }
                     BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
                 }
