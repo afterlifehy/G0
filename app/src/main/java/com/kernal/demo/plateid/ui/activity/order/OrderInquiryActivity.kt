@@ -102,7 +102,6 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
 
             override fun enterKey() {
                 pageIndex = 1
-                showProgressDialog(20000)
                 query()
             }
         })
@@ -132,7 +131,6 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
     override fun initData() {
         runBlocking {
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
-            showProgressDialog(20000)
             query()
         }
     }
@@ -141,10 +139,10 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         keyboardUtil.hideKeyboard()
         val searchContent = binding.etSearch.text.toString()
         if (searchContent.isNotEmpty() && (searchContent.length != 7 && searchContent.length != 8)) {
-            dismissProgressDialog()
             ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
             return
         }
+        showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["loginName"] = loginName
@@ -165,7 +163,6 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
 
             R.id.tv_search -> {
                 pageIndex = 1
-                showProgressDialog(20000)
                 query()
             }
 
@@ -176,7 +173,6 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                         endDate = endTime
                         binding.tvDate.text = "日期：${startDate}~${endDate}"
                         pageIndex = 1
-                        showProgressDialog(20000)
                         query()
                     }
 

@@ -98,7 +98,6 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
 
             override fun enterKey() {
                 pageIndex = 1
-                showProgressDialog(20000)
                 query()
             }
         })
@@ -129,7 +128,6 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
             simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
         }
-        showProgressDialog(20000)
         query()
     }
 
@@ -167,7 +165,6 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                         endDate = endTime
                         binding.tvDate.text = "日期：${startDate}~${endDate}"
                         pageIndex = 1
-                        showProgressDialog(20000)
                         query()
                     }
 
@@ -181,7 +178,6 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
 
             R.id.tv_search -> {
                 pageIndex = 1
-                showProgressDialog(20000)
                 query()
             }
 

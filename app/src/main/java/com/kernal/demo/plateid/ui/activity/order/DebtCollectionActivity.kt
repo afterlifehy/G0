@@ -150,7 +150,6 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
 
     fun query() {
         keyboardUtil.hideKeyboard()
-        showProgressDialog(20000)
         carLicense = binding.etSearch.text.toString()
         if (carLicense.isEmpty()) {
             ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.请输入车牌号))
@@ -160,6 +159,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
             return
         }
+        showProgressDialog(20000)
         runBlocking {
             simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             val param = HashMap<String, Any>()
