@@ -1,5 +1,6 @@
 package com.kernal.demo.base.util
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -124,6 +125,12 @@ object ToastUtil {
             toast.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, 20)
             toast.duration = Toast.LENGTH_SHORT
             toast.view = layout
+
+            layout.translationY = 1000f
+            val animator = ObjectAnimator.ofFloat(layout, "translationY", 0f)
+            animator.duration = 500
+            animator.start()
+
             toast.show()
 
             Handler(Looper.getMainLooper()).postDelayed({
