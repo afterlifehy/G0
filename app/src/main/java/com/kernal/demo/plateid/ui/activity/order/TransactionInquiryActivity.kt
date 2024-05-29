@@ -17,6 +17,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.hyperai.hyperlpr3.settings.TypeDefine
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.bean.TransactionBean
@@ -319,13 +320,8 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
             if (requestCode == 1) {
                 val plate = data?.getStringExtra("plate")
                 if (!plate.isNullOrEmpty()) {
-                    val plateId = if (plate.contains("新能源")) {
-                        plate.substring(plate.length - 8, plate.length)
-                    } else {
-                        plate.substring(plate.length.minus(7) ?: 0, plate.length)
-                    }
-                    binding.etSearch.setText(plateId)
-                    binding.etSearch.setSelection(plateId.length)
+                    binding.etSearch.setText(plate)
+                    binding.etSearch.setSelection(plate.length)
                 }
             }
         }

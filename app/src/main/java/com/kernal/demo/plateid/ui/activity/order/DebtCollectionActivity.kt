@@ -14,6 +14,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ClickUtils
+import com.hyperai.hyperlpr3.settings.TypeDefine
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.bean.DebtCollectionBean
@@ -206,39 +207,10 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             if (requestCode == 1) {
                 val plate = data?.getStringExtra("plate")
                 if (!plate.isNullOrEmpty()) {
-                    val plateId = if (plate.contains("新能源")) {
-                        plate.substring(plate.length - 8, plate.length)
-                    } else {
-                        plate.substring(plate.length.minus(7) ?: 0, plate.length)
-                    }
-                    binding.etSearch.setText(plateId)
-                    binding.etSearch.setSelection(plateId.length)
+                    binding.etSearch.setText(plate)
+                    binding.etSearch.setSelection(plate.length)
                 }
             } else if (requestCode == 2) {
-//                val plate = data?.getStringExtra("plate")
-//                if (!plate.isNullOrEmpty()) {
-//                    val plateId = if (plate.contains("新能源")) {
-//                        plate.substring(plate.length - 8, plate.length)
-//                    } else {
-//                        plate.substring(plate.length.minus(7) ?: 0, plate.length)
-//                    }
-//                    collectionDialog?.setPlate(plateId)
-//                    if (plate.startsWith("蓝")) {
-//                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.BLUE, 0)
-//                    } else if (plate.startsWith("绿")) {
-//                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.GREEN, 1)
-//                    } else if (plate.startsWith("黄")) {
-//                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.YELLOW, 2)
-//                    } else if (plate.startsWith("黄绿")) {
-//                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.YELLOW_GREEN, 3)
-//                    } else if (plate.startsWith("白")) {
-//                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.WHITE, 4)
-//                    } else if (plate.startsWith("黑")) {
-//                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
-//                    } else {
-//                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.OTHERS, 6)
-//                    }
-//                }
             }
 
         }

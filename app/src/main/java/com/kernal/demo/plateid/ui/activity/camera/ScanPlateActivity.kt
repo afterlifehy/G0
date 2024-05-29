@@ -3,13 +3,17 @@ package com.kernal.demo.plateid.ui.activity.camera
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.util.ArrayMap
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.Plate
+import com.hyperai.hyperlpr3.settings.TypeDefine
+import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
+import com.kernal.demo.base.ext.i18n
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityScanPlateBinding
@@ -20,19 +24,54 @@ import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterMap.SCAN_PLATE)
 class ScanPlateActivity : VbBaseActivity<ScanPlateViewModel, ActivityScanPlateBinding>(), OnClickListener {
-    var cameraPreview: com.kernal.demo.plateid.ui.activity.camera.CameraPreviews? = null
+    var cameraPreview: CameraPreviews? = null
+    var plateColorStr = ""
     var plateStr = ""
+    var plateColor = com.kernal.demo.base.R.color.color_ff0046de
+    var plateColorTxtMap: MutableMap<Int, String> = ArrayMap()
+    var plateLogoColorMap: MutableMap<Int, Int> = ArrayMap()
+
+    init {
+        plateLogoColorMap[TypeDefine.PLATE_TYPE_UNKNOWN] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[TypeDefine.PLATE_TYPE_BLUE] = com.kernal.demo.base.R.color.color_ff0046de
+        plateLogoColorMap[TypeDefine.PLATE_TYPE_YELLOW_SINGLE] = com.kernal.demo.base.R.color.color_fffda027
+        plateLogoColorMap[TypeDefine.PLATE_TYPE_WHILE_SINGLE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[TypeDefine.PLATE_TYPE_GREEN] = com.kernal.demo.base.R.color.color_ff09a95f
+        plateLogoColorMap[TypeDefine.PLATE_TYPE_BLACK_HK_MACAO] = com.kernal.demo.base.R.color.black
+        plateLogoColorMap[TypeDefine.PLATE_TYPE_HK_SINGLE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[TypeDefine.PLATE_TYPE_HK_DOUBLE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[TypeDefine.PLATE_TYPE_MACAO_SINGLE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[TypeDefine.PLATE_TYPE_MACAO_DOUBLE] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[TypeDefine.PLATE_TYPE_YELLOW_DOUBLE] = com.kernal.demo.base.R.color.color_fffda027
+
+        plateColorTxtMap[TypeDefine.PLATE_TYPE_UNKNOWN] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[TypeDefine.PLATE_TYPE_BLUE] = i18n(com.kernal.demo.base.R.string.蓝牌)
+        plateColorTxtMap[TypeDefine.PLATE_TYPE_YELLOW_SINGLE] = i18n(com.kernal.demo.base.R.string.黄牌)
+        plateColorTxtMap[TypeDefine.PLATE_TYPE_WHILE_SINGLE] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[TypeDefine.PLATE_TYPE_GREEN] = i18n(com.kernal.demo.base.R.string.绿牌)
+        plateColorTxtMap[TypeDefine.PLATE_TYPE_BLACK_HK_MACAO] = i18n(com.kernal.demo.base.R.string.黑牌)
+        plateColorTxtMap[TypeDefine.PLATE_TYPE_HK_SINGLE] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[TypeDefine.PLATE_TYPE_HK_DOUBLE] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[TypeDefine.PLATE_TYPE_MACAO_SINGLE] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[TypeDefine.PLATE_TYPE_MACAO_DOUBLE] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[TypeDefine.PLATE_TYPE_YELLOW_DOUBLE] = i18n(com.kernal.demo.base.R.string.黄牌)
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(plates: Array<Plate>) {
+        plateColorStr = ""
         plateStr = ""
         for (plate in plates) {
-            var type = "未知车牌"
-            if (plate.type != HyperLPR3.PLATE_TYPE_UNKNOWN) {
-                type = HyperLPR3.PLATE_TYPE_MAPS[plate.type]
-            }
-            val pStr = type + plate.code
-            plateStr += pStr
+            plateColor = plate.type
+            binding.rtvCarColor.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    plateLogoColorMap[plate.type]!!
+                )
+            )
+            plateColorStr = plateColorTxtMap[plate.type]!!
+            plateStr = plate.code
+            binding.rtvCarColor.text = plateColorStr
             binding.tvPlate.text = plateStr
         }
     }
@@ -41,7 +80,7 @@ class ScanPlateActivity : VbBaseActivity<ScanPlateViewModel, ActivityScanPlateBi
     }
 
     private fun initCamera() {
-        cameraPreview = com.kernal.demo.plateid.ui.activity.camera.CameraPreviews(this)
+        cameraPreview = CameraPreviews(this)
         binding.flPreview.addView(cameraPreview)
     }
 
@@ -62,6 +101,7 @@ class ScanPlateActivity : VbBaseActivity<ScanPlateViewModel, ActivityScanPlateBi
             R.id.rfl_ok -> {
                 val intent = Intent()
                 intent.putExtra("plate", plateStr)
+                intent.putExtra("plateColor", plateColor)
                 setResult(RESULT_OK, intent)
                 finish()
             }

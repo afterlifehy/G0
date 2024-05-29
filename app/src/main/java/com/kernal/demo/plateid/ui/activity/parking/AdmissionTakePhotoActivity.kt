@@ -25,6 +25,7 @@ import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.hyperai.hyperlpr3.settings.TypeDefine
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.bean.PlaceOederResultBean
@@ -550,41 +551,55 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         if (resultCode == RESULT_OK) {
             if (requestCode == 1) {
                 val plate = data?.getStringExtra("plate")
+                val plateColor = data?.getIntExtra("plateColor", TypeDefine.PLATE_TYPE_BLUE)
                 if (!plate.isNullOrEmpty()) {
-                    val plateId = if (plate.contains("新能源")) {
-                        plate.substring(plate.length - 8, plate.length)
-                    } else {
-                        plate.substring(plate.length.minus(7) ?: 0, plate.length)
-                    }
-                    binding.pvPlate.setAllPlate(plateId)
-                    if (plate.startsWith("蓝")) {
-                        checkedColor = Constant.BLUE
-                        collectionPlateColorAdapter?.updateColor(checkedColor, 0)
-                        binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
-                    } else if (plate.startsWith("绿")) {
-                        checkedColor = Constant.GREEN
-                        collectionPlateColorAdapter?.updateColor(checkedColor, 1)
-                        binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
-                    } else if (plate.startsWith("黄")) {
-                        checkedColor = Constant.YELLOW
-                        collectionPlateColorAdapter?.updateColor(checkedColor, 2)
-                        binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
-                    } else if (plate.startsWith("黄绿")) {
-                        checkedColor = Constant.YELLOW_GREEN
-                        collectionPlateColorAdapter?.updateColor(checkedColor, 3)
-                        binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
-                    } else if (plate.startsWith("白")) {
-                        checkedColor = Constant.WHITE
-                        collectionPlateColorAdapter?.updateColor(checkedColor, 4)
-                        binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
-                    } else if (plate.startsWith("黑")) {
-                        checkedColor = Constant.BLACK
-                        collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
-                        binding.pvPlate.setPlateBgAndTxtColor(Constant.BLACK)
-                    } else {
-                        checkedColor = Constant.OTHERS
-                        collectionPlateColorAdapter?.updateColor(checkedColor, 6)
-                        binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                    binding.pvPlate.setAllPlate(plate)
+                    when (plateColor) {
+                        TypeDefine.PLATE_TYPE_UNKNOWN -> {
+                            checkedColor = Constant.OTHERS
+                            collectionPlateColorAdapter?.updateColor(checkedColor, 6)
+                            binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                        }
+
+                        TypeDefine.PLATE_TYPE_BLUE -> {
+                            checkedColor = Constant.BLUE
+                            collectionPlateColorAdapter?.updateColor(checkedColor, 0)
+                            binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                        }
+
+                        TypeDefine.PLATE_TYPE_YELLOW_SINGLE,
+                        TypeDefine.PLATE_TYPE_YELLOW_DOUBLE -> {
+                            checkedColor = Constant.YELLOW
+                            collectionPlateColorAdapter?.updateColor(checkedColor, 2)
+                            binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                        }
+
+                        TypeDefine.PLATE_TYPE_WHILE_SINGLE -> {
+                            checkedColor = Constant.WHITE
+                            collectionPlateColorAdapter?.updateColor(checkedColor, 4)
+                            binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                        }
+
+                        TypeDefine.PLATE_TYPE_GREEN -> {
+                            checkedColor = Constant.GREEN
+                            collectionPlateColorAdapter?.updateColor(checkedColor, 1)
+                            binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                        }
+
+                        TypeDefine.PLATE_TYPE_BLACK_HK_MACAO -> {
+                            checkedColor = Constant.BLACK
+                            collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
+                            binding.pvPlate.setPlateBgAndTxtColor(Constant.BLACK)
+                        }
+
+                        TypeDefine.PLATE_TYPE_HK_SINGLE,
+                        TypeDefine.PLATE_TYPE_HK_DOUBLE,
+                        TypeDefine.PLATE_TYPE_MACAO_SINGLE,
+                        TypeDefine.PLATE_TYPE_MACAO_DOUBLE -> {
+                            checkedColor = Constant.WHITE
+                            collectionPlateColorAdapter?.updateColor(checkedColor, 4)
+                            binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                        }
                     }
                     binding.rflTakePhoto.show()
                     binding.rflPlateImg.gone()
