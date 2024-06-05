@@ -103,8 +103,13 @@ android {
     android.applicationVariants.all {
         outputs.all {
             if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
-                this.outputFileName =
-                    "G0_${versionName}_${versionCode}_${buildType.name}_${if (buildType.name == "release") BuildConfig.release_is_dev else BuildConfig.debug_is_dev}.apk"
+                if (buildType.name == "release") {
+                    this.outputFileName =
+                        "G0_v${versionName}_${versionCode}_.apk"
+                } else {
+                    this.outputFileName =
+                        "G0_v${versionName}_${versionCode}_debug_${BuildConfig.release_is_dev}.apk"
+                }
             }
         }
     }
