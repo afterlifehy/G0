@@ -12,8 +12,7 @@ class FeeRatePagerAdapter(
     activity: FragmentActivity,
     val fragmentList: List<Fragment>,
     val tabList: MutableList<Street>
-) :
-    com.kernal.demo.common.view.flycotablayout.adapter.SlidingAdapter(activity) {
+) : SlidingAdapter(activity) {
 
     override fun getItemCount(): Int {
         return fragmentList.size
