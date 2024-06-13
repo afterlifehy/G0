@@ -108,7 +108,7 @@ android {
                         "G0_v${versionName}_${versionCode}_.apk"
                 } else {
                     this.outputFileName =
-                        "G0_v${versionName}_${versionCode}_debug_${BuildConfig.release_is_dev}.apk"
+                        "G0_v${versionName}_${versionCode}_debug_${BuildConfig.debug_is_dev}.apk"
                 }
             }
         }

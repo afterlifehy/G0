@@ -132,6 +132,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
     }
 
     fun query() {
+        showProgressDialog(20000)
         keyboardUtil.hideKeyboard()
         val searchContent = binding.etSearch.text.toString()
         if (searchContent.isNotEmpty() && (searchContent.length != 7 && searchContent.length != 8)) {

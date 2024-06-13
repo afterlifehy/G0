@@ -63,12 +63,22 @@ class ScanPlateActivity : VbBaseActivity<ScanPlateViewModel, ActivityScanPlateBi
         plateStr = ""
         for (plate in plates) {
             plateColor = plate.type
-            binding.rtvCarColor.delegate.setBackgroundColor(
-                ContextCompat.getColor(
-                    BaseApplication.instance(),
-                    plateLogoColorMap[plate.type]!!
-                )
-            )
+            when (plateColor) {
+                TypeDefine.PLATE_TYPE_UNKNOWN,
+                TypeDefine.PLATE_TYPE_WHILE_SINGLE,
+                TypeDefine.PLATE_TYPE_HK_SINGLE,
+                TypeDefine.PLATE_TYPE_HK_DOUBLE,
+                TypeDefine.PLATE_TYPE_MACAO_SINGLE,
+                TypeDefine.PLATE_TYPE_MACAO_DOUBLE -> {
+                    binding.rtvCarColor.delegate.setTextColor(ContextCompat.getColor(this@ScanPlateActivity, R.color.black))
+                }
+
+                else -> {
+                    binding.rtvCarColor.delegate.setTextColor(ContextCompat.getColor(this@ScanPlateActivity, R.color.white))
+                }
+            }
+            binding.rtvCarColor.delegate.setBackgroundColor(ContextCompat.getColor(BaseApplication.instance(), plateLogoColorMap[plateColor]!!))
+            binding.rtvCarColor.delegate.init()
             plateColorStr = plateColorTxtMap[plate.type]!!
             plateStr = plate.code
             binding.rtvCarColor.text = plateColorStr
