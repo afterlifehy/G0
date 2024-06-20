@@ -102,11 +102,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         parkingNo = intent.getStringExtra(ARouterMap.PREPAID_PARKING_NO).toString()
         orderNo = intent.getStringExtra(ARouterMap.PREPAID_ORDER_NO).toString()
         carColor = intent.getStringExtra(ARouterMap.PREPAID_CAR_COLOR).toString()
-        if (minAmount == 1.0) {
-            binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
-        } else {
-            binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.续费)
-        }
+        binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
 
         binding.tvPlate.text = carLicense
         binding.tvParkingNo.text = parkingNo

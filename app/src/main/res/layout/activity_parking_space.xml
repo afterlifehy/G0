@@ -325,11 +325,12 @@
         android:orientation="horizontal">
 
         <com.aries.ui.view.radius.RadiusFrameLayout
-            android:id="@+id/rfl_renewal"
+            android:id="@+id/rfl_onSitePay"
             android:layout_width="@dimen/dp_0"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_6"
             android:layout_weight="1"
+            android:visibility="gone"
             app:rv_backgroundColor="@color/color_ff04a091"
             app:rv_radius="@dimen/dp_7">
 
@@ -338,9 +339,31 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableStart="@mipmap/ic_renewal"
-                android:drawablePadding="@dimen/dp_10"
+                android:drawablePadding="@dimen/dp_5"
                 android:gravity="center"
-                android:text="@string/续费"
+                android:text="@string/场内支付"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_19" />
+        </com.aries.ui.view.radius.RadiusFrameLayout>
+
+        <com.aries.ui.view.radius.RadiusFrameLayout
+            android:id="@+id/rfl_prepaid"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:layout_weight="1"
+            android:visibility="gone"
+            app:rv_backgroundColor="@color/color_ff04a091"
+            app:rv_radius="@dimen/dp_7">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableStart="@mipmap/ic_renewal"
+                android:drawablePadding="@dimen/dp_5"
+                android:gravity="center"
+                android:text="@string/预支付"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_19" />
         </com.aries.ui.view.radius.RadiusFrameLayout>
@@ -349,7 +372,7 @@
             android:id="@+id/rfl_finish"
             android:layout_width="@dimen/dp_0"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_3"
             android:layout_weight="1"
             app:rv_backgroundColor="@color/color_ffdb1f1f"
             app:rv_radius="@dimen/dp_7">
@@ -359,7 +382,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableStart="@mipmap/ic_finish"
-                android:drawablePadding="@dimen/dp_12"
+                android:drawablePadding="@dimen/dp_5"
                 android:gravity="center"
                 android:text="@string/结束"
                 android:textColor="@color/white"

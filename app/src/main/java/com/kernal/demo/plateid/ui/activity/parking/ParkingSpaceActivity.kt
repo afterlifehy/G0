@@ -39,6 +39,7 @@ import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.dialog.DialogHelp
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
+import com.kernal.demo.base.ext.gone
 import com.kernal.demo.base.ext.hide
 import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.i18n
@@ -201,10 +202,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.rrlArrears.setOnClickListener(this)
         binding.rrlExitMethod.setOnClickListener(this)
-        ClickUtils.applySingleDebouncing(binding.rlCamera,1000,this)
+        ClickUtils.applySingleDebouncing(binding.rlCamera, 1000, this)
         ClickUtils.applySingleDebouncing(binding.rflNotification, 3000, this)
         binding.rflReport.setOnClickListener(this)
-        binding.rflRenewal.setOnClickListener(this)
+        binding.rflOnSitePay.setOnClickListener(this)
+        binding.rflPrepaid.setOnClickListener(this)
         ClickUtils.applySingleDebouncing(binding.rflFinish, 1000, this)
     }
 
@@ -306,30 +308,18 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 })
             }
 
-            R.id.rfl_renewal -> {
+            R.id.rfl_prepaid -> {
                 startArouter(ARouterMap.PREPAID, data = Bundle().apply {
-                    if (parkingSpaceBean != null) {
-                        if (BigDecimal(parkingSpaceBean!!.havePayMoney).toDouble() > 0.0) {
-                            putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 0.5)
-                            putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
-                            putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
-                            putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
-                            putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
-                        } else {
-                            putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
-                            putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
-                            putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
-                            putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
-                            putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
-                        }
-                    } else {
-                        putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
-                        putString(ARouterMap.PREPAID_CARLICENSE, "")
-                        putString(ARouterMap.PREPAID_PARKING_NO, "")
-                        putString(ARouterMap.PREPAID_ORDER_NO, "")
-                        putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
-                    }
+                    putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+                    putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
+                    putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+                    putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
+                    putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
                 })
+            }
+
+            R.id.rfl_onSitePay -> {
+
             }
 
             R.id.rfl_finish -> {
@@ -454,11 +444,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 val strings = arrayOf(i18N(com.kernal.demo.base.R.string.开始时间), parkingSpaceBean?.startTime.toString())
                 binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors)
 
-                val strings2 =
-                    arrayOf(
-                        i18N(com.kernal.demo.base.R.string.预付金额),
-                        AppUtil.keepNDecimals(parkingSpaceBean?.havePayMoney.toString(), 2) + "元"
-                    )
+                val strings2 = arrayOf(
+                    i18N(com.kernal.demo.base.R.string.预付金额),
+                    AppUtil.keepNDecimals(parkingSpaceBean?.havePayMoney.toString(), 2) + "元"
+                )
                 binding.tvPrepayAmount.text = AppUtil.getSpan(strings2, sizes, colors)
 
                 val strings3 = arrayOf(i18N(com.kernal.demo.base.R.string.超时时长), parkingSpaceBean?.timeOut.toString())
@@ -472,6 +461,18 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
                 binding.tvArrearsNum.text = "${parkingSpaceBean?.historyCount}笔"
                 binding.tvArrearsAmount.text = "${parkingSpaceBean?.historySum}元"
+                val startTime = TimeUtils.string2Millis(parkingSpaceBean?.startTime, "yyyy-MM-dd HH:mm:ss")
+                if (System.currentTimeMillis() - startTime < 1000 * 60 * 5) {
+                    binding.rflOnSitePay.gone()
+                    if (BigDecimal(parkingSpaceBean!!.havePayMoney).toDouble() > 0.0) {
+                        binding.rflPrepaid.gone()
+                    } else {
+                        binding.rflPrepaid.show()
+                    }
+                } else {
+                    binding.rflOnSitePay.show()
+                    binding.rflPrepaid.gone()
+                }
             }
             endOrderLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
