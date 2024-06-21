@@ -11,6 +11,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.ArrayMap
 import android.view.View
@@ -52,6 +54,7 @@ import com.kernal.demo.plateid.databinding.ActivityParkingSpaceBinding
 import com.kernal.demo.plateid.dialog.ExitMethodDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.ParkingSpaceViewModel
 import com.kernal.demo.common.event.AbnormalReportEvent
+import com.kernal.demo.common.event.RefreshParkingLotEvent
 import com.kernal.demo.common.event.RefreshParkingSpaceEvent
 import com.kernal.demo.common.realm.RealmUtil
 import com.kernal.demo.common.util.AppUtil
@@ -61,6 +64,7 @@ import com.kernal.demo.common.util.FileUtil
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.common.util.ImageCompressor
 import com.kernal.demo.common.util.ImageUtil
+import com.kernal.demo.plateid.dialog.PaymentQrDialog
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -101,6 +105,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var currentStreet: Street? = null
     var plateLogoColorMap: MutableMap<String, Int> = ArrayMap()
     var plateColorTxtMap: MutableMap<String, String> = ArrayMap()
+
+    var count = 0
+    var paymentQrDialog: PaymentQrDialog? = null
+    var handler = Handler(Looper.getMainLooper())
 
     init {
         plateLogoColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.black
@@ -319,7 +327,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_onSitePay -> {
-
+                paymentQrDialog = PaymentQrDialog("12345", AppUtil.keepNDecimals("12345", 2))
+                paymentQrDialog?.show()
+                paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
+                count = 0
+                handler.postDelayed(runnable, 2000)
             }
 
             R.id.rfl_finish -> {
@@ -355,6 +367,38 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     }).build(this@ParkingSpaceActivity).showDailog()
             }
         }
+    }
+
+    val runnable = object : Runnable {
+        override fun run() {
+            if (count < 60) {
+                checkPayResult()
+                count++
+                handler.postDelayed(this, 3000)
+            }
+        }
+    }
+
+    fun checkPayResult() {
+        dismissProgressDialog()
+        handler.removeCallbacks(runnable)
+        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.支付成功))
+        parkingSpaceRequest()
+        if (paymentQrDialog != null) {
+            paymentQrDialog?.dismiss()
+        }
+//        val payResultBean = it
+//        var rxPermissions = RxPermissions(this@ParkingSpaceActivity)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+//                if (it) {
+//                    startPrint(payResultBean)
+//                }
+//            }
+//        } else {
+//            startPrint(it)
+//        }
+        EventBus.getDefault().post(RefreshParkingLotEvent())
     }
 
     fun takePhoto() {
@@ -597,5 +641,19 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     override fun providerVMClass(): Class<ParkingSpaceViewModel> {
         return ParkingSpaceViewModel::class.java
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (handler != null) {
+            handler.removeCallbacks(runnable)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (handler != null) {
+            handler.removeCallbacks(runnable)
+        }
     }
 }
