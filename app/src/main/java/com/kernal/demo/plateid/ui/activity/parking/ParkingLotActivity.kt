@@ -157,7 +157,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                     startArouter(ARouterMap.PARKING_SPACE, data = Bundle().apply {
                         putString(ARouterMap.ORDER_NO, parkingLotBean.orderNo)
                         putString(ARouterMap.CAR_LICENSE, parkingLotBean.carLicense)
-                        putString(ARouterMap.CAR_COLOR,parkingLotBean.carColor)
+                        putString(ARouterMap.CAR_COLOR, parkingLotBean.carColor)
                     })
                 }
             }
@@ -177,7 +177,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
             }
-            mException.observe(this@ParkingLotActivity){
+            mException.observe(this@ParkingLotActivity) {
                 dismissProgressDialog()
             }
         }
@@ -203,5 +203,6 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
         if (handler != null) {
             handler.removeCallbacks(runnable)
         }
+        dismissProgressDialog()
     }
 }

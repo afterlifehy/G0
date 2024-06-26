@@ -210,11 +210,11 @@ class PlateView @JvmOverloads constructor(
         binding!!.tvPlate4.getPlateView().text = plateArray[3].toString()
         binding!!.tvPlate5.getPlateView().text = plateArray[4].toString()
         binding!!.tvPlate6.getPlateView().text = plateArray[5].toString()
-        binding!!.tvPlate7.getPlateView().text = plateArray[6].toString()
-        if (plateArray.size == 8) {
-            binding!!.tvPlate8.getPlateView().text = plateArray[7].toString()
-        } else {
-            binding!!.tvPlate8.getPlateView().text = ""
+        binding?.let {
+            it.tvPlate7.getPlateView().text = plateArray.getOrNull(6)?.toString() ?: ""
+        }
+        binding?.let {
+            it.tvPlate8.getPlateView().text = plateArray.getOrNull(7)?.toString() ?: ""
         }
         inputPosition = 7
         if (plateBgColor == Constant.WHITE) {

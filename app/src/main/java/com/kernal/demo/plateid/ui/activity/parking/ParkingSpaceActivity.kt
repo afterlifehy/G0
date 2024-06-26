@@ -655,5 +655,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         if (handler != null) {
             handler.removeCallbacks(runnable)
         }
+        dismissProgressDialog()
     }
 }

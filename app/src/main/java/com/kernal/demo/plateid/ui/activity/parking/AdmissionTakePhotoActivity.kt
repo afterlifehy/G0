@@ -631,6 +631,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
     override fun onDestroy() {
         super.onDestroy()
+        dismissProgressDialog()
         plateImageBitmap?.recycle()
         plateImageBitmap = null
         panoramaImageBitmap?.recycle()

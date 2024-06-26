@@ -20,7 +20,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportActivity{
+abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportActivity {
     protected lateinit var mViewModel: VM
     private var mFragment: Fragment? = null
     private var isLoadContentView = true
@@ -127,12 +127,20 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
     }
 
     fun showProgressDialog(i: Long) {
-        mProgressDialog.show()
-        Handler(Looper.getMainLooper()).postDelayed({ dismissProgressDialog() }, i)
+        if (!isFinishing && !isDestroyed) {
+            mProgressDialog.show()
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (!isFinishing && !isDestroyed) {
+                    dismissProgressDialog()
+                }
+            }, i)
+        }
     }
 
     fun dismissProgressDialog() {
-        mProgressDialog.dismiss()
+        if (!isFinishing && !isDestroyed) {
+            mProgressDialog.dismiss()
+        }
     }
 
     override fun onDestroy() {

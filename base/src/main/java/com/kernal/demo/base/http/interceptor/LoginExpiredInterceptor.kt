@@ -18,7 +18,6 @@ import java.io.IOException
 class LoginExpiredInterceptor : Interceptor {
     private var mHandler: LoginExpiredHandler
 
-
     init {
         mHandler = LoginExpiredHandler()
     }
