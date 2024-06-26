@@ -317,13 +317,28 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_prepaid -> {
-                startArouter(ARouterMap.PREPAID, data = Bundle().apply {
-                    putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
-                    putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
-                    putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
-                    putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
-                    putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
-                })
+                val startTime = TimeUtils.string2Millis(parkingSpaceBean?.startTime, "yyyy-MM-dd HH:mm:ss")
+                val timeout = System.currentTimeMillis() - startTime
+                if (timeout > 1000 * 60 * 5) {
+                    binding.rflOnSitePay.show()
+                    binding.rflPrepaid.gone()
+                    val strings3 = arrayOf(i18N(com.kernal.demo.base.R.string.超时时长), AppUtil.dayHourMin((timeout / 1000 / 60).toInt()))
+                    binding.tvTimeoutDuration.text = AppUtil.getSpan(strings3, sizes, colors)
+
+                    paymentQrDialog = PaymentQrDialog("12345", AppUtil.keepNDecimals("12345", 2))
+                    paymentQrDialog?.show()
+                    paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
+                    count = 0
+                    handler.postDelayed(runnable, 2000)
+                } else {
+                    startArouter(ARouterMap.PREPAID, data = Bundle().apply {
+                        putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+                        putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
+                        putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+                        putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
+                        putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
+                    })
+                }
             }
 
             R.id.rfl_onSitePay -> {
