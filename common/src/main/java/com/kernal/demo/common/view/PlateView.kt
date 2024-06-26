@@ -278,7 +278,7 @@ class PlateView @JvmOverloads constructor(
             }
 
             6 -> {
-                binding!!.tvPlate7.getPlateView().text = "
+                binding!!.tvPlate7.getPlateView().text = ""
                 inputPosition = 5
                 binding!!.tvPlate6.performSelectAnimation()
             }
