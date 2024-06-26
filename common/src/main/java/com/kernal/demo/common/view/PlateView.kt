@@ -204,12 +204,24 @@ class PlateView @JvmOverloads constructor(
 
     fun setAllPlate(value: String) {
         val plateArray = value.toCharArray()
-        binding!!.tvPlate1.getPlateView().text = plateArray[0].toString()
-        binding!!.tvPlate2.getPlateView().text = plateArray[1].toString()
-        binding!!.tvPlate3.getPlateView().text = plateArray[2].toString()
-        binding!!.tvPlate4.getPlateView().text = plateArray[3].toString()
-        binding!!.tvPlate5.getPlateView().text = plateArray[4].toString()
-        binding!!.tvPlate6.getPlateView().text = plateArray[5].toString()
+        binding?.let {
+            it.tvPlate1.getPlateView().text = plateArray.getOrNull(0)?.toString() ?: ""
+        }
+        binding?.let {
+            it.tvPlate2.getPlateView().text = plateArray.getOrNull(1)?.toString() ?: ""
+        }
+        binding?.let {
+            it.tvPlate3.getPlateView().text = plateArray.getOrNull(2)?.toString() ?: ""
+        }
+        binding?.let {
+            it.tvPlate4.getPlateView().text = plateArray.getOrNull(3)?.toString() ?: ""
+        }
+        binding?.let {
+            it.tvPlate5.getPlateView().text = plateArray.getOrNull(4)?.toString() ?: ""
+        }
+        binding?.let {
+            it.tvPlate6.getPlateView().text = plateArray.getOrNull(5)?.toString() ?: ""
+        }
         binding?.let {
             it.tvPlate7.getPlateView().text = plateArray.getOrNull(6)?.toString() ?: ""
         }
@@ -266,7 +278,7 @@ class PlateView @JvmOverloads constructor(
             }
 
             6 -> {
-                binding!!.tvPlate7.getPlateView().text = ""
+                binding!!.tvPlate7.getPlateView().text = "
                 inputPosition = 5
                 binding!!.tvPlate6.performSelectAnimation()
             }
