@@ -26,6 +26,7 @@ import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.common.util.BaiduLocationUtil
+import com.kernal.demo.common.util.Constant
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityLoginBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LoginViewModel
@@ -149,6 +150,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 if (isSuccess) {
                     this@LoginActivity.lat = lat
                     this@LoginActivity.lon = lon
+                    Constant.lat = lat
+                    Constant.lon = lon
                     locationEnable = 1
                 } else {
                     locationEnable = -1

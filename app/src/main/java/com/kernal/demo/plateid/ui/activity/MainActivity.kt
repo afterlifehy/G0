@@ -37,7 +37,10 @@ import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.ext.startArouter
+import com.kernal.demo.common.event.BaiduLocationEvent
+import com.kernal.demo.common.event.RefreshIsPrintEvent
 import com.kernal.demo.common.util.BaiduLocationUtil
+import com.kernal.demo.common.util.Constant
 import com.kernal.demo.plateid.ui.activity.abnormal.AbnormalReportActivity
 import com.kernal.demo.plateid.ui.activity.income.IncomeCountingActivity
 import com.kernal.demo.plateid.ui.activity.login.LoginActivity
@@ -49,14 +52,20 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
     lateinit var baiduLocationUtil: BaiduLocationUtil
     var lat = 121.445345
     var lon = 31.238665
-    var locationEnable = 0
     var loginName = ""
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(baiduLocationEvent: BaiduLocationEvent) {
+        startBadiMapLocation()
+    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         // super.onSaveInstanceState(outState)
@@ -68,60 +77,44 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         runBlocking {
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
         }
-        if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            startBadiMapLocation()
-        }
+        PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION)
+            .callback(object : PermissionUtils.FullCallback {
+                override fun onGranted(granted: MutableList<String>) {
+                    startBadiMapLocation()
+                }
+
+                override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                }
+
+            }).request()
         repeatCheckLocation {
             runOnUiThread {
-                if (locationEnable == 1) {
-                    if (loginName.isNotEmpty()) {
-                        val param = HashMap<String, Any>()
-                        val jsonobject = JSONObject()
-                        jsonobject["loginName"] = loginName
-                        jsonobject["longitude"] = lon.toString()
-                        jsonobject["latitude"] = lat.toString()
-                        param["attr"] = jsonobject
-                        mViewModel.locationUpload(param)
+                if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    if (baiduLocationUtil == null) {
+                        startBadiMapLocation()
                     }
+                    locationUpload()
                 } else {
-                    if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
-                        if (baiduLocationUtil == null) {
-                            startBadiMapLocation()
-                        }
-                    } else {
-                        PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION)
-                            .callback(object : PermissionUtils.FullCallback {
-                                override fun onGranted(granted: MutableList<String>) {
-                                    startBadiMapLocation()
-                                    if (locationEnable == 1) {
-                                        if (loginName.isNotEmpty()) {
-                                            val param = HashMap<String, Any>()
-                                            val jsonobject = JSONObject()
-                                            jsonobject["loginName"] = loginName
-                                            jsonobject["longitude"] = lon.toString()
-                                            jsonobject["latitude"] = lat.toString()
-                                            param["attr"] = jsonobject
-                                            mViewModel.locationUpload(param)
-                                        }
-                                    } else {
-                                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
-                                    }
-                                }
+                    PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION)
+                        .callback(object : PermissionUtils.FullCallback {
+                            override fun onGranted(granted: MutableList<String>) {
+                                startBadiMapLocation()
+                                locationUpload()
+                            }
 
-                                override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
-                                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
-                                }
+                            override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
+                                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                            }
 
-                            }).request()
-                    }
+                        }).request()
                 }
             }
         }
     }
 
     fun startBadiMapLocation() {
-        baiduLocationUtil = BaiduLocationUtil.getInstance(1000 * 60)
+        baiduLocationUtil = BaiduLocationUtil.getInstance(1000 * 60 * 5)
         baiduLocationUtil.initBaiduLocation()
         val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
             override fun locationChange(
@@ -134,12 +127,10 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 if (isSuccess) {
                     this@MainActivity.lat = lat
                     this@MainActivity.lon = lon
-                    locationEnable = 1
-                } else {
-                    locationEnable = -1
+                    Constant.lat = lat
+                    Constant.lon = lon
                 }
             }
-
         }
         baiduLocationUtil.setBaiduLocationCallBack(callback)
     }
@@ -154,6 +145,18 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 i.delete()
 //                }
             }
+        }
+    }
+
+    fun locationUpload() {
+        if (loginName.isNotEmpty()) {
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["loginName"] = loginName
+            jsonobject["longitude"] = lon.toString()
+            jsonobject["latitude"] = lat.toString()
+            param["attr"] = jsonobject
+            mViewModel.locationUpload(param)
         }
     }
 
@@ -363,6 +366,10 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     override val isFullScreen: Boolean
         get() = false
+
+    override fun isRegEventBus(): Boolean {
+        return true
+    }
 
     override fun onBackPressedSupport() {
         if (AppUtil.isFastClick(1000)) {

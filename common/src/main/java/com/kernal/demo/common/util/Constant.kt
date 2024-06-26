@@ -19,4 +19,7 @@ object Constant {
     const val TRANSPARENT = "13"
     const val YELLOW_GREEN = "20"
     const val OTHERS = "99"
+
+    var lat = 121.445345
+    var lon = 31.238665
 }
