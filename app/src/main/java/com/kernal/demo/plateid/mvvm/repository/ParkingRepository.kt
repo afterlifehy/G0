@@ -5,9 +5,10 @@ import com.kernal.demo.base.bean.DebtUploadBean
 import com.kernal.demo.base.bean.HttpWrapper
 import com.kernal.demo.base.bean.ParkingLotResultBean
 import com.kernal.demo.base.bean.ParkingSpaceBean
+import com.kernal.demo.base.bean.PayQRBean
+import com.kernal.demo.base.bean.PayResultBean
+import com.kernal.demo.base.bean.PayResultPrintResultBean
 import com.kernal.demo.base.bean.PlaceOederResultBean
-import com.kernal.demo.base.bean.TicketPrintBean
-import com.kernal.demo.base.bean.TicketPrintResultBean
 
 class ParkingRepository : BaseRepository() {
 
@@ -49,14 +50,14 @@ class ParkingRepository : BaseRepository() {
     /**
      *  场内支付
      */
-    suspend fun ticketPrint(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean> {
+    suspend fun ticketPrint(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
         return mServer.ticketPrint(param)
     }
 
     /**
      *  根据订单查交易
      */
-    suspend fun inquiryTransactionByOrderNo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintResultBean> {
+    suspend fun inquiryTransactionByOrderNo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultPrintResultBean> {
         return mServer.inquiryTransactionByOrderNo(param)
     }
 
@@ -66,10 +67,18 @@ class ParkingRepository : BaseRepository() {
     suspend fun debtUpload(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<DebtUploadBean> {
         return mServer.debtUpload(param)
     }
-//    /**
-//     *  支付结果
-//     */
-//    suspend fun payResult(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
-//        return mServer.payResult(param)
-//    }
+
+    /**
+     * 场内支付
+     */
+    suspend fun onsitePayQR(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean> {
+        return mServer.onsitePayQR(param)
+    }
+
+    /**
+     * 查询支付结果
+     */
+    suspend fun payResultInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
+        return mServer.payResultInquiry(param)
+    }
 }

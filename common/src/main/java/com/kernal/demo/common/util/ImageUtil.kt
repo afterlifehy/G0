@@ -11,6 +11,7 @@ import android.graphics.Typeface
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import android.util.Base64
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import kotlin.math.max
@@ -117,4 +118,15 @@ object ImageUtil {
         return inSampleSize
     }
 
+    fun base64ToBitmap(base64String: String): Bitmap? {
+        return try {
+            // 解码 Base64 字符串为字节数组
+            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+            // 将字节数组转换为 Bitmap
+            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+            null
+        }
+    }
 }

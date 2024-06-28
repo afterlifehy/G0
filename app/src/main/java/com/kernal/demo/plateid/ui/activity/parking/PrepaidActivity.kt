@@ -42,10 +42,10 @@ import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.PREPAID)
 class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>(), OnClickListener {
-    var timeDuration = 1.0
+    var timeDuration = 1
     var paymentQrDialog: PaymentQrDialog? = null
 
-    var minAmount = 1.0
+    var minAmount = 1
     var parkingNo = ""
     var carLicense = ""
     var orderNo = ""
@@ -96,7 +96,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.white))
 
-        minAmount = intent.getDoubleExtra(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+        minAmount = intent.getIntExtra(ARouterMap.PREPAID_MIN_AMOUNT, 1)
         carLicense = intent.getStringExtra(ARouterMap.PREPAID_CARLICENSE).toString()
         parkingNo = intent.getStringExtra(ARouterMap.PREPAID_PARKING_NO).toString()
         orderNo = intent.getStringExtra(ARouterMap.PREPAID_ORDER_NO).toString()
@@ -166,19 +166,19 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                         s?.delete(s.length - 1, s.length)
                     }
                     if (value.endsWith(".") && value.length > 1) {
-                        timeDuration = value.replace(".", "").toDouble()
+                        timeDuration = value.replace(".", "").toInt()
                     } else if (value.endsWith(".") && value.length <= 1) {
-                        timeDuration = minAmount - 0.5
+//                        timeDuration = minAmount - 0.5
                     } else {
-                        timeDuration = value.toDouble()
+                        timeDuration = value.toInt()
                     }
                 } else if (value.length > 0) {
-                    timeDuration = value.toDouble()
+                    timeDuration = value.toInt()
                 } else {
-                    timeDuration = 0.0
+                    timeDuration = 0
                 }
                 if (timeDuration > 999) {
-                    timeDuration = 999.0
+                    timeDuration = 999
                     binding.etTimeDuration.setText(timeDuration.toString())
                     binding.etTimeDuration.setSelection(timeDuration.toString().length)
                 }
@@ -201,13 +201,13 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_add -> {
-                if (timeDuration == 999.0) {
+                if (timeDuration == 999) {
                     return
                 }
                 if (timeDuration < minAmount) {
                     timeDuration = minAmount
                 } else {
-                    timeDuration += 0.5
+//                    timeDuration += 0.5
                 }
                 binding.etTimeDuration.setText(timeDuration.toString())
                 binding.etTimeDuration.setSelection(timeDuration.toString().length)
@@ -217,7 +217,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                 if (timeDuration <= minAmount) {
                     timeDuration = minAmount
                 } else {
-                    timeDuration -= 0.5
+//                    timeDuration -= 0.5
                 }
                 binding.etTimeDuration.setText(timeDuration.toString())
                 binding.etTimeDuration.setSelection(timeDuration.toString().length)
@@ -250,7 +250,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             prePayFeeInquiryLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
-                paymentQrDialog = PaymentQrDialog(it.qrCode, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
+                paymentQrDialog = PaymentQrDialog(it.qrCode, "", it.totalAmount)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
                 count = 0
@@ -258,7 +258,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
             payResultInquiryLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
-                if (it != null) {
+                if (it != null && it.carLicense.isNotEmpty()) {
                     handler.removeCallbacks(runnable)
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
                     if (paymentQrDialog != null) {

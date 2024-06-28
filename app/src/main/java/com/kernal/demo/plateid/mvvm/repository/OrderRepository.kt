@@ -9,8 +9,7 @@ import com.kernal.demo.base.bean.OrderResultBean
 import com.kernal.demo.base.bean.PayResultBean
 import com.kernal.demo.base.bean.PicInquiryBean
 import com.kernal.demo.base.bean.PayQRBean
-import com.kernal.demo.base.bean.TicketPrintBean
-import com.kernal.demo.base.bean.TicketPrintResultBean
+import com.kernal.demo.base.bean.PayResultPrintResultBean
 import com.kernal.demo.base.bean.TransactionResultBean
 
 class OrderRepository : BaseRepository() {
@@ -67,7 +66,7 @@ class OrderRepository : BaseRepository() {
     /**
      * 票据打印
      */
-    suspend fun ticketPrint(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean> {
+    suspend fun ticketPrint(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
         return mServer.ticketPrint(param)
     }
 
@@ -81,7 +80,7 @@ class OrderRepository : BaseRepository() {
     /**
      *  根据订单查交易
      */
-    suspend fun inquiryTransactionByOrderNo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintResultBean> {
+    suspend fun inquiryTransactionByOrderNo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultPrintResultBean> {
         return mServer.inquiryTransactionByOrderNo(param)
     }
 

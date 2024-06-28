@@ -32,13 +32,13 @@ interface Api {
     /**
      * 预支付数据查询
      */
-    @POST("S_G0_04")
+    @POST("S_G0_04_1")
     suspend fun prePayFeeInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
 
     /**
      * 支付结果查询
      */
-    @POST("S_G0_05")
+    @POST("S_G0_05_1")
     suspend fun payResultInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean>
 
     /**
@@ -96,9 +96,9 @@ interface Api {
     suspend fun checkUpdate(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<UpdateBean>
 
     /**
-     * 泊位订单查询
+     * 场内停车费查询
      */
-    @POST("S_G0_16")
+    @POST("S_G0_16_1")
     suspend fun parkingSpace(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<ParkingSpaceBean>
 
     /**
@@ -117,7 +117,7 @@ interface Api {
      * 票据查询
      */
     @POST("S_G0_19")
-    suspend fun ticketPrint(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean>
+    suspend fun ticketPrint(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean>
 
     /**
      * 离场订单查询
@@ -135,7 +135,7 @@ interface Api {
      * 根据orderNo查交易
      */
     @POST("S_G0_21")
-    suspend fun inquiryTransactionByOrderNo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintResultBean>
+    suspend fun inquiryTransactionByOrderNo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultPrintResultBean>
 
     /**
      * 根据泊位号查询orderNo
@@ -144,16 +144,23 @@ interface Api {
     suspend fun inquiryOrderNoByParkingNo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<OrderNoBean>
 
     /**
+     * 场内支付二维码
+     */
+    @POST("S_G0_25_1")
+    suspend fun onsitePayQR(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
+
+
+    /**
+     * 欠费支付二维码
+     */
+    @POST("S_G0_27_1")
+    suspend fun debtPayQr(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
+
+    /**
      * 离场支付二维码
      */
     @POST("S_OR_0112")
     suspend fun endOrderQR(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
-
-    /**
-     * 追缴二维码
-     */
-    @POST("S_OR4_0113")
-    suspend fun debtPayQr(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
 
     /**
      * 轨迹上传

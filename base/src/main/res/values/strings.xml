@@ -200,4 +200,5 @@
     <string name="黄牌">黄牌</string>
     <string name="绿牌">绿牌</string>
     <string name="场内支付">场内支付</string>
+    <string name="未查询到支付结果">未查询到支付结果</string>
 </resources>

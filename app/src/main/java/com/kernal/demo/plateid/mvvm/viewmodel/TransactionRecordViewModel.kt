@@ -3,7 +3,7 @@ package com.kernal.demo.plateid.mvvm.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.kernal.demo.base.base.mvvm.BaseViewModel
 import com.kernal.demo.base.base.mvvm.ErrorMessage
-import com.kernal.demo.base.bean.TicketPrintResultBean
+import com.kernal.demo.base.bean.PayResultPrintResultBean
 import com.kernal.demo.plateid.mvvm.repository.OrderRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,7 +14,7 @@ class TransactionRecordViewModel : BaseViewModel() {
         OrderRepository()
     }
 
-    val inquiryTransactionByOrderNoLiveData = MutableLiveData<TicketPrintResultBean>()
+    val inquiryTransactionByOrderNoLiveData = MutableLiveData<PayResultPrintResultBean>()
 
     fun inquiryTransactionByOrderNo(param: Map<String, Any?>) {
         launch {

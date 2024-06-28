@@ -4,9 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -24,10 +21,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ClickUtils
-import com.blankj.utilcode.util.ConvertUtils
-import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.FileUtils
-import com.blankj.utilcode.util.ImageUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
@@ -35,9 +29,9 @@ import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.bean.ExitMethodBean
 import com.kernal.demo.base.bean.ParkingSpaceBean
+import com.kernal.demo.base.bean.PayResultBean
 import com.kernal.demo.base.bean.PrintInfoBean
 import com.kernal.demo.base.bean.Street
-import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.dialog.DialogHelp
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
@@ -109,6 +103,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var count = 0
     var paymentQrDialog: PaymentQrDialog? = null
     var handler = Handler(Looper.getMainLooper())
+    var loginName = ""
 
     init {
         plateLogoColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.black
@@ -219,6 +214,9 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     }
 
     override fun initData() {
+        runBlocking {
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+        }
         currentStreet = RealmUtil.instance?.findCurrentStreet()
 
         exitMethodList.add(ExitMethodBean("2", i18N(com.kernal.demo.base.R.string.收费员不在场欠费驶离)))
@@ -324,15 +322,9 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     binding.rflPrepaid.gone()
                     val strings3 = arrayOf(i18N(com.kernal.demo.base.R.string.超时时长), AppUtil.dayHourMin((timeout / 1000 / 60).toInt()))
                     binding.tvTimeoutDuration.text = AppUtil.getSpan(strings3, sizes, colors)
-
-                    paymentQrDialog = PaymentQrDialog("12345", AppUtil.keepNDecimals("12345", 2))
-                    paymentQrDialog?.show()
-                    paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
-                    count = 0
-                    handler.postDelayed(runnable, 2000)
                 } else {
                     startArouter(ARouterMap.PREPAID, data = Bundle().apply {
-                        putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+                        putInt(ARouterMap.PREPAID_MIN_AMOUNT, 1)
                         putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
                         putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
                         putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
@@ -342,11 +334,18 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_onSitePay -> {
-                paymentQrDialog = PaymentQrDialog("12345", AppUtil.keepNDecimals("12345", 2))
-                paymentQrDialog?.show()
-                paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
-                count = 0
-                handler.postDelayed(runnable, 2000)
+                showProgressDialog(20000)
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["simId"] = simId
+                jsonobject["orderNo"] = orderNo
+                jsonobject["tradeNo"] = parkingSpaceBean?.tradeNo
+                jsonobject["carLicense"] = carLicense
+                jsonobject["carColor"] = carColor
+                jsonobject["payMoney"] = parkingSpaceBean?.realtimeMoney
+                jsonobject["loginName"] = loginName
+                param["attr"] = jsonobject
+                mViewModel.onsitePayQR(param)
             }
 
             R.id.rfl_finish -> {
@@ -395,25 +394,12 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     }
 
     fun checkPayResult() {
-        dismissProgressDialog()
-        handler.removeCallbacks(runnable)
-        ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.支付成功))
-        parkingSpaceRequest()
-        if (paymentQrDialog != null) {
-            paymentQrDialog?.dismiss()
-        }
-//        val payResultBean = it
-//        var rxPermissions = RxPermissions(this@ParkingSpaceActivity)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
-//                if (it) {
-//                    startPrint(payResultBean)
-//                }
-//            }
-//        } else {
-//            startPrint(it)
-//        }
-        EventBus.getDefault().post(RefreshParkingLotEvent())
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["simId"] = simId
+        jsonobject["tradeNo"] = parkingSpaceBean?.tradeNo
+        param["attr"] = jsonobject
+        mViewModel.payResultInquiry(param)
     }
 
     fun takePhoto() {
@@ -535,34 +521,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             endOrderLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                when (type) {
-                    "1", "0" -> {
-                        if (parkingSpaceBean?.realtimeMoney!!.toDouble() == 0.0) {
-                            onBackPressedSupport()
-                        } else {
-                            startArouter(ARouterMap.ORDER_INFO, data = Bundle().apply {
-                                putString(ARouterMap.ORDER_INFO_ORDER_NO, orderNo)
-                            })
-                            finish()
-                        }
-                    }
-
-                    "2", "3", "5" -> {
-                        if (parkingSpaceBean?.realtimeMoney!!.toDouble() == 0.0) {
-                        } else {
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-                            jsonobject["orderNoList"] = orderList.joinToString(separator = ",") { it }
-                            param["attr"] = jsonobject
-                            mViewModel.debtUpload(param)
-                        }
-                        onBackPressedSupport()
-                    }
-
-                    "9", "4" -> {
-                        onBackPressedSupport()
-                    }
-                }
+                onBackPressedSupport()
             }
             debtUploadLiveData.observe(this@ParkingSpaceActivity) {
             }
@@ -578,6 +537,36 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     }
                 }
             }
+            onsitePayQRLiveData.observe(this@ParkingSpaceActivity) {
+                dismissProgressDialog()
+                paymentQrDialog = PaymentQrDialog("", it.payUrl, AppUtil.keepNDecimals(parkingSpaceBean?.realtimeMoney.toString(), 2))
+                paymentQrDialog?.show()
+                paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
+                count = 0
+                handler.postDelayed(runnable, 2000)
+            }
+            payResultInquiryLiveData.observe(this@ParkingSpaceActivity) {
+                if (it != null && it.carLicense.isNotEmpty()) {
+                    handler.removeCallbacks(runnable)
+                    ToastUtil.showMiddleToast(i18N(com.kernal.demo.base.R.string.支付成功))
+                    parkingSpaceRequest()
+                    if (paymentQrDialog != null) {
+                        paymentQrDialog?.dismiss()
+                    }
+                    val payResultBean = it
+                    var rxPermissions = RxPermissions(this@ParkingSpaceActivity)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                            if (it) {
+                                startPrint(payResultBean) {}
+                            }
+                        }
+                    } else {
+                        startPrint(it) {}
+                    }
+                    EventBus.getDefault().post(RefreshParkingLotEvent())
+                }
+            }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
@@ -588,7 +577,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         }
     }
 
-    fun performPrintTasks(printDataList: List<TicketPrintBean>, onComplete: () -> Unit) {
+    fun performPrintTasks(printDataList: List<PayResultBean>, onComplete: () -> Unit) {
         val iterator = printDataList.iterator()
 
         fun printNext() {
@@ -607,7 +596,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         printNext()
     }
 
-    fun startPrint(it: TicketPrintBean, onComplete: () -> Unit) {
+    fun startPrint(it: PayResultBean, onComplete: () -> Unit) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,

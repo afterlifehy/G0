@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import com.kernal.demo.base.base.mvvm.BaseViewModel
 import com.kernal.demo.base.base.mvvm.ErrorMessage
 import com.kernal.demo.base.bean.PayResultBean
-import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.bean.TransactionResultBean
 import com.kernal.demo.plateid.mvvm.repository.OrderRepository
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +15,9 @@ class TransactionInquiryViewModel : BaseViewModel() {
     }
 
     val transactionInquiryLiveData = MutableLiveData<TransactionResultBean>()
-    val ticketPrintLiveData = MutableLiveData<TicketPrintBean>()
+    val ticketPrintLiveData = MutableLiveData<PayResultBean>()
     val payResultInquiryLiveData = MutableLiveData<PayResultBean>()
+    val payResultInquiryLiveData1 = MutableLiveData<PayResultBean>()
 
     fun transactionInquiry(param: Map<String, Any?>) {
         launch {
@@ -46,6 +46,19 @@ class TransactionInquiryViewModel : BaseViewModel() {
     }
 
     fun payResultInquiry(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.payResultInquiry(param)
+            }
+            executeResponse(response, {
+                payResultInquiryLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun payResultInquiry1(param: Map<String, Any?>) {
         launch {
             val response = withContext(Dispatchers.IO) {
                 mOrderRepository.payResultInquiry(param)

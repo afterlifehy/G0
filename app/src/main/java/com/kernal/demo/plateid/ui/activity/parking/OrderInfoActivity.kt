@@ -196,7 +196,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                 dismissProgressDialog()
                 isOrderCreate = true
                 tradeNo = it.tradeNo
-                paymentQrDialog = PaymentQrDialog(it.qr_code, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
+                paymentQrDialog = PaymentQrDialog("", it.qr_code, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
                 count = 0
@@ -204,7 +204,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
             }
             payResultInquiryLiveData.observe(this@OrderInfoActivity) {
                 dismissProgressDialog()
-                if (it != null) {
+                if (it != null && it.carLicense.isNotEmpty()) {
                     handler.removeCallbacks(runnable)
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
                     if (paymentQrDialog != null) {

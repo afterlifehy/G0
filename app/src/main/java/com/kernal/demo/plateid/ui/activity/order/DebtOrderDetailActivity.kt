@@ -89,7 +89,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         binding.rivPic1.setOnClickListener(this)
         binding.rivPic2.setOnClickListener(this)
         binding.rivPic3.setOnClickListener(this)
-        ClickUtils.applySingleDebouncing(binding.rflPay,3000, this)
+        ClickUtils.applySingleDebouncing(binding.rflPay, 3000, this)
     }
 
     override fun initData() {
@@ -139,20 +139,17 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                     loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
-                    jsonobject["loginName"] = loginName
-                    jsonobject["carLicense"] = debtCollectionBean?.carLicense
-                    jsonobject["districtId"] = debtCollectionBean?.districtId
-                    jsonobject["businessId"] = debtCollectionBean?.orderNo
                     jsonobject["simId"] = simId
-                    jsonobject["channel"] = "pos"
-                    jsonobject["orderId"] = debtCollectionBean?.oweOrderId
+                    jsonobject["oweOrderId"] = debtCollectionBean?.oweOrderId
+                    jsonobject["orderNo"] = debtCollectionBean?.orderNo
+                    jsonobject["loginName"] = loginName
+                    jsonobject["startTime"] = debtCollectionBean?.startTime!!.replace("-", "").replace(":", "").replace(" ", "")
+                    jsonobject["endTime"] = debtCollectionBean?.endTime!!.replace("-", "").replace(":", "").replace(" ", "")
+                    jsonobject["streetName"] = debtCollectionBean?.streetName
+                    jsonobject["streetNo"] = debtCollectionBean?.streetNo
+                    jsonobject["districtId"] = debtCollectionBean?.districtId
+                    jsonobject["carLicense"] = debtCollectionBean?.carLicense
                     jsonobject["parkingTime"] = debtCollectionBean?.parkingTime
-                    jsonobject["arrivedTime"] = debtCollectionBean?.startTime!!.replace("-", "").replace(":", "").replace(" ", "")
-                    jsonobject["leftTime"] = debtCollectionBean?.endTime!!.replace("-", "").replace(":", "").replace(" ", "")
-                    jsonobject["roadName"] = debtCollectionBean?.streetName
-                    jsonobject["dueMoney"] = debtCollectionBean?.dueMoney.toString()
-                    jsonobject["oweMoney"] = debtCollectionBean?.oweMoney.toString()
-                    jsonobject["paidMoney"] = debtCollectionBean?.paidMoney.toString()
                     param["attr"] = jsonobject
                     mViewModel.debtPayQr(param)
                 }
@@ -195,7 +192,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             debtPayQrLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
-                paymentQrDialog = PaymentQrDialog(it.qr_code, AppUtil.keepNDecimals((it.amount / 100).toString(), 2))
+                paymentQrDialog = PaymentQrDialog("", it.payUrl, it.amount)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
                 count = 0
@@ -203,24 +200,26 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             }
             payResultInquiryLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
-                handler.removeCallbacks(runnable)
-                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
-                if (paymentQrDialog != null) {
-                    paymentQrDialog?.dismiss()
-                }
-                val payResultBean = it
-                var rxPermissions = RxPermissions(this@DebtOrderDetailActivity)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
-                        if (it) {
-                            startPrint(payResultBean)
-                        }
+                if (it != null && it.carLicense.isNotEmpty()) {
+                    handler.removeCallbacks(runnable)
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
+                    if (paymentQrDialog != null) {
+                        paymentQrDialog?.dismiss()
                     }
-                } else {
-                    startPrint(it)
+                    val payResultBean = it
+                    var rxPermissions = RxPermissions(this@DebtOrderDetailActivity)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                            if (it) {
+                                startPrint(payResultBean)
+                            }
+                        }
+                    } else {
+                        startPrint(it)
+                    }
+                    EventBus.getDefault().post(RefreshDebtOrderListEvent())
+                    onBackPressedSupport()
                 }
-                EventBus.getDefault().post(RefreshDebtOrderListEvent())
-                onBackPressedSupport()
             }
             errMsg.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()

@@ -12,6 +12,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
+import com.kernal.demo.base.bean.PayResultBean
 import com.kernal.demo.base.bean.PrintInfoBean
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
@@ -28,13 +29,12 @@ import com.kernal.demo.plateid.adapter.TransactionRecordAdapter
 import com.kernal.demo.plateid.databinding.ActivityTransactionRecordBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.TransactionRecordViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
-import com.kernal.demo.base.bean.TicketPrintBean
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.TRANSACTION_RECORD)
 class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, ActivityTransactionRecordBinding>(), OnClickListener {
     var transactionRecordAdapter: TransactionRecordAdapter? = null
-    var transactionRecordList: MutableList<TicketPrintBean> = ArrayList()
+    var transactionRecordList: MutableList<PayResultBean> = ArrayList()
     var orderNo = ""
     var simId = ""
 
@@ -80,7 +80,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
             }
 
             R.id.fl_notification -> {
-                val ticketPrintBean = v.tag as TicketPrintBean
+                val ticketPrintBean = v.tag as PayResultBean
                 var rxPermissions = RxPermissions(this@TransactionRecordActivity)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
@@ -95,7 +95,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
         }
     }
 
-    fun print(it: TicketPrintBean) {
+    fun print(it: PayResultBean) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,
