@@ -58,7 +58,7 @@
                 android:gravity="center"
                 android:maxEms="8"
                 android:maxLines="1"
-                android:text="@string/一车多位"
+                android:text="@string/两位"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_17" />
 

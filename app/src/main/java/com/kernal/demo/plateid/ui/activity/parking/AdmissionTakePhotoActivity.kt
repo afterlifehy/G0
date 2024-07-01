@@ -222,7 +222,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                                     val list = parkingNo.split("-")
                                     extParkingNo = "${list[0]}-${list[1]}-" + AppUtil.fillZero2(multipleSeat)
                                 } else {
-                                    binding.tvMultipleSeats.text = i18N(com.kernal.demo.base.R.string.一车多位)
+                                    binding.tvMultipleSeats.text = i18N(com.kernal.demo.base.R.string.两位)
                                     binding.tvMultipleSeats.show()
                                     binding.tvParkingNo.text = parkingNo
                                     extParkingNo = ""
