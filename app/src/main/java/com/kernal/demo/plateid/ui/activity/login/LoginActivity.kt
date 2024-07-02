@@ -21,6 +21,8 @@ import com.blankj.utilcode.util.PhoneUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.bean.UpdateBean
+import com.kernal.demo.base.ds.PreferencesDataStore
+import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.util.ToastUtil
@@ -31,6 +33,7 @@ import com.kernal.demo.plateid.databinding.ActivityLoginBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LoginViewModel
 import com.kernal.demo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.LOGIN)
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
@@ -150,6 +153,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     this@LoginActivity.lat = lat
                     this@LoginActivity.lon = lon
                     locationEnable = 1
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lat, lat)
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lon, lon)
+                    }
                 } else {
                     locationEnable = -1
                 }
