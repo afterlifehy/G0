@@ -145,8 +145,10 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 if (isSuccess) {
                     this@StreetChooseActivity.lat = lat
                     this@StreetChooseActivity.lon = lon
-                    Constant.lat = lat
-                    Constant.lon = lon
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lon, lon)
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lat, lat)
+                    }
                 }
             }
 
@@ -156,14 +158,18 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
     private fun checkonWork() {
         showProgressDialog(20000)
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["loginName"] = loginInfo?.loginName
-        jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
-        jsonobject["longitude"] = lon.toString()
-        jsonobject["latitude"] = lat.toString()
-        param["attr"] = jsonobject
-        mViewModel.checkOnWork(param)
+        runBlocking {
+            val longitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lon)
+            val latitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lat)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["loginName"] = loginInfo?.loginName
+            jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
+            jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude
+            jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude
+            param["attr"] = jsonobject
+            mViewModel.checkOnWork(param)
+        }
     }
 
     override fun startObserve() {

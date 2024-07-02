@@ -127,8 +127,10 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 if (isSuccess) {
                     this@MainActivity.lat = lat
                     this@MainActivity.lon = lon
-                    Constant.lat = lat
-                    Constant.lon = lon
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lon, lon)
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lat, lat)
+                    }
                 }
             }
         }
@@ -150,13 +152,17 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     fun locationUpload() {
         if (loginName.isNotEmpty()) {
-            val param = HashMap<String, Any>()
-            val jsonobject = JSONObject()
-            jsonobject["loginName"] = loginName
-            jsonobject["longitude"] = lon.toString()
-            jsonobject["latitude"] = lat.toString()
-            param["attr"] = jsonobject
-            mViewModel.locationUpload(param)
+            runBlocking {
+                val longitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lon)
+                val latitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lat)
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["loginName"] = loginName
+                jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude
+                jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude
+                param["attr"] = jsonobject
+                mViewModel.locationUpload(param)
+            }
         }
     }
 
