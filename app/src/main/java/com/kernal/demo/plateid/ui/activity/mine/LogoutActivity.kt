@@ -28,7 +28,9 @@ import com.kernal.demo.plateid.databinding.ActivityLogOutBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LogoutViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.ext.startArouter
+import com.kernal.demo.common.event.BaiduLocationEvent
 import com.kernal.demo.common.util.BaiduLocationUtil
+import com.kernal.demo.common.util.Constant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -37,13 +39,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
 
 class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(), OnClickListener {
     private var job: Job? = null
     lateinit var baiduLocationUtil: BaiduLocationUtil
     var lat = 0.00
     var lon = 0.00
-    var locationEnable = 0
     var loginName = ""
 
     @SuppressLint("MissingPermission", "CheckResult")
@@ -87,9 +89,10 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                 if (isSuccess) {
                     this@LogoutActivity.lat = lat
                     this@LogoutActivity.lon = lon
-                    locationEnable = 1
-                } else {
-                    locationEnable = -1
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lat, lat)
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lon, lon)
+                    }
                 }
             }
 
@@ -121,31 +124,20 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
 
             R.id.tv_logout -> {
                 var rxPermissions = RxPermissions(this@LogoutActivity)
-                if (locationEnable == 1) {
-                    rxPermissions.request(Manifest.permission.READ_PHONE_STATE).subscribe {
+                if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION) && rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                    logout()
+                } else {
+                    rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
                         if (it) {
+                            startBadiMapLocation()
                             logout()
-                        } else {
+                        } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                        } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
                             ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
                         }
                     }
-
-                } else {
-                    if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION) && rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
-                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
-                    } else {
-                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
-                            if (it) {
-                                startBadiMapLocation()
-                            } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
-                            } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
-                                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
-                            }
-                        }
-                    }
                 }
-
             }
         }
     }
@@ -162,8 +154,6 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                 override fun onRightClickLinsener(msg: String) {
                     showProgressDialog(20000)
                     runBlocking {
-                        val simId =
-                            PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.simId)
                         val loginName =
                             PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.loginName)
                         val param = HashMap<String, Any>()
@@ -226,6 +216,11 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         GlobalScope.launch(Dispatchers.IO) {
             job?.cancelAndJoin()
         }
+    }
+
+    override fun onBackPressedSupport() {
+        super.onBackPressedSupport()
+        EventBus.getDefault().post(BaiduLocationEvent())
     }
 
     override fun onDestroy() {

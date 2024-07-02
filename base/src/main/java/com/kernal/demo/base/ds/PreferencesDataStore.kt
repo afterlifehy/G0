@@ -107,9 +107,11 @@ object PreferencesKeys {
 
     val loginName by stringPreferencesKey()
 
-    val lastCheckUpdateTime by longPreferencesKey()
-
     val isUpdateLocation by booleanPreferencesKey()
+
+    val lat by doublePreferencesKey()
+
+    val lon by doublePreferencesKey()
 
     fun booleanPreferencesKey() =
         ReadOnlyProperty<Any, Preferences.Key<Boolean>> { _, property -> booleanPreferencesKey(property.name) }

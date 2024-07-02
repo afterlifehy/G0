@@ -47,7 +47,6 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     lateinit var baiduLocationUtil: BaiduLocationUtil
     var lat = 0.00
     var lon = 0.00
-    var locationEnable = 0
 
     @SuppressLint("CheckResult", "MissingPermission")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -64,30 +63,37 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         var rxPermissions = RxPermissions(this@StreetChooseActivity)
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
             if (it) {
-                baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
-                baiduLocationUtil.initBaiduLocation()
-                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                    override fun locationChange(
-                        lon: Double,
-                        lat: Double,
-                        location: LocationClientOption?,
-                        isSuccess: Boolean,
-                        address: String?
-                    ) {
-                        if (isSuccess) {
-                            this@StreetChooseActivity.lat = lat
-                            this@StreetChooseActivity.lon = lon
-                            locationEnable = 1
-                        } else {
-                            locationEnable = -1
-                        }
-                    }
-
-                }
-                baiduLocationUtil.setBaiduLocationCallBack(callback)
+                startBadiMapLocation()
+            } else {
+                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
             }
         }
     }
+
+    fun startBadiMapLocation() {
+        baiduLocationUtil = BaiduLocationUtil.getInstance(1000 * 60 * 5)
+        baiduLocationUtil.initBaiduLocation()
+        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+            override fun locationChange(
+                lon: Double,
+                lat: Double,
+                location: LocationClientOption?,
+                isSuccess: Boolean,
+                address: String?
+            ) {
+                if (isSuccess) {
+                    this@StreetChooseActivity.lat = lat
+                    this@StreetChooseActivity.lon = lon
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lat, lat)
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lon, lon)
+                    }
+                }
+            }
+        }
+        baiduLocationUtil.setBaiduLocationCallBack(callback)
+    }
+
 
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
@@ -102,6 +108,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         streetList.add(Street())
     }
 
+    @SuppressLint("CheckResult")
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fl_back -> {
@@ -120,69 +127,19 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
 
             R.id.rtv_enterWorkBench -> {
-                if (locationEnable == 1) {
-                    if (streetChoosedList.isNotEmpty()) {
-                        checkonWork()
-                    } else {
-                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请添加路段))
-                    }
+                var rxPermissions = RxPermissions(this@StreetChooseActivity)
+                if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION) && rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                    checkonWork()
                 } else {
-                    if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
-                        baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
-                        baiduLocationUtil.initBaiduLocation()
-                        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                            override fun locationChange(
-                                lon: Double,
-                                lat: Double,
-                                location: LocationClientOption?,
-                                isSuccess: Boolean,
-                                address: String?
-                            ) {
-                                if (isSuccess) {
-                                    this@StreetChooseActivity.lat = lat
-                                    this@StreetChooseActivity.lon = lon
-                                    locationEnable = 1
-                                } else {
-                                    locationEnable = -1
-                                }
-                            }
-
+                    rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
+                        if (it) {
+                            startBadiMapLocation()
+                            checkonWork()
+                        } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                        } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
                         }
-                        baiduLocationUtil.setBaiduLocationCallBack(callback)
-//                        baiduLocationUtil.startLocation()
-                    } else {
-                        PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION)
-                            .callback(object : PermissionUtils.FullCallback {
-                                override fun onGranted(granted: MutableList<String>) {
-                                }
-
-                                override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
-                                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
-                                    baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
-                                    baiduLocationUtil.initBaiduLocation()
-                                    val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                                        override fun locationChange(
-                                            lon: Double,
-                                            lat: Double,
-                                            location: LocationClientOption?,
-                                            isSuccess: Boolean,
-                                            address: String?
-                                        ) {
-                                            if (isSuccess) {
-                                                this@StreetChooseActivity.lat = lat
-                                                this@StreetChooseActivity.lon = lon
-                                                locationEnable = 1
-                                            } else {
-                                                locationEnable = -1
-                                            }
-                                        }
-
-                                    }
-                                    baiduLocationUtil.setBaiduLocationCallBack(callback)
-//                                    baiduLocationUtil.startLocation()
-                                }
-                            }).request()
                     }
                 }
             }
@@ -199,6 +156,12 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     }
 
     private fun checkonWork() {
+        if (streetChoosedList.isNotEmpty()) {
+            checkonWork()
+        } else {
+            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请添加路段))
+            return
+        }
         showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
