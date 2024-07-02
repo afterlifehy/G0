@@ -50,6 +50,7 @@ class BaiduLocationUtil private constructor(private var internal: Int) {
                     if (errorCode == 61 || errorCode == 66 || errorCode == 161) {
                         // 定位成功
                         locationSuccess(longitude, latitude, mLocationClient?.locOption, p0.address.address)
+                        Log.v("lon", "${longitude}  ${latitude}")
                     } else {
                         // 定位失败
                         locationFailure(mLocationClient?.locOption)

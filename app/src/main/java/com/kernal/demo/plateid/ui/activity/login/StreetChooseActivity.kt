@@ -71,7 +71,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     }
 
     fun startBadiMapLocation() {
-        baiduLocationUtil = BaiduLocationUtil.getInstance(1000 * 60 * 5)
+        baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
         baiduLocationUtil.initBaiduLocation()
         val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
             override fun locationChange(
