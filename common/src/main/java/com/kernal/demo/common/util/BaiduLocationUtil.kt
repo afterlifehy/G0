@@ -45,12 +45,11 @@ class BaiduLocationUtil private constructor(private var internal: Int) {
                     longitude = p0!!.longitude
                     latitude = p0.latitude
                     val errorCode = p0.locType
-                    Log.v("1234", this@BaiduLocationUtil.toString() + internal.toString())
+                    Log.v("lon", "${longitude}  ${latitude}")
                     // 获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
                     if (errorCode == 61 || errorCode == 66 || errorCode == 161) {
                         // 定位成功
                         locationSuccess(longitude, latitude, mLocationClient?.locOption, p0.address.address)
-                        Log.v("lon", "${longitude}  ${latitude}")
                     } else {
                         // 定位失败
                         locationFailure(mLocationClient?.locOption)

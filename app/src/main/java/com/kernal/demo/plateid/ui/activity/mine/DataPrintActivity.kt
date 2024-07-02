@@ -25,6 +25,7 @@ import com.kernal.demo.base.ext.startArouter
 import com.kernal.demo.base.help.ActivityCacheManager
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
+import com.kernal.demo.common.event.BaiduLocationLoginEvent
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.adapter.DataPrintAdapter
 import com.kernal.demo.plateid.databinding.ActivityDataPrintBinding
@@ -34,6 +35,7 @@ import com.kernal.demo.common.realm.RealmUtil
 import com.kernal.demo.common.util.BluePrint
 import com.kernal.demo.common.util.GlideUtils
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.DATA_PRINT)
 class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBinding>(), OnClickListener {
@@ -90,6 +92,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
                 }
                 RealmUtil.instance?.deleteAllStreet()
+                EventBus.getDefault().post(BaiduLocationLoginEvent())
                 onBackPressedSupport()
             }
 
@@ -207,6 +210,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
                 }
                 RealmUtil.instance?.deleteAllStreet()
+                EventBus.getDefault().post(BaiduLocationLoginEvent())
                 onBackPressedSupport()
             }
             errMsg.observe(this@DataPrintActivity) {

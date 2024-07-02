@@ -27,6 +27,8 @@ import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
+import com.kernal.demo.common.event.BaiduLocationEvent
+import com.kernal.demo.common.event.BaiduLocationLoginEvent
 import com.kernal.demo.common.util.BaiduLocationUtil
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityLoginBinding
@@ -34,6 +36,8 @@ import com.kernal.demo.plateid.mvvm.viewmodel.LoginViewModel
 import com.kernal.demo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterMap.LOGIN)
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
@@ -42,6 +46,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     var lon = 31.238665
     var updateBean: UpdateBean? = null
     var locationEnable = 0
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(baiduLocationLoginEvent: BaiduLocationLoginEvent) {
+        startBadiMapLocation()
+    }
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
@@ -286,6 +295,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     override val isFullScreen: Boolean
         get() = false
+
+    override fun isRegEventBus(): Boolean {
+        return true
+    }
 
     override fun onDestroy() {
         super.onDestroy()
