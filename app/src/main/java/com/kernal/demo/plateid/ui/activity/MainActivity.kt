@@ -16,6 +16,7 @@ import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PathUtils
 import com.blankj.utilcode.util.PermissionUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
 import com.kernal.demo.base.BaseApplication
@@ -72,7 +73,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     }
 
     override fun initView() {
-        delete7DayPic()
+        delete2DayPic()
         initHyperLPR()
         runBlocking {
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
@@ -137,15 +138,19 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         baiduLocationUtil.setBaiduLocationCallBack(callback)
     }
 
-    fun delete7DayPic() {
+    fun delete2DayPic() {
         val path = PathUtils.getExternalAppPicturesPath()
         if (FileUtils.createOrExistsDir(path)) {
             val list = FileUtils.listFilesInDir(path)
             for (i in list) {
-//                val createTime = TimeUtils.string2Millis(i.name.split("_")[1] + i.name.split("_")[2], "yyyyMMddHHmmss")
-//                if (System.currentTimeMillis() - createTime > 7 * 24 * 60 * 60 * 1000) {
-                i.delete()
-//                }
+                if (i.name.contains("_")) {
+                    val createTime = TimeUtils.string2Millis(i.name.substring(0, 8), "yyyyMMdd")
+                    if (System.currentTimeMillis() - createTime > 2 * 24 * 60 * 60 * 1000) {
+                        i.delete()
+                    }
+                } else {
+                    i.delete()
+                }
             }
         }
     }
