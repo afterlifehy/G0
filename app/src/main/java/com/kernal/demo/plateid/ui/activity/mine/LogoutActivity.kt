@@ -156,11 +156,13 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     runBlocking {
                         val loginName =
                             PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.loginName)
+                        val longitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lon)
+                        val latitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lat)
                         val param = HashMap<String, Any>()
                         val jsonobject = JSONObject()
                         jsonobject["loginName"] = loginName
-                        jsonobject["longitude"] = lon.toString()
-                        jsonobject["latitude"] = lat.toString()
+                        jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude
+                        jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             jsonobject["simId"] = PhoneUtils.getIMSI()
                         } else {
