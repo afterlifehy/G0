@@ -199,6 +199,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/sp_19"
             android:textStyle="bold"
+            android:visibility="gone"
             app:rv_backgroundColor="@color/color_ff04a091"
             app:rv_radius="@dimen/dp_7" />
 

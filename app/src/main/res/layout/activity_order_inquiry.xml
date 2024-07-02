@@ -108,8 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_13"
                 android:layout_marginTop="@dimen/dp_13"
-                android:layout_marginEnd="@dimen/dp_13"
-                android:paddingBottom="@dimen/dp_70" />
+                android:layout_marginEnd="@dimen/dp_13" />
 
             <include
                 android:id="@+id/layout_noData"
@@ -129,6 +128,7 @@
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginEnd="@dimen/dp_13"
         android:layout_marginBottom="@dimen/dp_13"
+        android:visibility="gone"
         app:rv_backgroundColor="@color/color_ff04a091"
         app:rv_radius="@dimen/dp_7">
 

@@ -64,28 +64,28 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             val strings =
                 arrayOf(i18n(com.kernal.demo.base.R.string.已付), order?.paidAmount.toString(), i18n(com.kernal.demo.base.R.string.元))
             binding.tvPayment.text = AppUtil.getSpan(strings, sizes, colors, styles)
-            if (order?.hasPayed == "1") {
-                binding.rtvUpload.gone()
-            } else {
-                binding.rtvUpload.show()
-                if (order?.isPrinted == "0") {
-                    binding.rtvUpload.delegate.setBackgroundColor(
-                        ContextCompat.getColor(
-                            BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
-                        )
-                    )
-                    ClickUtils.applySingleDebouncing(binding.rtvUpload,1000,this)
-                    binding.rtvUpload.delegate.init()
-                } else {
-                    binding.rtvUpload.delegate.setBackgroundColor(
-                        ContextCompat.getColor(
-                            BaseApplication.instance(), com.kernal.demo.base.R.color.color_ffc5dddb
-                        )
-                    )
-                    binding.rtvUpload.setOnClickListener(null)
-                    binding.rtvUpload.delegate.init()
-                }
-            }
+//            if (order?.hasPayed == "1") {
+//                binding.rtvUpload.gone()
+//            } else {
+//                binding.rtvUpload.show()
+//                if (order?.isPrinted == "0") {
+//                    binding.rtvUpload.delegate.setBackgroundColor(
+//                        ContextCompat.getColor(
+//                            BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
+//                        )
+//                    )
+//                    ClickUtils.applySingleDebouncing(binding.rtvUpload,1000,this)
+//                    binding.rtvUpload.delegate.init()
+//                } else {
+//                    binding.rtvUpload.delegate.setBackgroundColor(
+//                        ContextCompat.getColor(
+//                            BaseApplication.instance(), com.kernal.demo.base.R.color.color_ffc5dddb
+//                        )
+//                    )
+//                    binding.rtvUpload.setOnClickListener(null)
+//                    binding.rtvUpload.delegate.init()
+//                }
+//            }
             binding.rtvTransactionRecord.delegate.setBackgroundColor(
                 ContextCompat.getColor(
                     BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
@@ -99,7 +99,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                 i18n(com.kernal.demo.base.R.string.元)
             )
             binding.tvPayment.text = AppUtil.getSpan(strings, sizes, colors, styles)
-            binding.rtvUpload.gone()
+//            binding.rtvUpload.gone()
             binding.rtvTransactionRecord.delegate.setBackgroundColor(
                 ContextCompat.getColor(
                     BaseApplication.instance(), com.kernal.demo.base.R.color.color_ffc5dddb
@@ -118,7 +118,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                 i18n(com.kernal.demo.base.R.string.元)
             )
             binding.tvPayment.text = AppUtil.getSpan(strings, sizes, colors1, styles)
-            binding.rtvUpload.show()
+//            binding.rtvUpload.show()
             binding.rtvTransactionRecord.delegate.setBackgroundColor(
                 ContextCompat.getColor(
                     BaseApplication.instance(), com.kernal.demo.base.R.color.color_ffc5dddb
@@ -126,23 +126,23 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             )
             binding.rtvTransactionRecord.setOnClickListener(null)
             binding.rtvTransactionRecord.delegate.init()
-            if (order?.isPrinted == "0") {
-                binding.rtvUpload.delegate.setBackgroundColor(
-                    ContextCompat.getColor(
-                        BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
-                    )
-                )
-                ClickUtils.applySingleDebouncing(binding.rtvUpload,1000,this)
-                binding.rtvUpload.delegate.init()
-            } else {
-                binding.rtvUpload.delegate.setBackgroundColor(
-                    ContextCompat.getColor(
-                        BaseApplication.instance(), com.kernal.demo.base.R.color.color_ffc5dddb
-                    )
-                )
-                binding.rtvUpload.setOnClickListener(null)
-                binding.rtvUpload.delegate.init()
-            }
+//            if (order?.isPrinted == "0") {
+//                binding.rtvUpload.delegate.setBackgroundColor(
+//                    ContextCompat.getColor(
+//                        BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
+//                    )
+//                )
+//                ClickUtils.applySingleDebouncing(binding.rtvUpload,1000,this)
+//                binding.rtvUpload.delegate.init()
+//            } else {
+//                binding.rtvUpload.delegate.setBackgroundColor(
+//                    ContextCompat.getColor(
+//                        BaseApplication.instance(), com.kernal.demo.base.R.color.color_ffc5dddb
+//                    )
+//                )
+//                binding.rtvUpload.setOnClickListener(null)
+//                binding.rtvUpload.delegate.init()
+//            }
         }
 
         val strings1 = arrayOf(i18N(com.kernal.demo.base.R.string.订单) + "：", order?.orderNo.toString())

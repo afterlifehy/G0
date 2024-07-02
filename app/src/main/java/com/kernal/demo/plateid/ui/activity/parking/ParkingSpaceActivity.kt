@@ -320,7 +320,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (timeout > 1000 * 60 * 5) {
                     binding.rflOnSitePay.show()
                     binding.rflPrepaid.gone()
-                    val strings3 = arrayOf(i18N(com.kernal.demo.base.R.string.超时时长), AppUtil.dayHourMin((timeout / 1000 / 60).toInt()))
+                    val strings3 = arrayOf(i18N(com.kernal.demo.base.R.string.超时时长), AppUtil.millisToDate(timeout))
                     binding.tvTimeoutDuration.text = AppUtil.getSpan(strings3, sizes, colors)
                 } else {
                     startArouter(ARouterMap.PREPAID, data = Bundle().apply {
