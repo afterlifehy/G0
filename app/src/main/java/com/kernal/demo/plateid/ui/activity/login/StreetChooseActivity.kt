@@ -157,20 +157,18 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
     private fun checkonWork() {
         if (streetChoosedList.isNotEmpty()) {
-            checkonWork()
+            showProgressDialog(20000)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["loginName"] = loginInfo?.loginName
+            jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
+            jsonobject["longitude"] = lon.toString()
+            jsonobject["latitude"] = lat.toString()
+            param["attr"] = jsonobject
+            mViewModel.checkOnWork(param)
         } else {
             ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请添加路段))
-            return
         }
-        showProgressDialog(20000)
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["loginName"] = loginInfo?.loginName
-        jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
-        jsonobject["longitude"] = lon.toString()
-        jsonobject["latitude"] = lat.toString()
-        param["attr"] = jsonobject
-        mViewModel.checkOnWork(param)
     }
 
     override fun startObserve() {
