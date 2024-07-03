@@ -74,7 +74,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                             BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
                         )
                     )
-                    ClickUtils.applySingleDebouncing(binding.rtvUpload,1000,this)
+                    ClickUtils.applySingleDebouncing(binding.rtvUpload, 1000, this)
                     binding.rtvUpload.delegate.init()
                 } else {
                     binding.rtvUpload.delegate.setBackgroundColor(
@@ -132,7 +132,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                         BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
                     )
                 )
-                ClickUtils.applySingleDebouncing(binding.rtvUpload,1000,this)
+                ClickUtils.applySingleDebouncing(binding.rtvUpload, 1000, this)
                 binding.rtvUpload.delegate.init()
             } else {
                 binding.rtvUpload.delegate.setBackgroundColor(
@@ -155,7 +155,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
         binding.tvStartTime.text = AppUtil.getSpan(strings4, sizes2, colors2)
         val strings5 = arrayOf(i18N(com.kernal.demo.base.R.string.出场) + "：", order?.endTime.toString())
         binding.tvEndTime.text = AppUtil.getSpan(strings5, sizes2, colors2)
-        val strings6 = arrayOf(i18N(com.kernal.demo.base.R.string.时长) + "：", AppUtil.dayHourMin(order?.duration2!!.toInt()))
+        val strings6 = arrayOf(i18N(com.kernal.demo.base.R.string.时长) + "：", AppUtil.millisToDate(order?.duration2!!.toLong() * 1000L))
         binding.tvTotalTime.text = AppUtil.getSpan(strings6, sizes2, colors2)
         val strings7 = arrayOf(i18N(com.kernal.demo.base.R.string.总额) + "：", order?.amount.toString() + "元")
         binding.tvAmount.text = AppUtil.getSpan(strings7, sizes2, colors2)
@@ -271,7 +271,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
             }
-            mException.observe(this@OrderDetailActivity){
+            mException.observe(this@OrderDetailActivity) {
                 dismissProgressDialog()
             }
         }

@@ -265,4 +265,24 @@ object AppUtil {
         }
         return "${day}天${hour}小时${minute}分钟"
     }
+
+    fun millisToDate(millis: Long): String {
+        val second = 1000L
+        val minute = 60 * second
+        val hour = 60 * minute
+        val day = 24 * hour
+        // 计算天、小时、分钟、秒
+        val days = millis / day
+        val hours = (millis % day) / hour
+        val minutes = (millis % hour) / minute
+        val seconds = (millis % minute) / second
+
+        // 构建结果字符串
+        return buildString {
+            if (days > 0) append("${days}天")
+            if (hours > 0) append("${hours}小时")
+            if (minutes > 0) append("${minutes}分")
+            if (seconds > 0 || length == 0) append("${seconds}秒")
+        }
+    }
 }
