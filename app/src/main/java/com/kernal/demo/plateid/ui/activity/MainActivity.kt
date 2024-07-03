@@ -163,8 +163,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
                 jsonobject["loginName"] = loginName
-                jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude
-                jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude
+                jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
+                jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
                 param["attr"] = jsonobject
                 mViewModel.locationUpload(param)
             }
