@@ -43,8 +43,8 @@ import org.greenrobot.eventbus.ThreadMode
 @Route(path = ARouterMap.LOGIN)
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
     var baiduLocationUtil: BaiduLocationUtil? = null
-    var lat = 121.445345
-    var lon = 31.238665
+    var lat = 31.238665
+    var lon = 121.445345
     var updateBean: UpdateBean? = null
     var locationEnable = 0
 

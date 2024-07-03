@@ -59,8 +59,8 @@ import org.greenrobot.eventbus.ThreadMode
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
     lateinit var baiduLocationUtil: BaiduLocationUtil
-    var lat = 121.445345
-    var lon = 31.238665
+    var lat = 0.00
+    var lon = 0.00
     var loginName = ""
 
     @Subscribe(threadMode = ThreadMode.MAIN)
