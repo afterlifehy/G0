@@ -12,6 +12,7 @@ data class OrderBean(
     var amount: String = "",
     var carLicense: String = "",
     var duration: String = "0",
+    var duration2: String = "0",
     var endTime: String = "",
     var hasPayed: String = "",
     var orderNo: String = "",
@@ -24,6 +25,9 @@ data class OrderBean(
     init {
         if (duration.isNullOrEmpty()) {
             duration = "0"
+        }
+        if (duration2.isNullOrEmpty()) {
+            duration2 = "0"
         }
     }
 }
