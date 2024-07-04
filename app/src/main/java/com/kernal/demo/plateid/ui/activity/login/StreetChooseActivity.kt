@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.RequiresApi
@@ -34,7 +33,6 @@ import com.kernal.demo.plateid.dialog.StreetChooseListDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.StreetChooseViewModel
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.BaiduLocationUtil
-import com.kernal.demo.common.util.Constant
 import kotlinx.coroutines.runBlocking
 
 class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStreetChooseBinding>(),
@@ -64,7 +62,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         var rxPermissions = RxPermissions(this@StreetChooseActivity)
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
             if (it) {
-                startBadiMapLocation()
+                startBaduMapLocation()
             }
         }
     }
@@ -102,14 +100,14 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             R.id.rtv_enterWorkBench -> {
                 if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                     if (baiduLocationUtil == null) {
-                        startBadiMapLocation()
+                        startBaduMapLocation()
                     }
                     checkonWork()
                 } else {
                     PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION)
                         .callback(object : PermissionUtils.FullCallback {
                             override fun onGranted(granted: MutableList<String>) {
-                                startBadiMapLocation()
+                                startBaduMapLocation()
                                 checkonWork()
                             }
 
@@ -131,7 +129,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         }
     }
 
-    fun startBadiMapLocation() {
+    fun startBaduMapLocation() {
         baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
         baiduLocationUtil.initBaiduLocation()
         val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
