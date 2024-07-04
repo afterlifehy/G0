@@ -290,7 +290,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
             }
             payResultInquiryLiveData.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()
-                if (it != null) {
+                if (it != null && it.payMoney != null) {
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
                     currentTransactionBean?.hasPayed = "1"
                     currentTransactionBean?.payedAmount = currentTransactionBean!!.oweMoney

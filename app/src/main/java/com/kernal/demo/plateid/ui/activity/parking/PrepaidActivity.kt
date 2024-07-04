@@ -8,7 +8,6 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.ArrayMap
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
@@ -19,8 +18,8 @@ import com.blankj.utilcode.util.ClickUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
-import com.kernal.demo.base.bean.PayResultBean
 import com.kernal.demo.base.bean.PrintInfoBean
+import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.hide
@@ -263,7 +262,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
             payResultInquiryLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
-                if (it != null) {
+                if (it != null && it.payMoney != null) {
                     handler.removeCallbacks(runnable)
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
                     if (paymentQrDialog != null) {
@@ -313,7 +312,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         mViewModel.payResultInquiry(param)
     }
 
-    fun startPrint(it: PayResultBean) {
+    fun startPrint(it: TicketPrintBean) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,

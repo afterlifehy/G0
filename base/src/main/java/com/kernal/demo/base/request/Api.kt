@@ -39,7 +39,7 @@ interface Api {
      * 支付结果查询
      */
     @POST("S_G0_05")
-    suspend fun payResultInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean>
+    suspend fun payResultInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean>
 
     /**
      * 欠费上传

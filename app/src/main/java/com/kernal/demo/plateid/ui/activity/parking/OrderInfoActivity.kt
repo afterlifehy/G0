@@ -19,8 +19,8 @@ import com.zrq.spanbuilder.TextStyle
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.bean.EndOrderInfoBean
-import com.kernal.demo.base.bean.PayResultBean
 import com.kernal.demo.base.bean.PrintInfoBean
+import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.i18N
@@ -204,7 +204,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
             }
             payResultInquiryLiveData.observe(this@OrderInfoActivity) {
                 dismissProgressDialog()
-                if (it != null) {
+                if (it != null && it.payMoney != null) {
                     handler.removeCallbacks(runnable)
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
                     if (paymentQrDialog != null) {
@@ -253,7 +253,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
         mViewModel.payResultInquiry(param)
     }
 
-    fun startPrint(it: PayResultBean) {
+    fun startPrint(it: TicketPrintBean) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,

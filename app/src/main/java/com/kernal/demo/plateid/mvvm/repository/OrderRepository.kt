@@ -6,7 +6,6 @@ import com.kernal.demo.base.bean.DebtUploadBean
 import com.kernal.demo.base.bean.EndOrderInfoBean
 import com.kernal.demo.base.bean.HttpWrapper
 import com.kernal.demo.base.bean.OrderResultBean
-import com.kernal.demo.base.bean.PayResultBean
 import com.kernal.demo.base.bean.PicInquiryBean
 import com.kernal.demo.base.bean.PayQRBean
 import com.kernal.demo.base.bean.TicketPrintBean
@@ -74,7 +73,7 @@ class OrderRepository : BaseRepository() {
     /**
      * 查询支付结果
      */
-    suspend fun payResultInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
+    suspend fun payResultInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean> {
         return mServer.payResultInquiry(param)
     }
 

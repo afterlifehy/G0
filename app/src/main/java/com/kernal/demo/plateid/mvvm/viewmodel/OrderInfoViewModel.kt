@@ -6,7 +6,7 @@ import com.kernal.demo.base.base.mvvm.ErrorMessage
 import com.kernal.demo.base.bean.DebtUploadBean
 import com.kernal.demo.base.bean.EndOrderInfoBean
 import com.kernal.demo.base.bean.PayQRBean
-import com.kernal.demo.base.bean.PayResultBean
+import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.plateid.mvvm.repository.OrderRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,7 +19,7 @@ class OrderInfoViewModel : BaseViewModel() {
 
     val endOrderInfoLiveData = MutableLiveData<EndOrderInfoBean>()
     val endOrderQRLiveData = MutableLiveData<PayQRBean>()
-    val payResultInquiryLiveData = MutableLiveData<PayResultBean>()
+    val payResultInquiryLiveData = MutableLiveData<TicketPrintBean>()
     val debtUploadLiveData = MutableLiveData<DebtUploadBean>()
     fun endOrderInfo(param: Map<String, Any?>) {
         launch {
