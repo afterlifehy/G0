@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
@@ -27,10 +26,8 @@ import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
-import com.kernal.demo.common.event.BaiduLocationEvent
 import com.kernal.demo.common.event.BaiduLocationLoginEvent
 import com.kernal.demo.common.util.BaiduLocationUtil
-import com.kernal.demo.common.util.Constant
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityLoginBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LoginViewModel

@@ -30,7 +30,6 @@ import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.ext.startArouter
 import com.kernal.demo.common.event.BaiduLocationEvent
 import com.kernal.demo.common.util.BaiduLocationUtil
-import com.kernal.demo.common.util.Constant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
