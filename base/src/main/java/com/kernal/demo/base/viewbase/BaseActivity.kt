@@ -127,12 +127,26 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
     }
 
     fun showProgressDialog(i: Long) {
-        mProgressDialog.show()
-        Handler(Looper.getMainLooper()).postDelayed({ dismissProgressDialog() }, i)
+        if (!isFinishing && !isDestroyed) {
+            mProgressDialog.show()
+            Handler(Looper.getMainLooper()).postDelayed({
+                dismissProgressDialog()
+            }, i)
+        }
     }
 
     fun dismissProgressDialog() {
-        mProgressDialog.dismiss()
+        if (!isFinishing && !isDestroyed) {
+            mProgressDialog?.let {
+                if (it.isShowing) {
+                    try {
+                        it.dismiss()
+                    } catch (e: Exception) {
+
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
