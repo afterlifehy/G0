@@ -155,18 +155,22 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     }
 
     private fun checkonWork() {
-        showProgressDialog(20000)
-        runBlocking {
-            val longitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lon)
-            val latitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lat)
-            val param = HashMap<String, Any>()
-            val jsonobject = JSONObject()
-            jsonobject["loginName"] = loginInfo?.loginName
-            jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
-            jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
-            jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
-            param["attr"] = jsonobject
-            mViewModel.checkOnWork(param)
+        if (streetChoosedList.isNotEmpty()) {
+            showProgressDialog(20000)
+            runBlocking {
+                val longitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lon)
+                val latitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lat)
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["loginName"] = loginInfo?.loginName
+                jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
+                jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
+                jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
+                param["attr"] = jsonobject
+                mViewModel.checkOnWork(param)
+            }
+        } else {
+            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请添加路段))
         }
     }
 
