@@ -147,6 +147,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
             holder.vb.rflParking.tag = item
             holder.vb.rflParking.setOnClickListener(onClickListener)
         }
+//        item.parkingNo = "no"
         holder.vb.rtvParkingLotNum.text = item.parkingNo.substring(item.parkingNo.length - 3, item.parkingNo.length)
     }
 

@@ -5,6 +5,7 @@ import android.net.http.HttpResponseCache
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
 import com.kernal.demo.base.BaseApplication
+import com.kernal.demo.base.help.CustomExceptionHandler
 import com.kernal.demo.base.http.interceptor.*
 import com.kernal.demo.common.help.SmartRefreshHelp
 import com.kernal.demo.plateid.startup.OnAppBaseProxyManager
@@ -23,6 +24,7 @@ class AppApplication : BaseApplication() {
     override fun onCreate() {
         super.onCreate()
         _context = this
+        CustomExceptionHandler.INSTANCE.init(this@AppApplication)
         //realm
         Thread {
             Realm.init(this)
