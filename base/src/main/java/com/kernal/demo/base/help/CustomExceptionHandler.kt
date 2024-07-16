@@ -23,16 +23,21 @@ class CustomExceptionHandler : Thread.UncaughtExceptionHandler {
 
     override fun uncaughtException(t: Thread, e: Throwable) {
         // 创建 StringWriter 和 PrintWriter 来获取堆栈跟踪信息
-        val stringWriter = StringWriter()
-        e.printStackTrace(PrintWriter(stringWriter))
-        val errorReport = stringWriter.toString()
+//        val stringWriter = StringWriter()
+//        e.printStackTrace(PrintWriter(stringWriter))
+//        val errorReport = stringWriter.toString()
         Thread() {
             run() {
                 Looper.prepare()
-                ToastUtil.showBottomToast(errorReport)
+                ToastUtil.showBottomToast("系统异常，请联系后台客服人员处理")
                 Looper.loop()
             }
         }.start()
         Thread.sleep(3000)
+        if (ActivityCacheManager.instance().getAllActivity().size > 2) {
+            ActivityCacheManager.instance().getCurrentActivity()?.finish()
+        } else {
+
+        }
     }
 }
