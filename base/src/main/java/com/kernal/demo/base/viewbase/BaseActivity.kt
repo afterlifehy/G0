@@ -137,7 +137,7 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
 
     fun dismissProgressDialog() {
         if (!isFinishing && !isDestroyed) {
-            mProgressDialog?.let {
+            mProgressDialog.let {
                 if (it.isShowing) {
                     try {
                         it.dismiss()
