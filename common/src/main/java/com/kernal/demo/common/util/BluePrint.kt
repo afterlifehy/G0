@@ -134,7 +134,7 @@ class BluePrint() {
      */
     fun Print1(printText: String?): Int {
         var printText = printText
-        var yLocation = 182
+        var yLocation = 202
         if (printText !== "" && printText != null) {
             val receipt = printText.contains("receipt")
             if (receipt) {
@@ -229,13 +229,13 @@ class BluePrint() {
                 val now = Calendar.getInstance()
                 val today = now[Calendar.YEAR].toString() + "年" + (now[Calendar.MONTH] + 1) + "月" + now[Calendar.DAY_OF_MONTH] + "日"
                 val printInfo = JSONObject.parseObject(printText, PrintInfoBean::class.java)
-                zpSDK!!.pageSetup(800, 1400)
+                zpSDK!!.pageSetup(800, 1500)
                 //zpSDK.drawGraphic(0, 0, 0, 0, bmp);
-                zpSDK!!.DrawSpecialText(147, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市机动车道路停车费", 0, 0, 0) //3
-                zpSDK!!.DrawSpecialText(197, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 24, "电子票据告知书", 0, 0, 0) //3
-                drawText(10 + 36 + 40, 20, "-----------------------------------------------")
-                drawText(10 + 36 + 40 + 32, 20, "停车单号:   " + printInfo.orderId)
-                drawText(10 + 36 + 40 + 32 + 32, 20, "车牌号码:   " + printInfo.plateId)
+                zpSDK!!.DrawSpecialText(80, 10, PrinterInterface.Textfont.siyuanheiti, 40, "上海市机动车道路停车费", 0, 0, 0) //3
+                zpSDK!!.DrawSpecialText(150, 30 + 36, PrinterInterface.Textfont.siyuanheiti, 40, "电子票据告知书", 0, 0, 0) //3
+                drawText(30 + 36 + 40, 20, "-----------------------------------------------")
+                drawText(30 + 36 + 40 + 32, 20, "停车单号:   " + printInfo.orderId)
+                drawText(30 + 36 + 40 + 32 + 32, 20, "车牌号码:   " + printInfo.plateId)
                 if (printInfo.roadId.length <= 17) {
                     drawText(yLocation, 20, "停车路段:   " + printInfo.roadId)
                 } else if (printInfo.roadId.length > 17 && printInfo.roadId.length <= 34) {
@@ -261,7 +261,7 @@ class BluePrint() {
                 yLocation += 36
                 drawText(yLocation, 20, "----------------电子票据开具方式----------------")
                 yLocation += 36
-                drawText(yLocation, 20, "1、扫描下载“上海停车”官方APP、小程序(微信、支付宝)")
+                drawText(yLocation, 20, "1、扫码下载“上海停车”官方APP、小程序(微信、支付宝)")
                 yLocation += 36
                 zpSDK!!.drawGraphic(
                     65 + 60,
@@ -307,6 +307,12 @@ class BluePrint() {
                 drawText(yLocation, 20, "   姓名、电话等有效的联系方式反馈至邮箱service@shtc")
                 yLocation += 36
                 drawText(yLocation, 20, "   xx.com")
+                yLocation += 36
+                drawText(yLocation, 20, "4、停车协管员未出示现场收费POS机上生成的上海市公共支")
+                yLocation += 36
+                drawText(yLocation, 20, "   付平台统一支付二维码的，停车人有权拒绝支付停车费，")
+                yLocation += 36
+                drawText(yLocation, 20, "   并拨打以下电话投诉咨询（协管单位${printInfo.phone}）")
                 yLocation += 36
                 drawText(yLocation, 20, "-----------------------------------------------")
                 yLocation += 36
