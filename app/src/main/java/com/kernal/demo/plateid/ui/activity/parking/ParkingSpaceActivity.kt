@@ -105,6 +105,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var handler = Handler(Looper.getMainLooper())
     var loginName = ""
 
+    var isOnsitePay = false
+
     init {
         plateLogoColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.black
         plateLogoColorMap[Constant.WHITE] = com.kernal.demo.base.R.color.white
@@ -334,18 +336,12 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_onSitePay -> {
-                showProgressDialog(20000)
-                val param = HashMap<String, Any>()
-                val jsonobject = JSONObject()
-                jsonobject["simId"] = simId
-                jsonobject["orderNo"] = orderNo
-                jsonobject["tradeNo"] = parkingSpaceBean?.tradeNo
-                jsonobject["carLicense"] = carLicense
-                jsonobject["carColor"] = carColor
-                jsonobject["payMoney"] = parkingSpaceBean?.realtimeMoney
-                jsonobject["loginName"] = loginName
-                param["attr"] = jsonobject
-                mViewModel.onsitePayQR(param)
+                if (AppUtil.isFastClick(3000)) {
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请不要频繁点击))
+                } else {
+                    isOnsitePay = true
+                    parkingSpaceRequest()
+                }
             }
 
             R.id.rfl_finish -> {
@@ -517,6 +513,20 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 } else {
                     binding.rflOnSitePay.show()
                     binding.rflPrepaid.gone()
+                }
+                if (isOnsitePay) {
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    jsonobject["simId"] = simId
+                    jsonobject["orderNo"] = orderNo
+                    jsonobject["tradeNo"] = parkingSpaceBean?.tradeNo
+                    jsonobject["carLicense"] = carLicense
+                    jsonobject["carColor"] = carColor
+                    jsonobject["payMoney"] = parkingSpaceBean?.realtimeMoney
+                    jsonobject["loginName"] = loginName
+                    param["attr"] = jsonobject
+                    mViewModel.onsitePayQR(param)
+                    isOnsitePay = false
                 }
             }
             endOrderLiveData.observe(this@ParkingSpaceActivity) {

@@ -201,4 +201,5 @@
     <string name="绿牌">绿牌</string>
     <string name="场内支付">场内支付</string>
     <string name="未查询到支付结果">未查询到支付结果</string>
+    <string name="请不要频繁点击">请不要频繁点击</string>
 </resources>

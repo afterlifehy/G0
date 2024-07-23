@@ -191,6 +191,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         runBlocking {
             simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            prePayFeeInquiry()
         }
     }
 
@@ -225,22 +226,26 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
 
             R.id.rfl_scanPay -> {
                 if (timeDuration >= minAmount) {
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["parkingNo"] = parkingNo
-                    jsonobject["orderNo"] = orderNo
-                    jsonobject["loginName"] = loginName
-                    jsonobject["simId"] = simId
-                    jsonobject["parkingHours"] = timeDuration.toString()
-                    jsonobject["orderType"] = "1"
-                    param["attr"] = jsonobject
-                    mViewModel.prePayFeeInquiry(param)
+                    prePayFeeInquiry()
                 } else {
                     ToastUtil.showBottomToast("时长过短")
                     return
                 }
             }
         }
+    }
+
+    fun prePayFeeInquiry(){
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["parkingNo"] = parkingNo
+        jsonobject["orderNo"] = orderNo
+        jsonobject["loginName"] = loginName
+        jsonobject["simId"] = simId
+        jsonobject["parkingHours"] = timeDuration.toString()
+        jsonobject["orderType"] = "1"
+        param["attr"] = jsonobject
+        mViewModel.prePayFeeInquiry(param)
     }
 
     @SuppressLint("CheckResult")
