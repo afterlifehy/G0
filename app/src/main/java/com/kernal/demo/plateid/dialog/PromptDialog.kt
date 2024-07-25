@@ -68,7 +68,7 @@ class PromptDialog(
     }
 
     override fun getCanceledOnTouchOutside(): Boolean {
-        return true
+        return false
     }
 
     override fun getGravity(): Int {
