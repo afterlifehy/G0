@@ -22,6 +22,7 @@ import com.kernal.demo.base.bean.PrintInfoBean
 import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
+import com.kernal.demo.base.ext.gone
 import com.kernal.demo.base.ext.hide
 import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.i18n
@@ -43,9 +44,14 @@ import org.greenrobot.eventbus.EventBus
 @Route(path = ARouterMap.PREPAID)
 class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>(), OnClickListener {
     var timeDuration = 1.0
+    var payMoney = 1
     var paymentQrDialog: PaymentQrDialog? = null
 
-    var minAmount = 1.0
+    var prepayType = "1"
+    var minTime = 0.5
+    var maxTime = 999.0
+    var minMoney = 1
+    var maxMoney = 5000
     var parkingNo = ""
     var carLicense = ""
     var orderNo = ""
@@ -96,15 +102,19 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.white))
 
-        minAmount = intent.getDoubleExtra(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+        prepayType = intent.getStringExtra(ARouterMap.PREPAID_TYPE).toString()
         carLicense = intent.getStringExtra(ARouterMap.PREPAID_CARLICENSE).toString()
         parkingNo = intent.getStringExtra(ARouterMap.PREPAID_PARKING_NO).toString()
         orderNo = intent.getStringExtra(ARouterMap.PREPAID_ORDER_NO).toString()
         carColor = intent.getStringExtra(ARouterMap.PREPAID_CAR_COLOR).toString()
-        if (minAmount == 1.0) {
+        if (prepayType == "1") {
             binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
+            binding.rlTime.gone()
+            binding.rlMoney.show()
         } else {
             binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.续费)
+            binding.rlTime.show()
+            binding.rlMoney.gone()
         }
 
         binding.tvPlate.text = carLicense
@@ -172,7 +182,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                     if (value.endsWith(".") && value.length > 1) {
                         timeDuration = value.replace(".", "").toDouble()
                     } else if (value.endsWith(".") && value.length <= 1) {
-                        timeDuration = minAmount - 0.5
+                        timeDuration = minTime - 0.5
                     } else {
                         timeDuration = value.toDouble()
                     }
@@ -181,10 +191,40 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                 } else {
                     timeDuration = 0.0
                 }
-                if (timeDuration > 999) {
-                    timeDuration = 999.0
+                if (timeDuration > maxTime) {
+                    timeDuration = maxTime
                     binding.etTimeDuration.setText(timeDuration.toString())
                     binding.etTimeDuration.setSelection(timeDuration.toString().length)
+                }
+            }
+
+        })
+
+        binding.etPayMoney.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                val value = s.toString()
+                if (value.isNotEmpty()) {
+                    payMoney = value.toInt()
+                    if (value.length > 1 && value.startsWith("0")) {
+                        binding.etPayMoney.setText(payMoney.toString())
+                        binding.etPayMoney.setSelection(payMoney.toString().length)
+                    }
+                    if (payMoney > maxMoney) {
+                        payMoney = maxMoney
+                        binding.etPayMoney.setText(payMoney.toString())
+                        binding.etPayMoney.setSelection(payMoney.toString().length)
+                    }
+                } else {
+                    payMoney = minMoney
+                    binding.etPayMoney.setText(payMoney.toString())
+                    binding.etPayMoney.setSelection(payMoney.toString().length)
                 }
             }
 
@@ -208,8 +248,8 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                 if (timeDuration == 999.0) {
                     return
                 }
-                if (timeDuration < minAmount) {
-                    timeDuration = minAmount
+                if (timeDuration < minTime) {
+                    timeDuration = minTime
                 } else {
                     timeDuration += 0.5
                 }
@@ -218,8 +258,8 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_minus -> {
-                if (timeDuration <= minAmount) {
-                    timeDuration = minAmount
+                if (timeDuration <= minTime) {
+                    timeDuration = minTime
                 } else {
                     timeDuration -= 0.5
                 }
@@ -228,20 +268,24 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_scanPay -> {
-                if (timeDuration >= minAmount) {
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["parkingNo"] = parkingNo
-                    jsonobject["orderNo"] = orderNo
-                    jsonobject["loginName"] = loginName
-                    jsonobject["simId"] = simId
-                    jsonobject["parkingHours"] = timeDuration.toString()
-                    jsonobject["orderType"] = "1"
-                    param["attr"] = jsonobject
-                    mViewModel.prePayFeeInquiry(param)
+                if (prepayType == "1") {
+
                 } else {
-                    ToastUtil.showBottomToast("时长过短")
-                    return
+                    if (timeDuration >= minTime) {
+                        val param = HashMap<String, Any>()
+                        val jsonobject = JSONObject()
+                        jsonobject["parkingNo"] = parkingNo
+                        jsonobject["orderNo"] = orderNo
+                        jsonobject["loginName"] = loginName
+                        jsonobject["simId"] = simId
+                        jsonobject["parkingHours"] = timeDuration.toString()
+                        jsonobject["orderType"] = "1"
+                        param["attr"] = jsonobject
+                        mViewModel.prePayFeeInquiry(param)
+                    } else {
+                        ToastUtil.showBottomToast("时长过短")
+                        return
+                    }
                 }
             }
         }

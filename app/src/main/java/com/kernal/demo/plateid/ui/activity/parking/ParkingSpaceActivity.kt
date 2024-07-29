@@ -310,20 +310,20 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 startArouter(ARouterMap.PREPAID, data = Bundle().apply {
                     if (parkingSpaceBean != null) {
                         if (BigDecimal(parkingSpaceBean!!.havePayMoney).toDouble() > 0.0) {
-                            putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 0.5)
+                            putString(ARouterMap.PREPAID_TYPE, "2")
                             putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
                             putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
                             putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
                             putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
                         } else {
-                            putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+                            putString(ARouterMap.PREPAID_TYPE, "1")
                             putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
                             putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
                             putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
                             putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
                         }
                     } else {
-                        putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+                        putString(ARouterMap.PREPAID_TYPE, "1")
                         putString(ARouterMap.PREPAID_CARLICENSE, "")
                         putString(ARouterMap.PREPAID_PARKING_NO, "")
                         putString(ARouterMap.PREPAID_ORDER_NO, "")

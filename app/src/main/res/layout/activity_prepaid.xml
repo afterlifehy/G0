@@ -114,6 +114,7 @@
             app:rv_radius="@dimen/dp_7">
 
             <RelativeLayout
+                android:id="@+id/rl_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical">
@@ -153,7 +154,7 @@
                     android:cursorVisible="true"
                     android:gravity="center"
                     android:inputType="number"
-                    android:maxLength="5"
+                    android:maxLength="4"
                     android:text="1.0"
                     android:textColor="@color/color_ff1a1a1a"
                     android:textCursorDrawable="@drawable/shape_cursor"
@@ -175,6 +176,42 @@
                         android:layout_gravity="center"
                         android:src="@mipmap/ic_add" />
                 </com.aries.ui.view.radius.RadiusFrameLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_money"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/金额"
+                    android:textColor="@color/color_ff666666"
+                    android:textSize="@dimen/sp_19" />
+
+                <EditText
+                    android:id="@+id/et_payMoney"
+                    android:layout_width="@dimen/dp_69"
+                    android:layout_height="@dimen/dp_47"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="@dimen/dp_1"
+                    android:layout_marginEnd="@dimen/dp_1"
+                    android:background="@color/color_fff0f0f0"
+                    android:cursorVisible="true"
+                    android:digits="0123456789"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:text="1"
+                    android:textColor="@color/color_ff1a1a1a"
+                    android:textCursorDrawable="@drawable/shape_cursor"
+                    android:textSize="@dimen/sp_19"
+                    android:textStyle="bold" />
+
             </RelativeLayout>
 
             <View
