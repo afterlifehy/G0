@@ -51,6 +51,7 @@ import com.kernal.demo.plateid.mvvm.viewmodel.AdmissionTakePhotoViewModel
 import com.kernal.demo.plateid.pop.MultipleSeatsPop
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.Constant
+import com.kernal.demo.common.util.CountDownUtil
 import com.kernal.demo.common.util.FileUtil
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.common.util.ImageCompressor
@@ -90,6 +91,8 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var extParkingNo = ""
     var loginName = ""
     var street: Street? = null
+    var countDownUtil: CountDownUtil? = null
+    var canGoBack = true
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
@@ -282,6 +285,39 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                         override fun onRightClickLinsener(msg: String) {
                             showProgressDialog(20000)
+                            binding.rflStartBilling.delegate.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    BaseApplication.instance(),
+                                    com.kernal.demo.base.R.color.black_10_color
+                                )
+                            )
+                            binding.rflStartBilling.delegate.init()
+                            binding.rflStartBilling.setOnClickListener(null)
+                            countDownUtil = CountDownUtil(20000, 1000, object : CountDownUtil.TimeCallBack {
+                                override fun onTimeOut() {
+                                    binding.rflStartBilling.delegate.setBackgroundColor(
+                                        ContextCompat.getColor(
+                                            BaseApplication.instance(),
+                                            com.kernal.demo.base.R.color.color_ffea9a00
+                                        )
+                                    )
+                                    binding.tvStartBilling.text = i18N(com.kernal.demo.base.R.string.开始计费)
+                                    binding.rflStartBilling.delegate.init()
+                                    binding.rflStartBilling.setOnClickListener(this@AdmissionTakePhotoActivity)
+                                    canGoBack = true
+                                }
+
+                                override fun onTimeTick(millisUntilFinished: Long) {
+                                    binding.tvStartBilling.text = if (millisUntilFinished == 0L) {
+                                        i18N(com.kernal.demo.base.R.string.开始计费)
+                                    } else {
+                                        "${i18N(com.kernal.demo.base.R.string.开始计费)} ${millisUntilFinished / 1000}s"
+                                    }
+                                }
+
+                            })
+                            countDownUtil?.start()
+                            canGoBack = false
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
                             jsonobject["carLicense"] = binding.pvPlate.getPvTxt()
@@ -340,6 +376,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         mViewModel.apply {
             placeOrderLiveData.observe(this@AdmissionTakePhotoActivity) {
                 dismissProgressDialog()
+                countDownUtil?.onFinish()
 
                 val plateSavedFile = FileUtil.FileSaveToInside("${it.orderNo}_10.png", plateImageBitmap!!)
                 plateBase64 = FileUtil.fileToBase64(plateSavedFile).toString()
@@ -375,6 +412,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 try {
                     dismissProgressDialog()
                     ToastUtil.showBottomToast(it.msg)
+                    countDownUtil?.onFinish()
                     if (it.code == 2) {
                         DialogHelp.Builder().setTitle(it.msg)
                             .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).isAloneButton(true)
@@ -408,6 +446,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             }
             mException.observe(this@AdmissionTakePhotoActivity) {
                 dismissProgressDialog()
+                countDownUtil?.onFinish()
             }
         }
     }
@@ -629,8 +668,18 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         return binding.layoutToolbar.ablToolbar
     }
 
+    override fun onBackPressedSupport() {
+        if (canGoBack) {
+            super.onBackPressedSupport()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        if (countDownUtil != null) {
+            countDownUtil?.onFinish()
+            countDownUtil = null
+        }
         plateImageBitmap?.recycle()
         plateImageBitmap = null
         panoramaImageBitmap?.recycle()

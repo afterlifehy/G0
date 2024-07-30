@@ -268,6 +268,7 @@
             app:rv_radius="@dimen/dp_7">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_startBilling"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
