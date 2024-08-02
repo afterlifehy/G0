@@ -118,7 +118,7 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
-            tools:text="预付金额：15.00元" />
+            tools:text="已付金额：15.00元" />
 
         <TextView
             android:id="@+id/tv_timeoutDuration"
