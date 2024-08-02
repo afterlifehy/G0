@@ -486,7 +486,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors)
 
                 val strings2 = arrayOf(
-                    i18N(com.kernal.demo.base.R.string.预付金额),
+                    i18N(com.kernal.demo.base.R.string.已付金额),
                     AppUtil.keepNDecimals(parkingSpaceBean?.havePayMoney.toString(), 2) + "元"
                 )
                 binding.tvPrepayAmount.text = AppUtil.getSpan(strings2, sizes, colors)
