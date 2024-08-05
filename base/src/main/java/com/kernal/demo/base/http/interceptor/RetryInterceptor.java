@@ -23,6 +23,7 @@ public final class RetryInterceptor implements Interceptor {
         Response response = chain.proceed(request);
         Log.i("Retry", "num:" + retryNum);
         while (!response.isSuccessful() && retryNum < maxRetries) {
+            response.close();
             retryNum++;
             Log.i("Retry", "num:" + retryNum);
             try {
