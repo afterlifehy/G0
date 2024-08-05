@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -205,6 +204,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         }
         when (v?.id) {
             R.id.fl_back -> {
+                canGoBack = true
                 onBackPressedSupport()
             }
 
@@ -304,7 +304,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                                     binding.tvStartBilling.text = i18N(com.kernal.demo.base.R.string.开始计费)
                                     binding.rflStartBilling.delegate.init()
                                     binding.rflStartBilling.setOnClickListener(this@AdmissionTakePhotoActivity)
-                                    canGoBack = true
                                 }
 
                                 override fun onTimeTick(millisUntilFinished: Long) {
@@ -317,7 +316,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                             })
                             countDownUtil?.start()
-                            canGoBack = false
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
                             jsonobject["carLicense"] = binding.pvPlate.getPvTxt()
@@ -404,6 +402,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                         })
                     promptDialog1?.show()
+                    canGoBack = false
                 } else {
                     showPrePayDialog(it)
                 }
@@ -458,6 +457,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             i18N(com.kernal.demo.base.R.string.确定),
             object : PromptDialog.PromptCallBack {
                 override fun leftClick() {
+                    canGoBack = true
                     onBackPressedSupport()
                 }
 
