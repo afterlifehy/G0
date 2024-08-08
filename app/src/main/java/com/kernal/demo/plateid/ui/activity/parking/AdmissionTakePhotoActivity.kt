@@ -173,10 +173,12 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 keyboardUtil.setCallBack(object : KeyboardUtil.KeyInputCallBack {
                     override fun keyInput(value: String) {
                         binding.pvPlate.setOnePlate(value)
+                        changePlateColor(binding.pvPlate.getPvTxt())
                     }
 
                     override fun keyDelete() {
                         binding.pvPlate.keyDelete()
+                        changePlateColor(binding.pvPlate.getPvTxt())
                     }
 
                     override fun enterKey() {
@@ -184,6 +186,16 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 })
             }
         })
+    }
+
+    fun changePlateColor(plateId: String) {
+        if (plateId.length < 8) {
+            checkedColor = Constant.BLUE
+        } else {
+            checkedColor = Constant.GREEN
+        }
+        collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
+        binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -260,8 +272,16 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请输入车牌号))
                     return
                 }
+                if(!binding.pvPlate.isCompliant()){
+                    ToastUtil.showBottomToast("车牌格式不合规")
+                    return
+                }
                 if (binding.pvPlate.getPvTxt().length != 7 && binding.pvPlate.getPvTxt().length != 8) {
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
+                    return
+                }
+                if ((binding.pvPlate.getPvTxt().length == 8 && checkedColor == Constant.BLUE) || (binding.pvPlate.getPvTxt().length < 8 && checkedColor == Constant.GREEN)) {
+                    ToastUtil.showBottomToast("车牌与车牌颜色不匹配")
                     return
                 }
                 if (checkedColor.isEmpty()) {
@@ -598,12 +618,18 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                             checkedColor = Constant.OTHERS
                             collectionPlateColorAdapter?.updateColor(checkedColor, 6)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_BLUE -> {
                             checkedColor = Constant.BLUE
                             collectionPlateColorAdapter?.updateColor(checkedColor, 0)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_YELLOW_SINGLE,
@@ -611,24 +637,36 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                             checkedColor = Constant.YELLOW
                             collectionPlateColorAdapter?.updateColor(checkedColor, 2)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_WHILE_SINGLE -> {
                             checkedColor = Constant.WHITE
                             collectionPlateColorAdapter?.updateColor(checkedColor, 4)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_GREEN -> {
                             checkedColor = Constant.GREEN
                             collectionPlateColorAdapter?.updateColor(checkedColor, 1)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length < 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_BLACK_HK_MACAO -> {
                             checkedColor = Constant.BLACK
                             collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
                             binding.pvPlate.setPlateBgAndTxtColor(Constant.BLACK)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_HK_SINGLE,
@@ -638,6 +676,9 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                             checkedColor = Constant.WHITE
                             collectionPlateColorAdapter?.updateColor(checkedColor, 4)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
                     }
                     binding.rflTakePhoto.show()
