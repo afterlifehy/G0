@@ -195,4 +195,6 @@
     <string name="黄牌">黄牌</string>
     <string name="绿牌">绿牌</string>
     <string name="已付金额">已付金额：</string>
+    <string name="临">临</string>
+    <string name="临牌">临牌</string>
 </resources>

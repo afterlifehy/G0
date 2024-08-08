@@ -89,7 +89,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         plateColorTxtMap[Constant.CYAN] = i18n(com.kernal.demo.base.R.string.白牌)
         plateColorTxtMap[Constant.PINK] = i18n(com.kernal.demo.base.R.string.白牌)
         plateColorTxtMap[Constant.TRANSPARENT] = i18n(com.kernal.demo.base.R.string.白牌)
-        plateColorTxtMap[Constant.OTHERS] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.OTHERS] = i18n(com.kernal.demo.base.R.string.临牌)
     }
 
     override fun initView() {
