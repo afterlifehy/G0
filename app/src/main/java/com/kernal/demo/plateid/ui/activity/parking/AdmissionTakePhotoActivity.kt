@@ -107,6 +107,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         collectioPlateColorList.add(Constant.WHITE)
         collectioPlateColorList.add(Constant.BLACK)
         collectioPlateColorList.add(Constant.OTHERS)
+        collectioPlateColorList.add(Constant.OTHERS_OLD)
 
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
