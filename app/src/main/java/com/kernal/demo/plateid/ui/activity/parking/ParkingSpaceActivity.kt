@@ -203,7 +203,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.rrlArrears.setOnClickListener(this)
         binding.rrlExitMethod.setOnClickListener(this)
-        ClickUtils.applySingleDebouncing(binding.rlCamera,1000,this)
+        ClickUtils.applySingleDebouncing(binding.rlCamera, 1000, this)
         ClickUtils.applySingleDebouncing(binding.rflNotification, 3000, this)
         binding.rflReport.setOnClickListener(this)
         binding.rflRenewal.setOnClickListener(this)
@@ -341,32 +341,56 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 }
                 type = currentMethod!!.id
                 if (type == "3" && !isUpload) {
-                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请先拍摄在场照片))
+                    DialogHelp.Builder().setTitle(i18N(com.kernal.demo.base.R.string.请先拍摄在场照片))
+                        .setLeftMsg(i18N(com.kernal.demo.base.R.string.已拍摄))
+                        .setRightMsg(i18N(com.kernal.demo.base.R.string.去拍摄)).setCancelable(true)
+                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                            override fun onLeftClickLinsener(msg: String) {
+                                endOrder()
+                            }
+
+                            override fun onRightClickLinsener(msg: String) {
+                                var rxPermissions = RxPermissions(this@ParkingSpaceActivity)
+                                rxPermissions.request(
+                                    Manifest.permission.CAMERA,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                ).subscribe {
+                                    if (it) {
+                                        takePhoto()
+                                    }
+                                }
+                            }
+
+                        }).build(this@ParkingSpaceActivity).showDailog()
                     return
                 }
-                DialogHelp.Builder().setTitle(i18N(com.kernal.demo.base.R.string.是否确定结束订单))
-                    .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
-                    .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).setCancelable(true)
-                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                        override fun onLeftClickLinsener(msg: String) {
-                        }
-
-                        override fun onRightClickLinsener(msg: String) {
-                            showProgressDialog(20000)
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-                            jsonobject["carLicense"] = carLicense
-                            jsonobject["orderNo"] = orderNo
-                            jsonobject["parkingNo"] = parkingSpaceBean?.parkingNo
-                            jsonobject["leftType"] = type
-                            jsonobject["simId"] = simId
-                            param["attr"] = jsonobject
-                            mViewModel.endOrder(param)
-                        }
-
-                    }).build(this@ParkingSpaceActivity).showDailog()
             }
         }
+    }
+
+    fun endOrder() {
+        DialogHelp.Builder().setTitle(i18N(com.kernal.demo.base.R.string.是否确定结束订单))
+            .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
+            .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).setCancelable(true)
+            .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                override fun onLeftClickLinsener(msg: String) {
+                }
+
+                override fun onRightClickLinsener(msg: String) {
+                    showProgressDialog(20000)
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    jsonobject["carLicense"] = carLicense
+                    jsonobject["orderNo"] = orderNo
+                    jsonobject["parkingNo"] = parkingSpaceBean?.parkingNo
+                    jsonobject["leftType"] = type
+                    jsonobject["simId"] = simId
+                    param["attr"] = jsonobject
+                    mViewModel.endOrder(param)
+                }
+
+            }).build(this@ParkingSpaceActivity).showDailog()
     }
 
     fun takePhoto() {

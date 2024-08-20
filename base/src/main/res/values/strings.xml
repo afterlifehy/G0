@@ -197,4 +197,6 @@
     <string name="已付金额">已付金额：</string>
     <string name="临">临</string>
     <string name="临牌">临牌</string>
+    <string name="去拍摄">去拍摄</string>
+    <string name="已拍摄">已拍摄</string>
 </resources>

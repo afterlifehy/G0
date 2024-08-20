@@ -65,19 +65,20 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
     override fun convert(holder: VBViewHolder<ItemParkingLotBinding>, item: ParkingLotBean) {
         if (item.state == "01") {
             holder.vb.llPlateNum.hide()
+            holder.vb.ivCamera.gone()
             holder.vb.llParkingLotBg.setBackgroundColor(
                 ContextCompat.getColor(
                     BaseApplication.instance(),
                     com.kernal.demo.base.R.color.color_ffefefef
                 )
             )
-            holder.vb.rtvParkingLotNum.delegate.setBackgroundColor(
+            holder.vb.rflParkingLotNum.delegate.setBackgroundColor(
                 ContextCompat.getColor(
                     BaseApplication.instance(),
                     com.kernal.demo.base.R.color.color_ffaaaaaa
                 )
             )
-            holder.vb.rtvParkingLotNum.delegate.init()
+            holder.vb.rflParkingLotNum.delegate.init()
             holder.vb.tvPlate.text = i18n(com.kernal.demo.base.R.string.空闲)
             holder.vb.tvPlate.background = null
             holder.vb.rflParking.tag = item
@@ -91,21 +92,33 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                 )
             )
             if (item.deadLine > System.currentTimeMillis()) {
-                holder.vb.rtvParkingLotNum.delegate.setBackgroundColor(
+                holder.vb.ivCamera.gone()
+                holder.vb.rflParkingLotNum.delegate.setBackgroundColor(
                     ContextCompat.getColor(
                         BaseApplication.instance(),
                         com.kernal.demo.base.R.color.color_ff02d28b
                     )
                 )
             } else {
-                holder.vb.rtvParkingLotNum.delegate.setBackgroundColor(
+                holder.vb.rflParkingLotNum.delegate.setBackgroundColor(
                     ContextCompat.getColor(
                         BaseApplication.instance(),
                         com.kernal.demo.base.R.color.color_fffd4646
                     )
                 )
+                if (System.currentTimeMillis() - item.startTime > 60 * 60 * 1000) {
+                    val num = (System.currentTimeMillis() - item.startTime + 60 * 60 * 1000) / (30 * 60 * 1000)
+                    val timeBegin = item.startTime + 60 * 60 * 1000 + (30 * 60 * 1000) * num
+                    if (timeBegin > item.photoTime) {
+                        holder.vb.ivCamera.show()
+                    } else {
+                        holder.vb.ivCamera.gone()
+                    }
+                } else {
+                    holder.vb.ivCamera.gone()
+                }
             }
-            holder.vb.rtvParkingLotNum.delegate.init()
+            holder.vb.rflParkingLotNum.delegate.init()
             if (item.carColor == Constant.YELLOW_GREEN) {
                 holder.vb.llCarColor.show()
                 holder.vb.rtvCarColor.text = i18n(com.kernal.demo.base.R.string.黄绿)
@@ -150,7 +163,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
             holder.vb.rflParking.setOnClickListener(onClickListener)
         }
 //        item.parkingNo = "no"
-        holder.vb.rtvParkingLotNum.text = item.parkingNo.substring(item.parkingNo.length - 3, item.parkingNo.length)
+        holder.vb.tvParkingLotNum.text = item.parkingNo.substring(item.parkingNo.length - 3, item.parkingNo.length)
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemParkingLotBinding {
