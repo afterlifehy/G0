@@ -144,6 +144,12 @@ interface Api {
     suspend fun inquiryOrderNoByParkingNo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<OrderNoBean>
 
     /**
+     * 永达预支付数据查询
+     */
+    @POST("S_G0_99")
+    suspend fun prePayFeeInquiryYD(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
+
+    /**
      * 离场支付二维码
      */
     @POST("S_OR_0112")

@@ -44,13 +44,13 @@ import org.greenrobot.eventbus.EventBus
 @Route(path = ARouterMap.PREPAID)
 class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>(), OnClickListener {
     var timeDuration = 1.0
-    var payMoney = 1
+    var payMoney = 0
     var paymentQrDialog: PaymentQrDialog? = null
 
     var prepayType = "1"
     var minTime = 0.5
     var maxTime = 999.0
-    var minMoney = 1
+    var minMoney = 0
     var maxMoney = 5000
     var parkingNo = ""
     var carLicense = ""
@@ -113,6 +113,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
             binding.rlTime.gone()
             binding.rlMoney.show()
+            binding.etPayMoney.setSelection(payMoney.toString().length)
         } else {
             binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.续费)
             binding.rlTime.show()
@@ -271,7 +272,21 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
 
             R.id.rfl_scanPay -> {
                 if (prepayType == "1") {
-
+                    if (payMoney > minMoney) {
+                        val param = HashMap<String, Any>()
+                        val jsonobject = JSONObject()
+                        jsonobject["parkingNo"] = parkingNo
+                        jsonobject["orderNo"] = orderNo
+                        jsonobject["loginName"] = loginName
+                        jsonobject["simId"] = simId
+                        jsonobject["totalAmount"] = payMoney.toString()
+                        jsonobject["orderType"] = "1"
+                        param["attr"] = jsonobject
+                        mViewModel.prePayFeeInquiryYD(param)
+                    } else {
+                        ToastUtil.showBottomToast("金额不能为0")
+                        return
+                    }
                 } else {
                     if (timeDuration >= minTime) {
                         val param = HashMap<String, Any>()
@@ -298,6 +313,15 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         super.startObserve()
         mViewModel.apply {
             prePayFeeInquiryLiveData.observe(this@PrepaidActivity) {
+                dismissProgressDialog()
+                tradeNo = it.tradeNo
+                paymentQrDialog = PaymentQrDialog(it.qrCode, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
+                paymentQrDialog?.show()
+                paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
+                count = 0
+                handler.postDelayed(runnable, 2000)
+            }
+            prePayFeeInquiryYDLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
                 paymentQrDialog = PaymentQrDialog(it.qrCode, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))

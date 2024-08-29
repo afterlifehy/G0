@@ -50,6 +50,13 @@ class OrderRepository : BaseRepository() {
     }
 
     /**
+     * 永达预支付查询
+     */
+    suspend fun prePayFeeInquiryYD(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean> {
+        return mServer.prePayFeeInquiryYD(param)
+    }
+
+    /**
      * 离场订单查询
      */
     suspend fun endOrderInfo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<EndOrderInfoBean> {
