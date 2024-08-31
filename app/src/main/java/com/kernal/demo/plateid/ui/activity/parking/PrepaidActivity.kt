@@ -60,6 +60,8 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
     var simId = ""
     var loginName = ""
 
+    var hasPaid = false
+
     var count = 0
     var handler = Handler(Looper.getMainLooper())
     var tradeNo = ""
@@ -272,20 +274,25 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
 
             R.id.rfl_scanPay -> {
                 if (prepayType == "1") {
-                    if (payMoney > minMoney) {
-                        val param = HashMap<String, Any>()
-                        val jsonobject = JSONObject()
-                        jsonobject["parkingNo"] = parkingNo
-                        jsonobject["orderNo"] = orderNo
-                        jsonobject["loginName"] = loginName
-                        jsonobject["simId"] = simId
-                        jsonobject["totalAmount"] = payMoney.toString()
-                        jsonobject["orderType"] = "1"
-                        param["attr"] = jsonobject
-                        mViewModel.prePayFeeInquiryYD(param)
-                    } else {
-                        ToastUtil.showBottomToast("金额不能为0")
+                    if (hasPaid) {
+                        ToastUtil.showBottomToast("一笔订单只能付一次")
                         return
+                    } else {
+                        if (payMoney > minMoney) {
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["parkingNo"] = parkingNo
+                            jsonobject["orderNo"] = orderNo
+                            jsonobject["loginName"] = loginName
+                            jsonobject["simId"] = simId
+                            jsonobject["totalAmount"] = payMoney.toString()
+                            jsonobject["orderType"] = "1"
+                            param["attr"] = jsonobject
+                            mViewModel.prePayFeeInquiryYD(param)
+                        } else {
+                            ToastUtil.showBottomToast("金额不能为0")
+                            return
+                        }
                     }
                 } else {
                     if (timeDuration >= minTime) {
@@ -333,6 +340,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             payResultInquiryLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
                 if (it != null && it.payMoney != null) {
+                    hasPaid = true
                     handler.removeCallbacks(runnable)
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
                     if (paymentQrDialog != null) {
@@ -365,7 +373,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
 
     val runnable = object : Runnable {
         override fun run() {
-            if (count < 60) {
+            if (count < 120) {
                 checkPayResult()
                 count++
                 handler.postDelayed(this, 3000)

@@ -203,7 +203,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.rrlArrears.setOnClickListener(this)
         binding.rrlExitMethod.setOnClickListener(this)
-        ClickUtils.applySingleDebouncing(binding.rlCamera,1000,this)
+        ClickUtils.applySingleDebouncing(binding.rlCamera, 1000, this)
         ClickUtils.applySingleDebouncing(binding.rflNotification, 3000, this)
         binding.rflReport.setOnClickListener(this)
         binding.rflRenewal.setOnClickListener(this)
@@ -312,11 +312,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 startArouter(ARouterMap.PREPAID, data = Bundle().apply {
                     if (parkingSpaceBean != null) {
                         if (BigDecimal(parkingSpaceBean!!.havePayMoney).toDouble() > 0.0) {
-                            putString(ARouterMap.PREPAID_TYPE, "2")
-                            putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
-                            putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
-                            putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
-                            putString(ARouterMap.PREPAID_CAR_COLOR, carColor)
+                            ToastUtil.showBottomToast("一笔订单只能付一次")
+                            return
                         } else {
                             putString(ARouterMap.PREPAID_TYPE, "1")
                             putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
