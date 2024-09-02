@@ -52,26 +52,9 @@ class BluePrint() {
         try {
             printResult = Print1(content)
         } catch (e: Exception) {
-//            Handler(Looper.getMainLooper()).post {
-//                DialogHelp.Builder().setTitle(i18n(com.kernal.demo.base.R.string.打印机状态异常请重新连接))
-//                    .setLeftMsg(i18n(com.kernal.demo.base.R.string.取消))
-//                    .setRightMsg(i18n(com.kernal.demo.base.R.string.去连接)).setCancelable(true)
-//                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-//                        override fun onLeftClickLinsener(msg: String) {
-//                        }
-//
-//                        override fun onRightClickLinsener(msg: String) {
-////                            if (ActivityCacheManager.instance().getCurrentActivity() !is LoginActivity &&
-////                                ActivityCacheManager.instance().getCurrentActivity() !is StreetChooseActivity
-////                            ) {
-//                                startArouter(ARouterMap.MINE, data = Bundle().apply {
-//                                    putInt(ARouterMap.MINE_BLUE_PRINT, 1)
-//                                })
-////                            }
-//                        }
-//
-//                    }).build(ActivityCacheManager.instance().getCurrentActivity()).showDailog()
-//            }
+            Handler(Looper.getMainLooper()).post {
+                ToastUtil.showMiddleToast("打印机状态异常")
+            }
         }
         ActivityCacheManager.instance().getCurrentActivity()!!.runOnUiThread {
             if (printResult == 0) {
@@ -97,6 +80,7 @@ class BluePrint() {
             Handler(Looper.getMainLooper()).post {
                 ToastUtil.showBottomToast("打印机连接失败")
             }
+            zpSDK = null
             printResult = -1
             return printResult
         }

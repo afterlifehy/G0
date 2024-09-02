@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -51,6 +50,7 @@ import com.kernal.demo.plateid.mvvm.viewmodel.AdmissionTakePhotoViewModel
 import com.kernal.demo.plateid.pop.MultipleSeatsPop
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.Constant
+import com.kernal.demo.common.util.CountDownUtil
 import com.kernal.demo.common.util.FileUtil
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.common.util.ImageCompressor
@@ -90,6 +90,8 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var extParkingNo = ""
     var loginName = ""
     var street: Street? = null
+    var countDownUtil: CountDownUtil? = null
+    var canGoBack = true
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
@@ -105,6 +107,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         collectioPlateColorList.add(Constant.WHITE)
         collectioPlateColorList.add(Constant.BLACK)
         collectioPlateColorList.add(Constant.OTHERS)
+        collectioPlateColorList.add(Constant.OTHERS_OLD)
 
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
@@ -171,10 +174,12 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 keyboardUtil.setCallBack(object : KeyboardUtil.KeyInputCallBack {
                     override fun keyInput(value: String) {
                         binding.pvPlate.setOnePlate(value)
+                        changePlateColor(binding.pvPlate.getPvTxt())
                     }
 
                     override fun keyDelete() {
                         binding.pvPlate.keyDelete()
+                        changePlateColor(binding.pvPlate.getPvTxt())
                     }
 
                     override fun enterKey() {
@@ -182,6 +187,16 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 })
             }
         })
+    }
+
+    fun changePlateColor(plateId: String) {
+        if (plateId.length < 8) {
+            checkedColor = Constant.BLUE
+        } else {
+            checkedColor = Constant.GREEN
+        }
+        collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
+        binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -202,6 +217,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         }
         when (v?.id) {
             R.id.fl_back -> {
+                canGoBack = true
                 onBackPressedSupport()
             }
 
@@ -257,8 +273,16 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请输入车牌号))
                     return
                 }
+                if(!binding.pvPlate.isCompliant()){
+                    ToastUtil.showBottomToast("车牌格式不合规")
+                    return
+                }
                 if (binding.pvPlate.getPvTxt().length != 7 && binding.pvPlate.getPvTxt().length != 8) {
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.车牌长度只能是7位或8位))
+                    return
+                }
+                if ((binding.pvPlate.getPvTxt().length == 8 && checkedColor == Constant.BLUE) || (binding.pvPlate.getPvTxt().length < 8 && checkedColor == Constant.GREEN)) {
+                    ToastUtil.showBottomToast("车牌与车牌颜色不匹配")
                     return
                 }
                 if (checkedColor.isEmpty()) {
@@ -282,6 +306,37 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                         override fun onRightClickLinsener(msg: String) {
                             showProgressDialog(20000)
+                            binding.rflStartBilling.delegate.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    BaseApplication.instance(),
+                                    com.kernal.demo.base.R.color.black_10_color
+                                )
+                            )
+                            binding.rflStartBilling.delegate.init()
+                            binding.rflStartBilling.setOnClickListener(null)
+                            countDownUtil = CountDownUtil(20000, 1000, object : CountDownUtil.TimeCallBack {
+                                override fun onTimeOut() {
+                                    binding.rflStartBilling.delegate.setBackgroundColor(
+                                        ContextCompat.getColor(
+                                            BaseApplication.instance(),
+                                            com.kernal.demo.base.R.color.color_ffea9a00
+                                        )
+                                    )
+                                    binding.tvStartBilling.text = i18N(com.kernal.demo.base.R.string.开始计费)
+                                    binding.rflStartBilling.delegate.init()
+                                    binding.rflStartBilling.setOnClickListener(this@AdmissionTakePhotoActivity)
+                                }
+
+                                override fun onTimeTick(millisUntilFinished: Long) {
+                                    binding.tvStartBilling.text = if (millisUntilFinished == 0L) {
+                                        i18N(com.kernal.demo.base.R.string.开始计费)
+                                    } else {
+                                        "${i18N(com.kernal.demo.base.R.string.开始计费)} ${millisUntilFinished / 1000}s"
+                                    }
+                                }
+
+                            })
+                            countDownUtil?.start()
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
                             jsonobject["carLicense"] = binding.pvPlate.getPvTxt()
@@ -340,6 +395,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         mViewModel.apply {
             placeOrderLiveData.observe(this@AdmissionTakePhotoActivity) {
                 dismissProgressDialog()
+                countDownUtil?.onFinish()
 
                 val plateSavedFile = FileUtil.FileSaveToInside("${it.orderNo}_10.png", plateImageBitmap!!)
                 plateBase64 = FileUtil.fileToBase64(plateSavedFile).toString()
@@ -367,6 +423,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                         })
                     promptDialog1?.show()
+                    canGoBack = false
                 } else {
                     showPrePayDialog(it)
                 }
@@ -375,6 +432,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 try {
                     dismissProgressDialog()
                     ToastUtil.showBottomToast(it.msg)
+                    countDownUtil?.onFinish()
                     if (it.code == 2) {
                         DialogHelp.Builder().setTitle(it.msg)
                             .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).isAloneButton(true)
@@ -408,6 +466,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             }
             mException.observe(this@AdmissionTakePhotoActivity) {
                 dismissProgressDialog()
+                countDownUtil?.onFinish()
             }
         }
     }
@@ -419,6 +478,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             i18N(com.kernal.demo.base.R.string.确定),
             object : PromptDialog.PromptCallBack {
                 override fun leftClick() {
+                    canGoBack = true
                     onBackPressedSupport()
                 }
 
@@ -559,12 +619,18 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                             checkedColor = Constant.OTHERS
                             collectionPlateColorAdapter?.updateColor(checkedColor, 6)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_BLUE -> {
                             checkedColor = Constant.BLUE
                             collectionPlateColorAdapter?.updateColor(checkedColor, 0)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_YELLOW_SINGLE,
@@ -572,24 +638,36 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                             checkedColor = Constant.YELLOW
                             collectionPlateColorAdapter?.updateColor(checkedColor, 2)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_WHILE_SINGLE -> {
                             checkedColor = Constant.WHITE
                             collectionPlateColorAdapter?.updateColor(checkedColor, 4)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_GREEN -> {
                             checkedColor = Constant.GREEN
                             collectionPlateColorAdapter?.updateColor(checkedColor, 1)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length < 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_BLACK_HK_MACAO -> {
                             checkedColor = Constant.BLACK
                             collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
                             binding.pvPlate.setPlateBgAndTxtColor(Constant.BLACK)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
 
                         TypeDefine.PLATE_TYPE_HK_SINGLE,
@@ -599,6 +677,9 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                             checkedColor = Constant.WHITE
                             collectionPlateColorAdapter?.updateColor(checkedColor, 4)
                             binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                            if (plate.length == 8) {
+                                changePlateColor(plate)
+                            }
                         }
                     }
                     binding.rflTakePhoto.show()
@@ -629,9 +710,19 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         return binding.layoutToolbar.ablToolbar
     }
 
+    override fun onBackPressedSupport() {
+        if (canGoBack) {
+            super.onBackPressedSupport()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         dismissProgressDialog()
+        if (countDownUtil != null) {
+            countDownUtil?.onFinish()
+            countDownUtil = null
+        }
         plateImageBitmap?.recycle()
         plateImageBitmap = null
         panoramaImageBitmap?.recycle()

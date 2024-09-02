@@ -1,11 +1,8 @@
 package com.kernal.demo.base.help
 
 import android.content.Context
-import android.content.Intent
 import android.os.Looper
 import com.kernal.demo.base.util.ToastUtil
-import java.io.PrintWriter
-import java.io.StringWriter
 
 
 class CustomExceptionHandler : Thread.UncaughtExceptionHandler {

@@ -15,7 +15,6 @@ import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.SizeUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.bean.DebtCollectionBean
@@ -33,8 +32,8 @@ import com.kernal.demo.plateid.dialog.PaymentQrDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.DebtOrderDetailViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
-import com.kernal.demo.base.bean.PayResultBean
 import com.kernal.demo.base.bean.PrintInfoBean
+import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.ext.i18n
 import com.kernal.demo.base.ext.startArouter
 import com.kernal.demo.common.util.BluePrint
@@ -231,7 +230,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         }
     }
 
-    fun startPrint(it: PayResultBean) {
+    fun startPrint(it: TicketPrintBean) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,

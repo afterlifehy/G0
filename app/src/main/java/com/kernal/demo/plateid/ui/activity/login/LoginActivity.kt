@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
@@ -26,6 +27,7 @@ import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
+import com.kernal.demo.common.event.BaiduLocationEvent
 import com.kernal.demo.common.event.BaiduLocationLoginEvent
 import com.kernal.demo.common.util.BaiduLocationUtil
 import com.kernal.demo.plateid.R
@@ -220,11 +222,18 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         jsonobject["longitude"] = lon.toString()
         jsonobject["latitude"] = lat.toString()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            jsonobject["simId"] = PhoneUtils.getIMSI()
+//            jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+//            val subscriptionManager = getSystemService(TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+//            val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
+//            if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
+//                jsonobject["simId"] = subscriptionInfoList[0].iccId
+//            }
+            jsonobject["imei"] = ""
+            jsonobject["simId"] = ""
         } else {
+            jsonobject["imei"] = PhoneUtils.getIMEI()
             jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
         }
-        jsonobject["imei"] = PhoneUtils.getIMEI()
         jsonobject["version"] = AppUtils.getAppVersionName()
         param["attr"] = jsonobject
         mViewModel.login(param)

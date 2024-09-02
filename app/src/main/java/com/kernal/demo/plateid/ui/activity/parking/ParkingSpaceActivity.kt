@@ -122,6 +122,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         plateLogoColorMap[Constant.PINK] = com.kernal.demo.base.R.color.white
         plateLogoColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.white
         plateLogoColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.OTHERS_OLD] = com.kernal.demo.base.R.color.white
 
         plateColorTxtMap[Constant.BLACK] = i18n(com.kernal.demo.base.R.string.黑牌)
         plateColorTxtMap[Constant.WHITE] = i18n(com.kernal.demo.base.R.string.白牌)
@@ -136,7 +137,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         plateColorTxtMap[Constant.CYAN] = i18n(com.kernal.demo.base.R.string.白牌)
         plateColorTxtMap[Constant.PINK] = i18n(com.kernal.demo.base.R.string.白牌)
         plateColorTxtMap[Constant.TRANSPARENT] = i18n(com.kernal.demo.base.R.string.白牌)
-        plateColorTxtMap[Constant.OTHERS] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.OTHERS] = i18n(com.kernal.demo.base.R.string.临牌)
+        plateColorTxtMap[Constant.OTHERS_OLD] = i18n(com.kernal.demo.base.R.string.白牌)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

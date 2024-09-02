@@ -6,7 +6,7 @@
     <!--网络-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!--定位-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -103,10 +103,12 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="SERp9borieII1yDvfEEECWXVoX4NYt1c" >
-        </meta-data>
+            android:value="SERp9borieII1yDvfEEECWXVoX4NYt1c"></meta-data>
 
-        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"> </service>
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote"></service>
 
         <activity
             android:name=".ui.activity.SplashActivity"
@@ -216,7 +218,7 @@
             android:name=".ui.activity.income.IncomeCountingActivity"
             android:exported="false"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/ColorTheme" />
 
         <activity
             android:name=".ui.activity.order.OrderMainActivity"
@@ -227,7 +229,7 @@
             android:name=".ui.activity.order.TransactionInquiryActivity"
             android:exported="false"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/ColorTheme" />
 
         <activity
             android:name=".ui.activity.order.DebtCollectionActivity"
@@ -243,7 +245,7 @@
             android:name=".ui.activity.order.OrderInquiryActivity"
             android:exported="false"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/ColorTheme" />
 
         <activity
             android:name=".ui.activity.order.OrderDetailActivity"

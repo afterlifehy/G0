@@ -1,6 +1,8 @@
 package com.kernal.demo.plateid.dialog
 
+import android.content.DialogInterface
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.WindowManager
@@ -35,6 +37,16 @@ class PromptDialog(
         }
         binding.rtvLeft.setOnClickListener(this)
         binding.rtvRight.setOnClickListener(this)
+        setOnKeyListener(object : DialogInterface.OnKeyListener {
+            override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event?.action == KeyEvent.ACTION_UP) {
+                    // 处理返回键事件
+                    // 返回true表示消费了该事件，不会关闭对话框
+                    return true;
+                }
+                return false;
+            }
+        })
     }
 
     override fun onClick(v: View?) {
@@ -68,7 +80,7 @@ class PromptDialog(
     }
 
     override fun getCanceledOnTouchOutside(): Boolean {
-        return true
+        return false
     }
 
     override fun getGravity(): Int {

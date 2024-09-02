@@ -238,6 +238,25 @@ class PlateView @JvmOverloads constructor(
         return "${binding!!.tvPlate1.getPlateView().text}${binding!!.tvPlate2.getPlateView().text}${binding!!.tvPlate3.getPlateView().text}${binding!!.tvPlate4.getPlateView().text}${binding!!.tvPlate5.getPlateView().text}${binding!!.tvPlate6.getPlateView().text}${binding!!.tvPlate7.getPlateView().text}${binding!!.tvPlate8.getPlateView().text}"
     }
 
+    fun isCompliant(): Boolean {
+        val plates = listOf(
+            binding!!.tvPlate1.getPlateView().text,
+            binding!!.tvPlate2.getPlateView().text,
+            binding!!.tvPlate3.getPlateView().text,
+            binding!!.tvPlate4.getPlateView().text,
+            binding!!.tvPlate5.getPlateView().text,
+            binding!!.tvPlate6.getPlateView().text,
+            binding!!.tvPlate7.getPlateView().text,
+            binding!!.tvPlate8.getPlateView().text
+        )
+        for (i in 0 until plates.size - 1) {
+            if (plates[i].isEmpty() && plates[i + 1].isNotEmpty()) {
+                return false
+            }
+        }
+        return true
+    }
+    
     fun keyDelete() {
         stopAnimation()
         when (inputPosition) {

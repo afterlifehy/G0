@@ -48,21 +48,5 @@
         <item name="android:windowExitAnimation">@anim/slide_out_to_bottom</item>
     </style>
 
-    <style name="main_activity_style" parent="AppTheme">
-        <item name="android:windowIsTranslucent">false</item>
-        <item name="android:windowDisablePreview">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <!--        <item name="android:windowBackground">@drawable/layerlist_start_bg</item>-->
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:background">@null</item>
-    </style>
-
     <!-- loading 动画-->
-    <style name="progressbar_style">
-        <item name="android:maxWidth">50.0dip</item>
-        <item name="android:maxHeight">50.0dip</item>
-        <item name="android:indeterminateDrawable">@anim/anim_loading</item>
-        <item name="android:minWidth">50.0dip</item>
-        <item name="android:minHeight">50.0dip</item>
-    </style>
 </resources>

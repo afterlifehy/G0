@@ -62,9 +62,35 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         var rxPermissions = RxPermissions(this@StreetChooseActivity)
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
             if (it) {
-                startBaduMapLocation()
+                startBadiMapLocation()
+            } else {
+                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
             }
         }
+    }
+
+    fun startBadiMapLocation() {
+        baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
+        baiduLocationUtil.initBaiduLocation()
+        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+            override fun locationChange(
+                lon: Double,
+                lat: Double,
+                location: LocationClientOption?,
+                isSuccess: Boolean,
+                address: String?
+            ) {
+                if (isSuccess) {
+                    this@StreetChooseActivity.lat = lat
+                    this@StreetChooseActivity.lon = lon
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lat, lat)
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lon, lon)
+                    }
+                }
+            }
+        }
+        baiduLocationUtil.setBaiduLocationCallBack(callback)
     }
 
     override fun initListener() {
@@ -80,6 +106,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         streetList.add(Street())
     }
 
+    @SuppressLint("CheckResult")
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fl_back -> {
@@ -98,23 +125,20 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
 
             R.id.rtv_enterWorkBench -> {
-                if (PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    if (baiduLocationUtil == null) {
-                        startBaduMapLocation()
-                    }
+                var rxPermissions = RxPermissions(this@StreetChooseActivity)
+                if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION) && rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
                     checkonWork()
                 } else {
-                    PermissionUtils.permission(Manifest.permission.ACCESS_FINE_LOCATION)
-                        .callback(object : PermissionUtils.FullCallback {
-                            override fun onGranted(granted: MutableList<String>) {
-                                startBaduMapLocation()
-                                checkonWork()
-                            }
-
-                            override fun onDenied(deniedForever: MutableList<String>, denied: MutableList<String>) {
-                                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
-                            }
-                        }).request()
+                    rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
+                        if (it) {
+                            startBadiMapLocation()
+                            checkonWork()
+                        } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                        } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
+                        }
+                    }
                 }
             }
 
@@ -127,31 +151,6 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 }
             }
         }
-    }
-
-    fun startBaduMapLocation() {
-        baiduLocationUtil = BaiduLocationUtil.getInstance(1000)
-        baiduLocationUtil.initBaiduLocation()
-        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-            override fun locationChange(
-                lon: Double,
-                lat: Double,
-                location: LocationClientOption?,
-                isSuccess: Boolean,
-                address: String?
-            ) {
-                if (isSuccess) {
-                    this@StreetChooseActivity.lat = lat
-                    this@StreetChooseActivity.lon = lon
-                    runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lon, lon)
-                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lat, lat)
-                    }
-                }
-            }
-
-        }
-        baiduLocationUtil.setBaiduLocationCallBack(callback)
     }
 
     private fun checkonWork() {

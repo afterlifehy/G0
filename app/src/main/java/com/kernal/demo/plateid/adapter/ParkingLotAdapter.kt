@@ -43,6 +43,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
         plateLogoColorMap[Constant.PINK] = com.kernal.demo.base.R.color.white
         plateLogoColorMap[Constant.TRANSPARENT] = com.kernal.demo.base.R.color.white
         plateLogoColorMap[Constant.OTHERS] = com.kernal.demo.base.R.color.white
+        plateLogoColorMap[Constant.OTHERS_OLD] = com.kernal.demo.base.R.color.white
 
         plateColorTxtMap[Constant.BLACK] = i18n(com.kernal.demo.base.R.string.黑牌)
         plateColorTxtMap[Constant.WHITE] = i18n(com.kernal.demo.base.R.string.白牌)
@@ -57,7 +58,8 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
         plateColorTxtMap[Constant.CYAN] = i18n(com.kernal.demo.base.R.string.白牌)
         plateColorTxtMap[Constant.PINK] = i18n(com.kernal.demo.base.R.string.白牌)
         plateColorTxtMap[Constant.TRANSPARENT] = i18n(com.kernal.demo.base.R.string.白牌)
-        plateColorTxtMap[Constant.OTHERS] = i18n(com.kernal.demo.base.R.string.白牌)
+        plateColorTxtMap[Constant.OTHERS] = i18n(com.kernal.demo.base.R.string.临牌)
+        plateColorTxtMap[Constant.OTHERS_OLD] = i18n(com.kernal.demo.base.R.string.白牌)
     }
 
     override fun convert(holder: VBViewHolder<ItemParkingLotBinding>, item: ParkingLotBean) {
@@ -147,6 +149,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
             holder.vb.rflParking.tag = item
             holder.vb.rflParking.setOnClickListener(onClickListener)
         }
+//        item.parkingNo = "no"
         holder.vb.rtvParkingLotNum.text = item.parkingNo.substring(item.parkingNo.length - 3, item.parkingNo.length)
     }
 

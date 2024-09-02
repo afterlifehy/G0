@@ -3,8 +3,8 @@ package com.kernal.demo.plateid.mvvm.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.kernal.demo.base.base.mvvm.BaseViewModel
 import com.kernal.demo.base.base.mvvm.ErrorMessage
-import com.kernal.demo.base.bean.PayResultBean
 import com.kernal.demo.base.bean.PayQRBean
+import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.plateid.mvvm.repository.OrderRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,7 +15,7 @@ class PrepaidViewModel: BaseViewModel() {
     }
 
     val prePayFeeInquiryLiveData = MutableLiveData<PayQRBean>()
-    val payResultInquiryLiveData = MutableLiveData<PayResultBean>()
+    val payResultInquiryLiveData = MutableLiveData<TicketPrintBean>()
 
     fun prePayFeeInquiry(param: Map<String, Any?>) {
         launch {

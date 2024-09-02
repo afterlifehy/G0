@@ -96,7 +96,7 @@ interface Api {
     suspend fun checkUpdate(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<UpdateBean>
 
     /**
-     * 场内停车费查询
+     * 泊位订单查询
      */
     @POST("S_G0_16_1")
     suspend fun parkingSpace(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<ParkingSpaceBean>
