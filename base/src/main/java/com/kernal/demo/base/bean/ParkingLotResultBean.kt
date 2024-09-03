@@ -12,6 +12,6 @@ data class ParkingLotBean(
     var parkingNo: String,
     var state: String,
     var deadLine:Long,
-    var startTime:Long,
-    var photoTime:Long
+    var thirdPicTime:Long,
+    var orderStartTime:Long
 )
