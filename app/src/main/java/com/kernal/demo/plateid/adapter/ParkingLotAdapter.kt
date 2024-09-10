@@ -107,7 +107,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                     )
                 )
                 if (System.currentTimeMillis() - item.orderStartTime > 60 * 60 * 1000) {
-                    val num = (System.currentTimeMillis() - item.orderStartTime + 60 * 60 * 1000) / (30 * 60 * 1000)
+                    val num = (System.currentTimeMillis() - item.orderStartTime - 60 * 60 * 1000) / (30 * 60 * 1000)
                     val timeBegin = item.orderStartTime + 60 * 60 * 1000 + (30 * 60 * 1000) * num
                     if (timeBegin > item.thirdPicTime) {
                         holder.vb.ivCamera.show()

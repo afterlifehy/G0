@@ -364,6 +364,28 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
                         }).build(this@ParkingSpaceActivity).showDailog()
                     return
+                } else {
+                    DialogHelp.Builder().setTitle(i18N(com.kernal.demo.base.R.string.是否确定结束订单))
+                        .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
+                        .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).setCancelable(true)
+                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                            override fun onLeftClickLinsener(msg: String) {
+                            }
+
+                            override fun onRightClickLinsener(msg: String) {
+                                showProgressDialog(20000)
+                                val param = HashMap<String, Any>()
+                                val jsonobject = JSONObject()
+                                jsonobject["carLicense"] = carLicense
+                                jsonobject["orderNo"] = orderNo
+                                jsonobject["parkingNo"] = parkingSpaceBean?.parkingNo
+                                jsonobject["leftType"] = type
+                                jsonobject["simId"] = simId
+                                param["attr"] = jsonobject
+                                mViewModel.endOrder(param)
+                            }
+
+                        }).build(this@ParkingSpaceActivity).showDailog()
                 }
             }
         }
