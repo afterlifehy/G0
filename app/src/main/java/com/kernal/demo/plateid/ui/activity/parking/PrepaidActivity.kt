@@ -33,6 +33,7 @@ import com.kernal.demo.plateid.databinding.ActivityPrepaidBinding
 import com.kernal.demo.plateid.dialog.PaymentQrDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.PrepaidViewModel
 import com.kernal.demo.common.event.RefreshParkingSpaceEvent
+import com.kernal.demo.common.realm.RealmUtil
 import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.BluePrint
 import com.kernal.demo.common.util.Constant
@@ -104,6 +105,10 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         orderNo = intent.getStringExtra(ARouterMap.PREPAID_ORDER_NO).toString()
         carColor = intent.getStringExtra(ARouterMap.PREPAID_CAR_COLOR).toString()
         binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
+
+        val street = RealmUtil.instance?.findCurrentStreet()
+        timeDuration = street?.prepayDuration!!
+        binding.etTimeDuration.setText(timeDuration.toString())
 
         binding.tvPlate.text = carLicense
         binding.tvParkingNo.text = parkingNo
@@ -237,7 +242,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         }
     }
 
-    fun prePayFeeInquiry(){
+    fun prePayFeeInquiry() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["parkingNo"] = parkingNo
