@@ -25,8 +25,6 @@ class GlobalDialog(context: Context, mDialogHelp: DialogHelp) :
     private fun initView() {
         bindShowViewData()
 
-        binding.rtvLeft.setOnClickListener(this)
-        binding.rtvRight.setOnClickListener(this)
         ClickUtils.applySingleDebouncing(binding.rtvLeft, 3000, this)
         ClickUtils.applySingleDebouncing(binding.rtvRight, 3000, this)
     }
@@ -57,7 +55,7 @@ class GlobalDialog(context: Context, mDialogHelp: DialogHelp) :
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.rtv_left -> {
-                mDialogHelp?.mOnButtonClickLinsener?.onLeftClickLinsener()
+                mDialogHelp?.mOnButtonClickLinsener?.onLeftClickListener()
                 if (mDialogHelp!!.cancelable) {
                     dismiss()
                 }
@@ -65,7 +63,7 @@ class GlobalDialog(context: Context, mDialogHelp: DialogHelp) :
             }
 
             R.id.rtv_right -> {
-                mDialogHelp?.mOnButtonClickLinsener?.onRightClickLinsener()
+                mDialogHelp?.mOnButtonClickLinsener?.onRightClickListener()
                 if (mDialogHelp!!.cancelable) {
                     dismiss()
                 }

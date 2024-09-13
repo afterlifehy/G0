@@ -202,10 +202,10 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                                 .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
                                 .setRightMsg(i18N(com.kernal.demo.base.R.string.去连接)).setCancelable(true)
                                 .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                    override fun onLeftClickLinsener(msg: String) {
+                                    override fun onLeftClickListener(msg: String) {
                                     }
 
-                                    override fun onRightClickLinsener(msg: String) {
+                                    override fun onRightClickListener(msg: String) {
                                         if (ActivityCacheManager.instance().getCurrentActivity() !is LoginActivity &&
                                             ActivityCacheManager.instance().getCurrentActivity() !is StreetChooseActivity
                                         ) {
@@ -243,10 +243,10 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                                 .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
                                 .setRightMsg(i18N(com.kernal.demo.base.R.string.去配对)).setCancelable(true)
                                 .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                    override fun onLeftClickLinsener(msg: String) {
+                                    override fun onLeftClickListener(msg: String) {
                                     }
 
-                                    override fun onRightClickLinsener(msg: String) {
+                                    override fun onRightClickListener(msg: String) {
                                         val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
                                         startActivity(intent)
                                     }
@@ -273,10 +273,10 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                         .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
                         .setRightMsg(i18N(com.kernal.demo.base.R.string.去配对)).setCancelable(true)
                         .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                            override fun onLeftClickLinsener(msg: String) {
+                            override fun onLeftClickListener(msg: String) {
                             }
 
-                            override fun onRightClickLinsener(msg: String) {
+                            override fun onRightClickListener(msg: String) {
                                 val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
                                 startActivity(intent)
                             }
@@ -292,10 +292,10 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
             .setRightMsg(i18N(com.kernal.demo.base.R.string.去连接)).setCancelable(true)
             .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                override fun onLeftClickLinsener(msg: String) {
+                override fun onLeftClickListener(msg: String) {
                 }
 
-                override fun onRightClickLinsener(msg: String) {
+                override fun onRightClickListener(msg: String) {
                     if (ActivityCacheManager.instance().getCurrentActivity() !is LoginActivity &&
                         ActivityCacheManager.instance().getCurrentActivity() !is StreetChooseActivity
                     ) {

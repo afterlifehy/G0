@@ -360,10 +360,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
                     .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).setCancelable(true)
                     .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                        override fun onLeftClickLinsener(msg: String) {
+                        override fun onLeftClickListener(msg: String) {
                         }
 
-                        override fun onRightClickLinsener(msg: String) {
+                        override fun onRightClickListener(msg: String) {
                             showProgressDialog(20000)
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()

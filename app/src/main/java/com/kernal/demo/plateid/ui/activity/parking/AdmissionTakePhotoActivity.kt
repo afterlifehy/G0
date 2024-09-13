@@ -130,8 +130,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         ClickUtils.applySingleDebouncing(binding.rflTakePhoto2, 1000, this@AdmissionTakePhotoActivity)
         ClickUtils.applySingleDebouncing(binding.rivPlate, 1000, this@AdmissionTakePhotoActivity)
         ClickUtils.applySingleDebouncing(binding.rivPanorama, 1000, this@AdmissionTakePhotoActivity)
-        binding.rivPlate.setOnClickListener(this)
-        binding.rivPanorama.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
         ClickUtils.applySingleDebouncing(binding.rflStartBilling, 1000, this@AdmissionTakePhotoActivity)
@@ -273,7 +271,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请输入车牌号))
                     return
                 }
-                if(!binding.pvPlate.isCompliant()){
+                if (!binding.pvPlate.isCompliant()) {
                     ToastUtil.showBottomToast("车牌格式不合规")
                     return
                 }
@@ -301,10 +299,13 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     .setRightMsg(i18N(com.kernal.demo.base.R.string.确定))
                     .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消)).setCancelable(true)
                     .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                        override fun onLeftClickLinsener(msg: String) {
+                        override fun onLeftClickListener(msg: String) {
                         }
 
-                        override fun onRightClickLinsener(msg: String) {
+                        override fun onRightClickListener(msg: String) {
+                            if (AppUtil.isFastClick(1000)) {
+                                return
+                            }
                             showProgressDialog(20000)
                             binding.rflStartBilling.delegate.setBackgroundColor(
                                 ContextCompat.getColor(
@@ -324,7 +325,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                                     )
                                     binding.tvStartBilling.text = i18N(com.kernal.demo.base.R.string.开始计费)
                                     binding.rflStartBilling.delegate.init()
-                                    binding.rflStartBilling.setOnClickListener(this@AdmissionTakePhotoActivity)
+                                    ClickUtils.applySingleDebouncing(binding.rflStartBilling, 1000, this@AdmissionTakePhotoActivity)
                                 }
 
                                 override fun onTimeTick(millisUntilFinished: Long) {
@@ -438,10 +439,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                             .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).isAloneButton(true)
                             .setCancelable(false)
                             .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                override fun onLeftClickLinsener(msg: String) {
+                                override fun onLeftClickListener(msg: String) {
                                 }
 
-                                override fun onRightClickLinsener(msg: String) {
+                                override fun onRightClickListener(msg: String) {
                                     runBlocking {
                                         PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, false)
                                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")

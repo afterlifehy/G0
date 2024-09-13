@@ -47,10 +47,10 @@ class DialogHelp {
         private var rightMsg: String = i18n(R.string.Ok)
         private var isAloneButton = false
         private var mOnButtonClickLinsener: OnButtonClickLinsener = object : OnButtonClickLinsener {
-            override fun onLeftClickLinsener(msg: String) {
+            override fun onLeftClickListener(msg: String) {
             }
 
-            override fun onRightClickLinsener(msg: String) {
+            override fun onRightClickListener(msg: String) {
             }
         }
         private var cancelable = true
@@ -125,7 +125,7 @@ class DialogHelp {
     }
 
     interface OnButtonClickLinsener {
-        fun onLeftClickLinsener(msg: String = "")
-        fun onRightClickLinsener(msg: String = "")
+        fun onLeftClickListener(msg: String = "")
+        fun onRightClickListener(msg: String = "")
     }
 }

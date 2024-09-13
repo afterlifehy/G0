@@ -181,10 +181,10 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                     .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).setCancelable(true)
                     .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消)).setCancelable(true)
                     .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                        override fun onLeftClickLinsener(msg: String) {
+                        override fun onLeftClickListener(msg: String) {
                         }
 
-                        override fun onRightClickLinsener(msg: String) {
+                        override fun onRightClickListener(msg: String) {
                             ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                             for (i in ActivityCacheManager.instance().getAllActivity()) {
                                 if (i !is LoginActivity) {
@@ -242,10 +242,10 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                 .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
                 .setRightMsg(i18N(com.kernal.demo.base.R.string.去配对)).setCancelable(true)
                 .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                    override fun onLeftClickLinsener(msg: String) {
+                    override fun onLeftClickListener(msg: String) {
                     }
 
-                    override fun onRightClickLinsener(msg: String) {
+                    override fun onRightClickListener(msg: String) {
                         val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
                         startActivity(intent)
                     }
