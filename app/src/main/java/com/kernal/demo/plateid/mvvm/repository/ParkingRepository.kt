@@ -5,7 +5,7 @@ import com.kernal.demo.base.bean.DebtUploadBean
 import com.kernal.demo.base.bean.HttpWrapper
 import com.kernal.demo.base.bean.ParkingLotResultBean
 import com.kernal.demo.base.bean.ParkingSpaceBean
-import com.kernal.demo.base.bean.PlaceOederResultBean
+import com.kernal.demo.base.bean.PlaceOrderResultBean
 import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.bean.TicketPrintResultBean
 
@@ -28,7 +28,7 @@ class ParkingRepository : BaseRepository() {
     /**
      * 下单
      */
-    suspend fun placeOrder(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PlaceOederResultBean> {
+    suspend fun placeOrder(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PlaceOrderResultBean> {
         return mServer.placeOrder(param)
     }
 

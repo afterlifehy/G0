@@ -3,17 +3,17 @@ package com.kernal.demo.plateid.mvvm.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.kernal.demo.base.base.mvvm.BaseViewModel
 import com.kernal.demo.base.base.mvvm.ErrorMessage
-import com.kernal.demo.base.bean.PlaceOederResultBean
+import com.kernal.demo.base.bean.PlaceOrderResultBean
 import com.kernal.demo.plateid.mvvm.repository.ParkingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AdmissionTakePhotoViewModel: BaseViewModel() {
+class AdmissionTakePhotoViewModel : BaseViewModel() {
 
     val mParkingRepository by lazy {
         ParkingRepository()
     }
-    val placeOrderLiveData = MutableLiveData<PlaceOederResultBean>()
+    val placeOrderLiveData = MutableLiveData<PlaceOrderResultBean>()
     val picUploadLiveData = MutableLiveData<Any>()
 
     fun placeOrder(param: Map<String, Any?>) {
@@ -37,7 +37,7 @@ class AdmissionTakePhotoViewModel: BaseViewModel() {
             executeResponse(response, {
                 picUploadLiveData.value = response.attr
             }, {
-                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "picUpload"))
             })
         }
     }
