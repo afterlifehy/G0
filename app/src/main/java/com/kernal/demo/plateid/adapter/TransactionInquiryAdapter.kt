@@ -37,13 +37,24 @@ class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val 
         holder.vb.tvStartTime.text = item.startTime
         holder.vb.tvEndTime.text = item.endTime
         holder.vb.tvNo.text = item.parkingNo
+        holder.vb.viewLiner.show()
         if (item.hasPayed == "1") {
-            val strings = arrayOf("已付：", item.payedAmount, "元")
-            holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)
-            holder.vb.flNotification.show()
-            holder.vb.flPaymentInquiry.gone()
-            holder.vb.flNotification.tag = item
-            ClickUtils.applySingleDebouncing(holder.vb.flNotification, 3000, onClickListener)
+            if (item.refundMoney > 0.00) {
+                val strings = arrayOf("退款：", AppUtil.keepNDecimal(item.refundMoney, 2), "元")
+                holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colors2, styles)
+                holder.vb.flNotification.gone()
+                holder.vb.flPaymentInquiry.gone()
+                holder.vb.viewLiner.gone()
+                holder.vb.flPaymentInquiry.tag = item
+                holder.vb.flPaymentInquiry.setOnClickListener(null)
+            } else {
+                val strings = arrayOf("已付：", item.payedAmount, "元")
+                holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)
+                holder.vb.flNotification.show()
+                holder.vb.flPaymentInquiry.gone()
+                holder.vb.flNotification.tag = item
+                ClickUtils.applySingleDebouncing(holder.vb.flNotification, 3000, onClickListener)
+            }
         } else {
             val strings = arrayOf("未付：", item.oweMoney, "元")
             holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colors2, styles)

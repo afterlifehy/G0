@@ -14,5 +14,6 @@ data class TransactionBean(
     var payedAmount: String,
     var startTime: String,
     var tradeNo: String,
-    var orderType:String
+    var orderType:String,
+    var refundMoney:Double
 )
