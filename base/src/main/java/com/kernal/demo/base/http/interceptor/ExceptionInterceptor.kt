@@ -19,30 +19,43 @@ class ExceptionInterceptor : Interceptor {
     private val UTF8 = Charset.forName("UTF-8")
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        //执行请求，计算请求时间
-        val request = chain.request()
-        val startNs = System.nanoTime()
-        val response = try {
-            chain.proceed(request)
-        } catch (e: SocketTimeoutException) {
-            log("<-- HTTP FAILED: $e")
-            val errorMsg = "连接超时，请检查网络"
-            throw IOException(errorMsg, e)
-        } catch (e: ConnectException) {
-            log("<-- HTTP FAILED: $e")
-            val errorMsg = "连接服务器错误，请检查网络"
-            throw IOException(errorMsg, e)
-        } catch (e: UnknownHostException) {
-            log("<-- HTTP FAILED: $e")
-            val errorMsg = "网络错误，请检查网络"
-            throw IOException(errorMsg, e)
-        } catch (e: Exception) {
-            log("<-- HTTP FAILED: $e")
-            throw e
+        var request = chain.request()
+        val maxRetryCount = 3 // 最大重试次数
+        var retryCount = 0 // 当前重试次数
+        val retryDelayMs = 3000L // 重试间隔时间，单位毫秒
+        var response: Response? = null
+        var startNs: Long
+
+        while (retryCount <= maxRetryCount) {
+            startNs = System.nanoTime()
+            try {
+                response = chain.proceed(request)
+                val tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
+                // 响应日志拦截
+                return logForResponse(response, tookMs)
+            } catch (e: SocketTimeoutException) {
+                retryCount++
+                log("<-- HTTP FAILED: $e, retrying ($retryCount/$maxRetryCount)")
+                if (retryCount > maxRetryCount) {
+                    val errorMsg = "连接超时，请检查网络"
+                    throw IOException(errorMsg, e)
+                }
+                Thread.sleep(retryDelayMs)
+            } catch (e: ConnectException) {
+                log("<-- HTTP FAILED: $e")
+                val errorMsg = "连接服务器错误，请检查网络"
+                throw IOException(errorMsg, e)
+            } catch (e: UnknownHostException) {
+                log("<-- HTTP FAILED: $e")
+                val errorMsg = "网络错误，请检查网络"
+                throw IOException(errorMsg, e)
+            } catch (e: Exception) {
+                log("<-- HTTP FAILED: $e")
+                throw e
+            }
         }
-        val tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
-        //响应日志拦截
-        return logForResponse(response, tookMs)
+        // 若重试后仍然失败，抛出最后一个异常
+        throw IOException("已达到最大尝试次数")
     }
 
     private fun log(message: String) {

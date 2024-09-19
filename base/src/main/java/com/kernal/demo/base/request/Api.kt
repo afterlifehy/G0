@@ -21,7 +21,7 @@ interface Api {
      * 下单
      */
     @POST("S_G0_02")
-    suspend fun placeOrder(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PlaceOederResultBean>
+    suspend fun placeOrder(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PlaceOrderResultBean>
 
     /**
      * 结单

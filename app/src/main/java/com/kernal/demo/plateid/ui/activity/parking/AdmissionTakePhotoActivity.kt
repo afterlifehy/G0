@@ -15,6 +15,7 @@ import android.widget.PopupWindow
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -27,7 +28,8 @@ import com.blankj.utilcode.util.TimeUtils
 import com.hyperai.hyperlpr3.settings.TypeDefine
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
-import com.kernal.demo.base.bean.PlaceOederResultBean
+import com.kernal.demo.base.base.mvvm.ErrorMessage
+import com.kernal.demo.base.bean.PlaceOrderResultBean
 import com.kernal.demo.base.bean.Street
 import com.kernal.demo.base.dialog.DialogHelp
 import com.kernal.demo.base.ds.PreferencesDataStore
@@ -92,6 +94,12 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var street: Street? = null
     var countDownUtil: CountDownUtil? = null
     var canGoBack = true
+
+    private lateinit var photoObserver: Observer<Any>
+    private lateinit var placeOrderObserver: Observer<PlaceOrderResultBean>
+    private lateinit var errorObserver: Observer<ErrorMessage>
+    private var currentType = 10
+    private var orderNo = ""
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
@@ -393,78 +401,103 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
     override fun startObserve() {
         super.startObserve()
-        mViewModel.apply {
-            placeOrderLiveData.observe(this@AdmissionTakePhotoActivity) {
-                dismissProgressDialog()
-                countDownUtil?.onFinish()
+        placeOrderObserver = Observer {
+            dismissProgressDialog()
+            countDownUtil?.onFinish()
 
-                val plateSavedFile = FileUtil.FileSaveToInside("${it.orderNo}_10.png", plateImageBitmap!!)
-                plateBase64 = FileUtil.fileToBase64(plateSavedFile).toString()
-                uploadImg(it.orderNo, plateBase64, "${it.orderNo}_10.png", 10)
+            orderNo = it.orderNo
+            val plateSavedFile = FileUtil.FileSaveToInside("${it.orderNo}_10.png", plateImageBitmap!!)
+            plateBase64 = FileUtil.fileToBase64(plateSavedFile).toString()
+            currentType = 10
+            uploadImg(it.orderNo, plateBase64, "${orderNo}_10.png")
 
-                val panoramaSavedFile = FileUtil.FileSaveToInside("${it.orderNo}_11.png", panoramaImageBitmap!!)
+            if (it.historyCount > 0) {
+                promptDialog1 = PromptDialog(
+                    i18N(com.kernal.demo.base.R.string.下单成功当前车辆有欠费记录是否追缴),
+                    i18N(com.kernal.demo.base.R.string.是),
+                    i18N(com.kernal.demo.base.R.string.否),
+                    object : PromptDialog.PromptCallBack {
+                        override fun leftClick() {
+                            startArouter(ARouterMap.DEBT_COLLECTION, data = Bundle().apply {
+                                putString(ARouterMap.DEBT_CAR_LICENSE, binding.pvPlate.getPvTxt())
+                            })
+                            finish()
+                        }
+
+                        override fun rightClick() {
+                            showPrePayDialog(it)
+                        }
+
+                    })
+                promptDialog1?.show()
+                canGoBack = false
+            } else {
+                showPrePayDialog(it)
+            }
+        }
+        photoObserver = Observer {
+            if (currentType == 10) {
+                val panoramaSavedFile = FileUtil.FileSaveToInside("${orderNo}_11.png", panoramaImageBitmap!!)
                 panoramaBase64 = FileUtil.fileToBase64(panoramaSavedFile).toString()
-                uploadImg(it.orderNo, panoramaBase64, "${it.orderNo}_11.png", 11)
-                if (it.historyCount > 0) {
-                    promptDialog1 = PromptDialog(
-                        i18N(com.kernal.demo.base.R.string.下单成功当前车辆有欠费记录是否追缴),
-                        i18N(com.kernal.demo.base.R.string.是),
-                        i18N(com.kernal.demo.base.R.string.否),
-                        object : PromptDialog.PromptCallBack {
-                            override fun leftClick() {
-                                startArouter(ARouterMap.DEBT_COLLECTION, data = Bundle().apply {
-                                    putString(ARouterMap.DEBT_CAR_LICENSE, binding.pvPlate.getPvTxt())
-                                })
-                                finish()
+                currentType = 11
+                uploadImg(orderNo, panoramaBase64, "${orderNo}_11.png")
+            } else {
+                mViewModel.picUploadLiveData.removeObserver(photoObserver)
+                mViewModel.placeOrderLiveData.removeObserver(placeOrderObserver)
+            }
+        }
+        errorObserver = Observer {
+            try {
+                dismissProgressDialog()
+                ToastUtil.showBottomToast(it.msg)
+                countDownUtil?.onFinish()
+                if (it.code == 2) {
+                    DialogHelp.Builder().setTitle(it.msg)
+                        .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).isAloneButton(true)
+                        .setCancelable(false)
+                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                            override fun onLeftClickListener(msg: String) {
                             }
 
-                            override fun rightClick() {
-                                showPrePayDialog(it)
+                            override fun onRightClickListener(msg: String) {
+                                runBlocking {
+                                    PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, false)
+                                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
+                                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
+                                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+                                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+                                }
+                                RealmUtil.instance?.deleteAllStreet()
+                                startArouter(ARouterMap.LOGIN)
+                                for (i in ActivityCacheManager.instance().getAllActivity()) {
+                                    if (i !is LoginActivity) {
+                                        i.finish()
+                                    }
+                                }
                             }
 
-                        })
-                    promptDialog1?.show()
-                    canGoBack = false
+                        }).build(this@AdmissionTakePhotoActivity).showDailog()
                 } else {
-                    showPrePayDialog(it)
-                }
-            }
-            errMsg.observe(this@AdmissionTakePhotoActivity) {
-                try {
-                    dismissProgressDialog()
-                    ToastUtil.showBottomToast(it.msg)
-                    countDownUtil?.onFinish()
-                    if (it.code == 2) {
-                        DialogHelp.Builder().setTitle(it.msg)
-                            .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).isAloneButton(true)
-                            .setCancelable(false)
-                            .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                override fun onLeftClickListener(msg: String) {
-                                }
-
-                                override fun onRightClickListener(msg: String) {
-                                    runBlocking {
-                                        PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, false)
-                                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
-                                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
-                                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
-                                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
-                                    }
-                                    RealmUtil.instance?.deleteAllStreet()
-                                    startArouter(ARouterMap.LOGIN)
-                                    for (i in ActivityCacheManager.instance().getAllActivity()) {
-                                        if (i !is LoginActivity) {
-                                            i.finish()
-                                        }
-                                    }
-                                }
-
-                            }).build(this@AdmissionTakePhotoActivity).showDailog()
+                    if (it.api == "picUpload") {
+                        if (currentType == 10) {
+                            val panoramaSavedFile = FileUtil.FileSaveToInside("${orderNo}_11.png", panoramaImageBitmap!!)
+                            panoramaBase64 = FileUtil.fileToBase64(panoramaSavedFile).toString()
+                            currentType = 11
+                            uploadImg(orderNo, panoramaBase64, "${orderNo}_11.png")
+                        } else {
+                            mViewModel.picUploadLiveData.removeObserver(photoObserver)
+                            mViewModel.placeOrderLiveData.removeObserver(placeOrderObserver)
+                        }
                     }
-                } catch (_: Exception) {
-
                 }
+            } catch (_: Exception) {
+
             }
+        }
+        mViewModel.apply {
+            placeOrderLiveData.observeForever(placeOrderObserver)
+            picUploadLiveData.observeForever(photoObserver)
+            errMsg.observeForever(errorObserver)
             mException.observe(this@AdmissionTakePhotoActivity) {
                 dismissProgressDialog()
                 countDownUtil?.onFinish()
@@ -472,7 +505,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         }
     }
 
-    fun showPrePayDialog(it: PlaceOederResultBean) {
+    fun showPrePayDialog(it: PlaceOrderResultBean) {
         promptDialog2 = PromptDialog(
             i18N(com.kernal.demo.base.R.string.下单成功是否预支付),
             i18N(com.kernal.demo.base.R.string.取消),
@@ -594,12 +627,12 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         }
     }
 
-    fun uploadImg(orderNo: String, photo: String, name: String, type: Int) {
+    fun uploadImg(orderNo: String, photo: String, name: String) {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["businessId"] = orderNo
         jsonobject["photoName"] = name
-        jsonobject["photoType"] = type
+        jsonobject["photoType"] = currentType
         jsonobject["photoFormat"] = "png"
         jsonobject["photo"] = photo
         jsonobject["simId"] = simId
