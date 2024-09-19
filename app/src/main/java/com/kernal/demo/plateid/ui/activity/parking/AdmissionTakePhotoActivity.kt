@@ -406,7 +406,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             countDownUtil?.onFinish()
 
             orderNo = it.orderNo
-            val plateSavedFile = FileUtil.FileSaveToInside("${it.orderNo}_10.png", plateImageBitmap!!)
+            val plateSavedFile = FileUtil.FileSaveToInside("${orderNo}_10.png", plateImageBitmap!!)
             plateBase64 = FileUtil.fileToBase64(plateSavedFile).toString()
             currentType = 10
             uploadImg(it.orderNo, plateBase64, "${orderNo}_10.png")
@@ -518,7 +518,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                 override fun rightClick() {
                     startArouter(ARouterMap.PREPAID, data = Bundle().apply {
-                        putInt(ARouterMap.PREPAID_MIN_AMOUNT, 1)
+                        putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
                         putString(ARouterMap.PREPAID_CARLICENSE, binding.pvPlate.getPvTxt())
                         putString(ARouterMap.PREPAID_PARKING_NO, parkingNo)
                         putString(ARouterMap.PREPAID_ORDER_NO, it.orderNo)
