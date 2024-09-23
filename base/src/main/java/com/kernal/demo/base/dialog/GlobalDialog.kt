@@ -57,7 +57,7 @@ class GlobalDialog(context: Context, mDialogHelp: DialogHelp) :
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.rtv_left -> {
-                mDialogHelp?.mOnButtonClickLinsener?.onLeftClickLinsener()
+                mDialogHelp?.mOnButtonClickLinsener?.onLeftClickListener()
                 if (mDialogHelp!!.cancelable) {
                     dismiss()
                 }
@@ -65,7 +65,7 @@ class GlobalDialog(context: Context, mDialogHelp: DialogHelp) :
             }
 
             R.id.rtv_right -> {
-                mDialogHelp?.mOnButtonClickLinsener?.onRightClickLinsener()
+                mDialogHelp?.mOnButtonClickLinsener?.onRightClickListener()
                 if (mDialogHelp!!.cancelable) {
                     dismiss()
                 }

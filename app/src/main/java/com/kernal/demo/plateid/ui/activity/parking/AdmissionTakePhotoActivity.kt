@@ -60,7 +60,6 @@ import com.kernal.demo.common.util.ImageUtil
 import com.kernal.demo.common.view.PlateView
 import com.kernal.demo.common.view.keyboard.KeyboardUtil
 import com.kernal.demo.plateid.ui.activity.login.LoginActivity
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.text.SimpleDateFormat
@@ -139,8 +138,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         ClickUtils.applySingleDebouncing(binding.rflTakePhoto2, 1000, this@AdmissionTakePhotoActivity)
         ClickUtils.applySingleDebouncing(binding.rivPlate, 1000, this@AdmissionTakePhotoActivity)
         ClickUtils.applySingleDebouncing(binding.rivPanorama, 1000, this@AdmissionTakePhotoActivity)
-        binding.rivPlate.setOnClickListener(this)
-        binding.rivPanorama.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
         ClickUtils.applySingleDebouncing(binding.rflStartBilling, 1000, this@AdmissionTakePhotoActivity)
@@ -310,10 +307,13 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                     .setRightMsg(i18N(com.kernal.demo.base.R.string.确定))
                     .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消)).setCancelable(true)
                     .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                        override fun onLeftClickLinsener(msg: String) {
+                        override fun onLeftClickListener(msg: String) {
                         }
 
-                        override fun onRightClickLinsener(msg: String) {
+                        override fun onRightClickListener(msg: String) {
+                            if (AppUtil.isFastClick(2000)) {
+                                return
+                            }
                             showProgressDialog(20000)
                             binding.rflStartBilling.delegate.setBackgroundColor(
                                 ContextCompat.getColor(
@@ -333,7 +333,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                                     )
                                     binding.tvStartBilling.text = i18N(com.kernal.demo.base.R.string.开始计费)
                                     binding.rflStartBilling.delegate.init()
-                                    binding.rflStartBilling.setOnClickListener(this@AdmissionTakePhotoActivity)
+                                    ClickUtils.applySingleDebouncing(binding.rflStartBilling, 1000, this@AdmissionTakePhotoActivity)
                                 }
 
                                 override fun onTimeTick(millisUntilFinished: Long) {
@@ -408,7 +408,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             val plateSavedFile = FileUtil.FileSaveToInside("${orderNo}_10.png", plateImageBitmap!!)
             plateBase64 = FileUtil.fileToBase64(plateSavedFile).toString()
             currentType = 10
-            uploadImg(it.orderNo, plateBase64, "${it.orderNo}_10.png")
+            uploadImg(it.orderNo, plateBase64, "${orderNo}_10.png")
 
             if (it.historyCount > 0) {
                 promptDialog1 = PromptDialog(
@@ -455,10 +455,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                         .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).isAloneButton(true)
                         .setCancelable(false)
                         .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                            override fun onLeftClickLinsener(msg: String) {
+                            override fun onLeftClickListener(msg: String) {
                             }
 
-                            override fun onRightClickLinsener(msg: String) {
+                            override fun onRightClickListener(msg: String) {
                                 runBlocking {
                                     PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, false)
                                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
@@ -751,6 +751,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
     override fun onDestroy() {
         super.onDestroy()
+        dismissProgressDialog()
         if (countDownUtil != null) {
             countDownUtil?.onFinish()
             countDownUtil = null
