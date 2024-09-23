@@ -311,7 +311,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                         }
 
                         override fun onRightClickListener(msg: String) {
-                            if (AppUtil.isFastClick(1000)) {
+                            if (AppUtil.isFastClick(2000)) {
                                 return
                             }
                             showProgressDialog(20000)
