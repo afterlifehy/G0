@@ -24,7 +24,6 @@ object ARouterMap {
     const val PIC_ORDER_NO = "orderNo"
 
     const val PREPAID = "/G0_app/prepaid"
-    const val PREPAID_MIN_AMOUNT = "minAmount"
     const val PREPAID_CARLICENSE = "carLicense"
     const val PREPAID_PARKING_NO = "parkingNo"
     const val PREPAID_ORDER_NO = "orderNo"

@@ -518,7 +518,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                 override fun rightClick() {
                     startArouter(ARouterMap.PREPAID, data = Bundle().apply {
-                        putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
                         putString(ARouterMap.PREPAID_CARLICENSE, binding.pvPlate.getPvTxt())
                         putString(ARouterMap.PREPAID_PARKING_NO, parkingNo)
                         putString(ARouterMap.PREPAID_ORDER_NO, it.orderNo)

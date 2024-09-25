@@ -16,7 +16,7 @@ public class MyMigration implements RealmMigration {
     public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
         RealmSchema schema = realm.getSchema();
         if (oldVersion == 1 && newVersion == 2) {
-            schema.get("Street").addField("prepayDuration", Integer.class).setRequired("prepayDuration", true);
+            schema.get("Street").addField("prepayDuration", Double.class).setRequired("prepayDuration", true);
             oldVersion++;
         }
     }

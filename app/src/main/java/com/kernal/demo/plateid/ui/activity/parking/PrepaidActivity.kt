@@ -43,10 +43,11 @@ import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.PREPAID)
 class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>(), OnClickListener {
-    var timeDuration = 1
+    var timeDuration = 1.0
+    var maxDuration = 1.0
+    var minDuration = 1.0
     var paymentQrDialog: PaymentQrDialog? = null
 
-    var minAmount = 1
     var parkingNo = ""
     var carLicense = ""
     var orderNo = ""
@@ -99,7 +100,6 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.white))
 
-        minAmount = intent.getIntExtra(ARouterMap.PREPAID_MIN_AMOUNT, 1)
         carLicense = intent.getStringExtra(ARouterMap.PREPAID_CARLICENSE).toString()
         parkingNo = intent.getStringExtra(ARouterMap.PREPAID_PARKING_NO).toString()
         orderNo = intent.getStringExtra(ARouterMap.PREPAID_ORDER_NO).toString()
@@ -107,8 +107,9 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
 
         val street = RealmUtil.instance?.findCurrentStreet()
-        timeDuration = street?.prepayDuration!!
+        maxDuration = street?.prepayDuration!!
         binding.etTimeDuration.setText(timeDuration.toString())
+        binding.etTimeDuration.setSelection(timeDuration.toString().length)
 
         binding.tvPlate.text = carLicense
         binding.tvParkingNo.text = parkingNo
@@ -172,20 +173,14 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                     if (splitInput.size > 1 && splitInput[1].length > 1) {
                         s?.delete(s.length - 1, s.length)
                     }
-                    if (value.endsWith(".") && value.length > 1) {
-                        timeDuration = value.replace(".", "").toInt()
-                    } else if (value.endsWith(".") && value.length <= 1) {
-//                        timeDuration = minAmount - 0.5
-                    } else {
-                        timeDuration = value.toInt()
-                    }
+                    timeDuration = s.toString().toDouble()
                 } else if (value.length > 0) {
-                    timeDuration = value.toInt()
+                    timeDuration = value.toDouble()
                 } else {
-                    timeDuration = 0
+                    timeDuration = minDuration
                 }
-                if (timeDuration > 999) {
-                    timeDuration = 999
+                if (timeDuration > maxDuration) {
+                    timeDuration = maxDuration
                     binding.etTimeDuration.setText(timeDuration.toString())
                     binding.etTimeDuration.setSelection(timeDuration.toString().length)
                 }
@@ -209,30 +204,30 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_add -> {
-                if (timeDuration == 999) {
+                if (timeDuration == maxDuration) {
                     return
                 }
-                if (timeDuration < minAmount) {
-                    timeDuration = minAmount
+                if (timeDuration < minDuration) {
+                    timeDuration = minDuration
                 } else {
-//                    timeDuration += 0.5
+                    timeDuration += 0.5
                 }
                 binding.etTimeDuration.setText(timeDuration.toString())
                 binding.etTimeDuration.setSelection(timeDuration.toString().length)
             }
 
             R.id.rfl_minus -> {
-                if (timeDuration <= minAmount) {
-                    timeDuration = minAmount
+                if (timeDuration <= minDuration) {
+                    timeDuration = minDuration
                 } else {
-//                    timeDuration -= 0.5
+                    timeDuration -= 0.5
                 }
                 binding.etTimeDuration.setText(timeDuration.toString())
                 binding.etTimeDuration.setSelection(timeDuration.toString().length)
             }
 
             R.id.rfl_scanPay -> {
-                if (timeDuration >= minAmount) {
+                if (timeDuration >= minDuration) {
                     prePayFeeInquiry()
                 } else {
                     ToastUtil.showBottomToast("时长过短")

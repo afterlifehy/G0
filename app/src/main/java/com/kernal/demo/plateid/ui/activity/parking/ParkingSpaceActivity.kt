@@ -328,7 +328,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     binding.tvTimeoutDuration.text = AppUtil.getSpan(strings3, sizes, colors)
                 } else {
                     startArouter(ARouterMap.PREPAID, data = Bundle().apply {
-                        putInt(ARouterMap.PREPAID_MIN_AMOUNT, 1)
                         putString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
                         putString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
                         putString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)

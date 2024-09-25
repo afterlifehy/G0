@@ -12,7 +12,7 @@ open class Street(
     var streetName: String = "",
     var ischeck: Boolean = false,
     var isCurrent: Boolean = false,
-    var prepayDuration: Int = 1
+    var prepayDuration: Double = 1.0
 ) : RealmObject(), Parcelable {
     fun copy(): Street {
         return Street(streetNo, streetName, ischeck, isCurrent, prepayDuration)

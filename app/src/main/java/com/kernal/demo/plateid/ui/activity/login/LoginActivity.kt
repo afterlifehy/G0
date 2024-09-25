@@ -42,10 +42,9 @@ import org.greenrobot.eventbus.ThreadMode
 @Route(path = ARouterMap.LOGIN)
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
     var baiduLocationUtil: BaiduLocationUtil? = null
-    var lat = 31.238665
-    var lon = 121.445345
+    var lat = 0.00
+    var lon = 0.00
     var updateBean: UpdateBean? = null
-    var locationEnable = 0
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(baiduLocationLoginEvent: BaiduLocationLoginEvent) {
@@ -165,9 +164,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lon, lon)
                         PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lat, lat)
                     }
-                    locationEnable = 1
-                } else {
-                    locationEnable = -1
                 }
             }
 
@@ -184,27 +180,17 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
             R.id.rtv_login -> {
                 var rxPermissions = RxPermissions(this@LoginActivity)
-                if (locationEnable == 1) {
-                    rxPermissions.request(Manifest.permission.READ_PHONE_STATE).subscribe {
-                        if (it) {
-                            login()
-                        } else {
-                            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
-                        }
-                    }
+                if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    login()
                 } else {
-                    if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.未获取到位置信息))
-                    } else {
-                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
-                            if (it) {
-                                startBadiMapLocation()
-                                baiduLocationUtil?.startLocation()
-                            } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
-                            } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
-                                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
-                            }
+                    rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
+                        if (it) {
+                            startBadiMapLocation()
+                            baiduLocationUtil?.startLocation()
+                        } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请打开位置信息))
+                        } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                            ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
                         }
                     }
                 }
@@ -215,28 +201,32 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     @SuppressLint("MissingPermission")
     fun login() {
         showProgressDialog(20000)
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["loginName"] = binding.etAccount.text.toString()
-        jsonobject["passWord"] = binding.etPw.text.toString()
-        jsonobject["longitude"] = lon.toString()
-        jsonobject["latitude"] = lat.toString()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        runBlocking {
+            val longitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lon)
+            val latitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lat)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["loginName"] = binding.etAccount.text.toString()
+            jsonobject["passWord"] = binding.etPw.text.toString()
+            jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
+            jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 //            jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
 //            val subscriptionManager = getSystemService(TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
 //            val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
 //            if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
 //                jsonobject["simId"] = subscriptionInfoList[0].iccId
 //            }
-            jsonobject["imei"] = ""
-            jsonobject["simId"] = ""
-        } else {
-            jsonobject["imei"] = PhoneUtils.getIMEI()
-            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                jsonobject["imei"] = ""
+                jsonobject["simId"] = ""
+            } else {
+                jsonobject["imei"] = PhoneUtils.getIMEI()
+                jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+            }
+            jsonobject["version"] = AppUtils.getAppVersionName()
+            param["attr"] = jsonobject
+            mViewModel.login(param)
         }
-        jsonobject["version"] = AppUtils.getAppVersionName()
-        param["attr"] = jsonobject
-        mViewModel.login(param)
     }
 
     override fun startObserve() {
