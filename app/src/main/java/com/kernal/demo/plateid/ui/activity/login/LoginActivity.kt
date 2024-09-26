@@ -76,7 +76,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     }
 
     override fun initListener() {
-        binding.viewLog.setOnClickListener{
+        binding.viewLog.setOnClickListener {
             startArouter(ARouterMap.LOG_FILE)
         }
         binding.ivLogo.setOnLongClickListener {
@@ -232,14 +232,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         jsonobject["longitude"] = lon.toString()
         jsonobject["latitude"] = lat.toString()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-            val subscriptionManager = getSystemService(TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-            val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
-            if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
-                jsonobject["simId"] = subscriptionInfoList[0].iccId
-            }
-            jsonobject["imei"] = ""
-            jsonobject["simId"] = ""
+            jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
         } else {
             jsonobject["imei"] = PhoneUtils.getIMEI()
             jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber

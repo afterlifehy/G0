@@ -1,19 +1,13 @@
 package com.kernal.demo.base.util
 
 import android.annotation.SuppressLint
+import android.content.Context.TELEPHONY_SERVICE
 import android.os.Build
 import android.os.Environment
-import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.getSystemService
 import com.blankj.utilcode.util.PhoneUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.BaseApplication
-import com.kernal.demo.base.ds.PreferencesDataStore
-import com.kernal.demo.base.ds.PreferencesKeys
-import kotlinx.coroutines.runBlocking
-import me.yokeyword.fragmentation.SupportActivity
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileOutputStream
@@ -39,7 +33,7 @@ object LogFileUtil {
         var imei = ""
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-
+                imei = (BaseApplication.instance().getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
             } else {
                 imei = PhoneUtils.getIMEI()
             }
