@@ -179,7 +179,7 @@ object AppUtil {
 
     fun isFastClick(interval: Long): Boolean {
         val currentClickTime = System.currentTimeMillis()
-        Log.v("lastClickTime3", (currentClickTime - AppUtil.lastClickTime1).toString())
+        Log.v("lastClickTime3", (currentClickTime - lastClickTime1).toString())
         return if (currentClickTime - lastClickTime1 >= interval) {
             lastClickTime1 = currentClickTime
             false
