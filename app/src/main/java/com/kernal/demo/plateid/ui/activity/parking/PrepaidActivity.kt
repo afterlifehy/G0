@@ -108,6 +108,9 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
 
         val street = RealmUtil.instance?.findCurrentStreet()
         maxDuration = street?.prepayDuration!!
+        if (maxDuration < 1.0) {
+            maxDuration = 1.0
+        }
         binding.etTimeDuration.setText(timeDuration.toString())
         binding.etTimeDuration.setSelection(timeDuration.toString().length)
 
