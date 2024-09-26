@@ -9,7 +9,7 @@ import com.kernal.demo.base.adapter.BaseBindingAdapter
 import com.kernal.demo.base.adapter.VBViewHolder
 import com.kernal.demo.base.bean.OrderBean
 import com.kernal.demo.base.ext.i18n
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.common.util.BigDecimalManager
 import com.kernal.demo.plateid.databinding.ItemOrderBinding
 import com.zrq.spanbuilder.TextStyle

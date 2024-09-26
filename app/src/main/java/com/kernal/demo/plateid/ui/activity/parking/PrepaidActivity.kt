@@ -33,7 +33,7 @@ import com.kernal.demo.plateid.databinding.ActivityPrepaidBinding
 import com.kernal.demo.plateid.dialog.PaymentQrDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.PrepaidViewModel
 import com.kernal.demo.common.event.RefreshParkingSpaceEvent
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.common.util.BluePrint
 import com.kernal.demo.common.util.Constant
 import com.kernal.demo.common.util.GlideUtils

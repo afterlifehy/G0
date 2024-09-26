@@ -12,7 +12,7 @@ import com.kernal.demo.base.help.ActivityCacheManager
 import com.kernal.demo.common.util.CodeUtils
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.plateid.databinding.DialogPaymentQrBinding
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 
 class PaymentQrDialog(var qr: String, var amount: String) : VBBaseLibDialog<DialogPaymentQrBinding>(
     ActivityCacheManager.instance().getCurrentActivity()!!,

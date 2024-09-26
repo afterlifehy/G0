@@ -50,7 +50,7 @@ import com.kernal.demo.plateid.databinding.ActivityAdmissionTakePhotoBinding
 import com.kernal.demo.plateid.dialog.PromptDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.AdmissionTakePhotoViewModel
 import com.kernal.demo.plateid.pop.MultipleSeatsPop
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.common.util.Constant
 import com.kernal.demo.common.util.CountDownUtil
 import com.kernal.demo.common.util.FileUtil

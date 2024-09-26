@@ -11,7 +11,7 @@ import androidx.annotation.RequiresApi
 import com.kernal.demo.base.ext.gone
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.PopMultipleSeatsBinding
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.common.util.GlideUtils
 
 /**

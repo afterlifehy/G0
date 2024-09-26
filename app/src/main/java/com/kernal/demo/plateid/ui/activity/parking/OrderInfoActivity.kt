@@ -31,7 +31,7 @@ import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityOrderInfoBinding
 import com.kernal.demo.plateid.dialog.PaymentQrDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.OrderInfoViewModel
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.common.util.BluePrint
 import com.kernal.demo.common.util.GlideUtils
 import kotlinx.coroutines.runBlocking

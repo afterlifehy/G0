@@ -5,7 +5,9 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
@@ -27,7 +29,7 @@ import com.kernal.demo.base.help.ActivityCacheManager
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.common.realm.RealmUtil
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.common.util.BluePrint
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityMainBinding
@@ -38,10 +40,9 @@ import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.ext.startArouter
+import com.kernal.demo.base.util.LogFileUtil
 import com.kernal.demo.common.event.BaiduLocationEvent
-import com.kernal.demo.common.event.RefreshIsPrintEvent
 import com.kernal.demo.common.util.BaiduLocationUtil
-import com.kernal.demo.common.util.Constant
 import com.kernal.demo.plateid.ui.activity.abnormal.AbnormalReportActivity
 import com.kernal.demo.plateid.ui.activity.income.IncomeCountingActivity
 import com.kernal.demo.plateid.ui.activity.login.LoginActivity
@@ -55,6 +56,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
 
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
@@ -74,6 +76,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     override fun initView() {
         delete2DayPic()
+        delete30DayLog()
         initHyperLPR()
         runBlocking {
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
@@ -145,13 +148,36 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             for (i in list) {
                 if (i.name.contains("_")) {
                     val createTime = TimeUtils.string2Millis(i.name.substring(0, 8), "yyyyMMdd")
-                    if (System.currentTimeMillis() - createTime > 2 * 24 * 60 * 60 * 1000) {
+                    if (System.currentTimeMillis() - createTime > 2 * 24 * 60 * 60 * 1000L) {
                         i.delete()
                     }
                 } else {
                     i.delete()
                 }
             }
+        }
+    }
+
+    fun delete30DayLog() {
+        val logDir = File(Environment.getExternalStorageDirectory().absolutePath, LogFileUtil.LOG_DIR_NAME)
+        if (logDir.exists() && logDir.isDirectory) {
+            val files = logDir.listFiles()
+            for (i in files) {
+                if (i.name.contains("_")) {
+                    val name = i.name.split("_")
+                    if (name.size == 4) {
+                        val createTime = TimeUtils.string2Millis(name[3], "yyyyMMdd")
+                        if (System.currentTimeMillis() - createTime > 30 * 24 * 60 * 60 * 1000L) {
+                            Log.v("1111", "before  ${i.length()}")
+                            i.delete()
+                            Log.v("1111", "after  ${i.length()}")
+                        }
+                    }
+                } else {
+                    i.delete()
+                }
+            }
+        } else {
         }
     }
 

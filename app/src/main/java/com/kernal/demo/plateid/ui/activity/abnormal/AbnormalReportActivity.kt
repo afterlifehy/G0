@@ -38,7 +38,7 @@ import com.kernal.demo.base.ext.startArouter
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.common.realm.RealmUtil
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.common.view.keyboard.KeyboardUtil
 import com.kernal.demo.common.view.keyboard.MyTextWatcher

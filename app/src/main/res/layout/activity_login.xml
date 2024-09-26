@@ -12,6 +12,12 @@
         android:scaleType="fitXY"
         android:src="@mipmap/ic_login_top_bg" />
 
+    <View
+        android:id="@+id/view_log"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_alignTop="@+id/iv_logo" />
+
     <ImageView
         android:id="@+id/iv_logo"
         android:layout_width="wrap_content"

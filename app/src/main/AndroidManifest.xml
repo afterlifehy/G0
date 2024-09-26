@@ -256,5 +256,10 @@
             android:name=".ui.activity.order.TransactionRecordActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.LogFileListActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

@@ -26,6 +26,7 @@ import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.startAct
+import com.kernal.demo.base.ext.startArouter
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.common.event.BaiduLocationEvent
@@ -34,6 +35,7 @@ import com.kernal.demo.common.util.BaiduLocationUtil
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityLoginBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LoginViewModel
+import com.kernal.demo.plateid.ui.activity.LogFileListActivity
 import com.kernal.demo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
@@ -74,6 +76,13 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     }
 
     override fun initListener() {
+        binding.viewLog.setOnClickListener{
+            startArouter(ARouterMap.LOG_FILE)
+        }
+        binding.ivLogo.setOnLongClickListener {
+            startArouter(ARouterMap.LOG_FILE)
+            true
+        }
         binding.tvForgetPw.setOnClickListener(this)
         binding.etAccount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

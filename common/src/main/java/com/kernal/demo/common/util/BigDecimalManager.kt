@@ -1,5 +1,6 @@
 package com.kernal.demo.common.util
 
+import com.kernal.demo.base.util.AppUtil
 import java.math.BigDecimal
 import java.math.RoundingMode
 

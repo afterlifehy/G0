@@ -1,7 +1,9 @@
 package com.kernal.demo.base.request
 
 import com.kernal.demo.base.bean.*
+import okhttp3.MultipartBody
 import retrofit2.http.*
+import java.io.File
 
 
 interface Api {
@@ -160,5 +162,12 @@ interface Api {
      */
     @POST("S_VO3_02")
     suspend fun locationUpload(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 日志上传
+     */
+    @Multipart
+    @POST("upload")
+    suspend fun logFileUpload(@Part file: MultipartBody.Part): HttpWrapper<Any>
 
 }

@@ -2,6 +2,8 @@ package com.kernal.demo.base.http.interceptor
 
 import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
+import com.kernal.demo.base.util.AppUtil
+import com.kernal.demo.base.util.LogFileUtil
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.Response
@@ -38,6 +40,7 @@ class ExceptionInterceptor : Interceptor {
                 log("<-- HTTP FAILED: $e, retrying ($retryCount/$maxRetryCount)")
                 if (retryCount > maxRetryCount) {
                     val errorMsg = "连接超时，请检查网络"
+                    LogFileUtil.logToFile("${AppUtil.getCurrentTime()}   --- HTTP FAILED---: retryCount: $retryCount$errorMsg${request.url}")
                     throw IOException(errorMsg, e)
                 }
                 Thread.sleep(retryDelayMs)

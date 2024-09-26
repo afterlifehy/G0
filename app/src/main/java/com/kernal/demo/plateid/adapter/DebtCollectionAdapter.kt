@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import com.kernal.demo.base.adapter.BaseBindingAdapter
 import com.kernal.demo.base.adapter.VBViewHolder
 import com.kernal.demo.base.bean.DebtCollectionBean
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.plateid.databinding.ItemDebtCollectionBinding
 import com.zrq.spanbuilder.TextStyle
 

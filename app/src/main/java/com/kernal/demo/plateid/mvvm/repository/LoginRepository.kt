@@ -4,6 +4,9 @@ import com.kernal.demo.base.base.mvvm.BaseRepository
 import com.kernal.demo.base.bean.HttpWrapper
 import com.kernal.demo.base.bean.LoginBean
 import com.kernal.demo.base.bean.UpdateBean
+import okhttp3.MultipartBody
+import retrofit2.http.Part
+import java.io.File
 
 class LoginRepository : BaseRepository() {
 
@@ -26,5 +29,12 @@ class LoginRepository : BaseRepository() {
      */
     suspend fun checkOnWork(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
         return mServer.checkOnWork(param)
+    }
+
+    /**
+     * 日志上传
+     */
+    suspend fun logFileUpload(@Part file: MultipartBody.Part): HttpWrapper<Any> {
+        return mFileServer.logFileUpload(file)
     }
 }

@@ -13,7 +13,7 @@ import com.blankj.utilcode.constant.TimeConstants
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.help.ActivityCacheManager
 import com.kernal.demo.base.util.ToastUtil
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.PopDateBinding
 import java.text.SimpleDateFormat

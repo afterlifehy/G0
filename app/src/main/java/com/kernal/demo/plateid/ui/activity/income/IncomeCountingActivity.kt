@@ -30,7 +30,7 @@ import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
 import com.kernal.demo.base.ext.show
 import com.kernal.demo.plateid.dialog.PromptDialog
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.common.util.GlideUtils
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat

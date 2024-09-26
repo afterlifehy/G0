@@ -1,4 +1,4 @@
-package com.kernal.demo.common.util
+package com.kernal.demo.base.util
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import androidx.core.content.FileProvider
+import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.help.ActivityCacheManager
 import com.zrq.spanbuilder.Spans
@@ -284,5 +285,10 @@ object AppUtil {
             if (minutes > 0) append("${minutes}分")
             if (seconds > 0 || length == 0) append("${seconds}秒")
         }
+    }
+
+    fun getCurrentTime(): String {
+        val time = TimeUtils.millis2String(System.currentTimeMillis(),"yyyy-MM-dd HH:mm:ss")
+        return time
     }
 }

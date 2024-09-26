@@ -8,7 +8,6 @@ import com.kernal.demo.base.help.ActivityCacheManager
 import com.kernal.demo.base.http.OnAddOkhttpInterceptor
 import com.kernal.demo.base.proxy.OnAppBaseProxyListener
 import com.tencent.bugly.crashreport.CrashReport
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import kotlin.properties.Delegates
 
@@ -70,7 +69,6 @@ abstract class BaseApplication : Application(), Application.ActivityLifecycleCal
     }
 
     override fun onActivityPaused(activity: Activity) {
-
     }
 
     override fun onActivityStarted(activity: Activity) {

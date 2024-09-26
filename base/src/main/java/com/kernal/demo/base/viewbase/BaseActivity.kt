@@ -14,6 +14,7 @@ import com.kernal.demo.base.R
 import com.kernal.demo.base.base.mvvm.BaseViewModel
 import com.kernal.demo.base.dialog.IOSLoadingDialog
 import com.kernal.demo.base.event.BaseEvent
+import com.kernal.demo.base.util.LogFileUtil
 import me.yokeyword.fragmentation.ISupportActivity
 import me.yokeyword.fragmentation.SupportActivity
 import org.greenrobot.eventbus.EventBus
@@ -35,6 +36,7 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        LogFileUtil.logToFile("-------------${javaClass.simpleName} CREATE--------------------------")
         if (!isHorizontalScreen()) {//设置智能竖屏
             try {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -149,7 +151,18 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        LogFileUtil.logToFile("-------------${javaClass.simpleName} RESUME--------------------------")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        LogFileUtil.logToFile("-------------${javaClass.simpleName} PAUSE--------------------------")
+    }
+
     override fun onDestroy() {
+        LogFileUtil.logToFile("-------------${javaClass.simpleName} DESTROY--------------------------")
         if (::mViewModel.isInitialized) {
             mViewModel.let {
                 lifecycle.removeObserver(it)

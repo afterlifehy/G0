@@ -4,9 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -22,10 +19,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ClickUtils
-import com.blankj.utilcode.util.ConvertUtils
-import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.FileUtils
-import com.blankj.utilcode.util.ImageUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
@@ -53,7 +47,7 @@ import com.kernal.demo.plateid.mvvm.viewmodel.ParkingSpaceViewModel
 import com.kernal.demo.common.event.AbnormalReportEvent
 import com.kernal.demo.common.event.RefreshParkingSpaceEvent
 import com.kernal.demo.common.realm.RealmUtil
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.common.util.BluePrint
 import com.kernal.demo.common.util.Constant
 import com.kernal.demo.common.util.FileUtil
@@ -64,7 +58,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File

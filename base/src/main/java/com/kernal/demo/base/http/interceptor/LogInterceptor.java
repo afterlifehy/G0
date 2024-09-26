@@ -2,6 +2,9 @@ package com.kernal.demo.base.http.interceptor;
 
 import android.util.Log;
 
+import com.kernal.demo.base.util.AppUtil;
+import com.kernal.demo.base.util.LogFileUtil;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -22,8 +25,8 @@ public class LogInterceptor implements Interceptor {
         if (isDebug) {
             Log.i("HttpRequest:", "okhttp3:" + request.toString());//输出请求前整个url
             //去执行网络请求
-
         }
+        LogFileUtil.INSTANCE.logToFile(AppUtil.INSTANCE.getCurrentTime() + "    " + request);
         Response response = chain.proceed(request);
 
         if (isDebug) {
@@ -41,6 +44,8 @@ public class LogInterceptor implements Interceptor {
 
                 Log.i("HttpResponse:", "request:" + request.toString() + "==" + "response body:" + content);//输出返回信息
             }
+            LogFileUtil.INSTANCE.logToFile(AppUtil.INSTANCE.getCurrentTime() + "    " + response);
+            LogFileUtil.INSTANCE.logToFile(AppUtil.INSTANCE.getCurrentTime() + "    " + request + "    " + content);
             return response.newBuilder()
                     .body(okhttp3.ResponseBody.create(mediaType, content))
                     .build();

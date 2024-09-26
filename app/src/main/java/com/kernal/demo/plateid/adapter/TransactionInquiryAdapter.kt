@@ -12,7 +12,7 @@ import com.kernal.demo.base.adapter.VBViewHolder
 import com.kernal.demo.base.bean.TransactionBean
 import com.kernal.demo.base.ext.gone
 import com.kernal.demo.base.ext.show
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.plateid.databinding.ItemTransactionQueryBinding
 import com.zrq.spanbuilder.TextStyle
 

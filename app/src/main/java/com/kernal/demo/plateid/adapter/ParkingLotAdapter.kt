@@ -14,10 +14,7 @@ import com.kernal.demo.base.ext.hide
 import com.kernal.demo.base.ext.i18n
 import com.kernal.demo.base.ext.show
 import com.kernal.demo.plateid.databinding.ItemParkingLotBinding
-import com.kernal.demo.common.util.AppUtil
 import com.kernal.demo.common.util.Constant
-import com.kernal.demo.plateid.R
-import kotlin.random.Random
 
 class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickListener: OnClickListener) :
     BaseBindingAdapter<ParkingLotBean, ItemParkingLotBinding>(data) {

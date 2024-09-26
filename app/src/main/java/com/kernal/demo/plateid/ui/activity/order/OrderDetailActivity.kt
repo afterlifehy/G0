@@ -18,7 +18,7 @@ import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.i18n
 import com.kernal.demo.base.ext.show
 import com.kernal.demo.base.viewbase.VbBaseActivity
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.common.util.BigDecimalManager
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.plateid.R

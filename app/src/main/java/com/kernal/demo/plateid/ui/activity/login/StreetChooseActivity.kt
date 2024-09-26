@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.RequiresApi
@@ -13,7 +12,6 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.baidu.location.LocationClientOption
-import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.BaseApplication
@@ -32,7 +30,7 @@ import com.kernal.demo.plateid.adapter.StreetChoosedAdapter
 import com.kernal.demo.plateid.databinding.ActivityStreetChooseBinding
 import com.kernal.demo.plateid.dialog.StreetChooseListDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.StreetChooseViewModel
-import com.kernal.demo.common.util.AppUtil
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.common.util.BaiduLocationUtil
 import kotlinx.coroutines.runBlocking
 
