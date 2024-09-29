@@ -19,6 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.kernal.demo.base.http.interceptor.LogInterceptor { *; }
+-keep class com.kernal.demo.base.util.LogFileUtil { *; }
 #----------------------------------------------------------------------------
 -keepattributes SourceFile,LineNumberTable
 #---------------------------------webview------------------------------------

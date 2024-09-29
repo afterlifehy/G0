@@ -2,7 +2,7 @@ package com.kernal.demo.base.http.interceptor
 
 import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
-import com.kernal.demo.base.util.AppUtil
+import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.util.LogFileUtil
 import okhttp3.Interceptor
 import okhttp3.MediaType
@@ -40,7 +40,7 @@ class ExceptionInterceptor : Interceptor {
                 log("<-- HTTP FAILED: $e, retrying ($retryCount/$maxRetryCount)")
                 if (retryCount > maxRetryCount) {
                     val errorMsg = "连接超时，请检查网络"
-                    LogFileUtil.logToFile("${AppUtil.getCurrentTime()}   --- HTTP FAILED---: retryCount: $retryCount$errorMsg${request.url}")
+                    LogFileUtil.logToFile("${getCurrentTime()}   --- HTTP FAILED---: retryCount: $retryCount$errorMsg${request.url}")
                     throw IOException(errorMsg, e)
                 }
                 Thread.sleep(retryDelayMs)
@@ -123,5 +123,10 @@ class ExceptionInterceptor : Interceptor {
         var charset = if (contentType != null) contentType.charset(UTF8) else UTF8
         if (charset == null) charset = UTF8
         return charset
+    }
+
+    fun getCurrentTime(): String {
+        val time = TimeUtils.millis2String(System.currentTimeMillis(),"yyyy-MM-dd HH:mm:ss")
+        return time
     }
 }
