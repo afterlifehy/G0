@@ -5,8 +5,8 @@ object BuildConfig {
     const val minSdk = 23
     const val targetSdk = 33
 
-    const val versionCode = 20037
-    const val versionName = "1.9.9"
+    const val versionCode = 20038
+    const val versionName = "1.9.10"
     const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
     const val debug_is_debug = "true"
@@ -16,4 +16,6 @@ object BuildConfig {
     const val release_is_debug = "true"
     const val release_is_dev = "false"
     const val release_is_proxy = "false"
+
+    const val is_inside = "true"
 }

@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context.TELEPHONY_SERVICE
 import android.os.Build
 import android.os.Environment
+import android.provider.Settings
 import android.telephony.TelephonyManager
 import com.blankj.utilcode.util.PhoneUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.BaseApplication
+import com.kernal.demo.base.BuildConfig
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileOutputStream
@@ -33,8 +35,16 @@ object LogFileUtil {
         var imei = ""
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                imei = (BaseApplication.instance().getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                imei = "1000000"
+                if (BuildConfig.is_inside) {
+                    val manufacturer = Build.MANUFACTURER
+                    val model = Build.MODEL
+                    imei = manufacturer + model + " " + Settings.Secure.getString(
+                        BaseApplication.instance().getContentResolver(),
+                        Settings.Secure.ANDROID_ID
+                    )
+                } else {
+                    imei = (BaseApplication.instance().getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                }
             } else {
                 imei = PhoneUtils.getIMEI()
             }
