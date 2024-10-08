@@ -33,7 +33,8 @@ object LogFileUtil {
         var imei = ""
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                imei = (BaseApplication.instance().getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+//                imei = (BaseApplication.instance().getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                imei = "1000000"
             } else {
                 imei = PhoneUtils.getIMEI()
             }
