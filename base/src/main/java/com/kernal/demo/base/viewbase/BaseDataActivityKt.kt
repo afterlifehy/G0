@@ -29,7 +29,7 @@ abstract class BaseDataActivityKt<VM : BaseViewModel> : BaseActivity<VM>(), View
             mRoot = mViewAddManager?.getRootView(this, mBinView)!!
 
         }
-        setStatusBarColor(com.kernal.demo.base.R.color.black, false)
+        setStatusBarColor(com.kernal.demo.base.R.color.black, true)
         if (isFullScreen) {
             BarUtils.transparentStatusBar(this)
             if (marginStatusBarView() != null) {
@@ -55,7 +55,7 @@ abstract class BaseDataActivityKt<VM : BaseViewModel> : BaseActivity<VM>(), View
     }
 
     open fun navbarColor(): Int {
-        return R.color.white
+        return R.color.black
     }
 
     open fun marginStatusBarView(): View? {
