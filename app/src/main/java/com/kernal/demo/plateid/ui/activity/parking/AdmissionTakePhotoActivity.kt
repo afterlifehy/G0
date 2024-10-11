@@ -444,6 +444,11 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             } else {
                 mViewModel.picUploadLiveData.removeObserver(photoObserver)
                 mViewModel.placeOrderLiveData.removeObserver(placeOrderObserver)
+                plateImageBitmap?.recycle()
+                plateImageBitmap = null
+                panoramaImageBitmap?.recycle()
+                panoramaImageBitmap = null
+                System.gc()
             }
         }
         errorObserver = Observer {
@@ -487,6 +492,11 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                         } else {
                             mViewModel.picUploadLiveData.removeObserver(photoObserver)
                             mViewModel.placeOrderLiveData.removeObserver(placeOrderObserver)
+                            plateImageBitmap?.recycle()
+                            plateImageBitmap = null
+                            panoramaImageBitmap?.recycle()
+                            panoramaImageBitmap = null
+                            System.gc()
                         }
                     }
                 }
@@ -756,10 +766,5 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             countDownUtil?.onFinish()
             countDownUtil = null
         }
-        plateImageBitmap?.recycle()
-        plateImageBitmap = null
-        panoramaImageBitmap?.recycle()
-        panoramaImageBitmap = null
-        System.gc()
     }
 }
