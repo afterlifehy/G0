@@ -3,6 +3,7 @@ package com.kernal.demo.common.util
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
@@ -247,12 +248,14 @@ class BluePrint() {
                 yLocation += 36
                 drawText(yLocation, 20, "1、扫描下载“上海停车”官方APP、小程序(微信、支付宝)")
                 yLocation += 36
+                val bitmap = BitmapFactory.decodeResource(BaseApplication.instance().resources, com.kernal.demo.common.R.mipmap.ic_print_qr)
+                val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true)
                 zpSDK!!.drawGraphic(
                     65 + 60,
                     yLocation,
                     300,
                     300,
-                    BitmapFactory.decodeResource(BaseApplication.instance().resources, com.kernal.demo.common.R.mipmap.ic_print_qr)
+                    scaledBitmap
                 )
 //                zpSDK!!.drawQrCode(65 + 60, yLocation, "https://shtc.jtcx.sh.cn/union.html", 0, 10, 0)
                 yLocation += (300 + 18)

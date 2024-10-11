@@ -46,7 +46,11 @@ object LogFileUtil {
                     imei = (BaseApplication.instance().getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
                 }
             } else {
-                imei = PhoneUtils.getIMEI()
+                try {
+                    imei = PhoneUtils.getIMEI()
+                } catch (e: Exception) {
+
+                }
             }
             val logDir = File(Environment.getExternalStorageDirectory().absolutePath, LOG_DIR_NAME)
             if (!logDir.exists()) {
