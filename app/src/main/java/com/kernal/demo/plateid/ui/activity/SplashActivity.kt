@@ -21,6 +21,10 @@ import com.xj.anchortask.library.log.LogUtils
 import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.plateid.ui.activity.login.LoginActivity
 import com.kernal.demo.common.realm.RealmUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
@@ -80,23 +84,22 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
     }
 
     override fun onProjectFinish() {
-        runBlocking {
+        CoroutineScope(Dispatchers.IO).launch {
             PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
             PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
             PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
             PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
         }
         RealmUtil.instance?.deleteAllStreet()
-        Handler(Looper.getMainLooper()).postDelayed({
-            runBlocking {
-                if (PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId).isEmpty()) {
-                    startAct<LoginActivity>()
-                } else {
-                    startAct<MainActivity>()
-                }
-                finish()
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(100)
+            if (PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId).isEmpty()) {
+                startAct<LoginActivity>()
+            } else {
+                startAct<MainActivity>()
             }
-        }, 100)
+            finish()
+        }
     }
 
     override fun onProjectStart() {
