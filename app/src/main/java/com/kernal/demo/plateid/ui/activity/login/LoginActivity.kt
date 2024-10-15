@@ -234,7 +234,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         jsonobject["longitude"] = lon.toString()
         jsonobject["latitude"] = lat.toString()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (BuildConfig.is_inside) {
+            try {
+                jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+            } catch (e: Exception) {
                 val manufacturer = Build.MANUFACTURER
                 val model = Build.MODEL
                 val id = manufacturer + model + " " + Settings.Secure.getString(
@@ -243,9 +246,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 )
                 jsonobject["imei"] = id
                 jsonobject["simId"] = id
-            } else {
-                jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
             }
         } else {
             jsonobject["imei"] = PhoneUtils.getIMEI()

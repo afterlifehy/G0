@@ -35,15 +35,15 @@ object LogFileUtil {
         var imei = ""
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (BuildConfig.is_inside) {
+                try {
+                    imei = (BaseApplication.instance().getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                } catch (e: Exception) {
                     val manufacturer = Build.MANUFACTURER
                     val model = Build.MODEL
                     imei = manufacturer + model + " " + Settings.Secure.getString(
                         BaseApplication.instance().getContentResolver(),
                         Settings.Secure.ANDROID_ID
                     )
-                } else {
-                    imei = (BaseApplication.instance().getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
                 }
             } else {
                 try {

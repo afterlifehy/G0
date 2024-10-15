@@ -16,6 +16,4 @@ object BuildConfig {
     const val release_is_debug = "true"
     const val release_is_dev = "false"
     const val release_is_proxy = "false"
-
-    const val is_inside = "true"
 }

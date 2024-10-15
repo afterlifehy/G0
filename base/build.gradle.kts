@@ -48,7 +48,6 @@ android {
             buildConfigField("boolean", "is_debug", BuildConfig.debug_is_debug)
             buildConfigField("boolean", "is_dev", BuildConfig.debug_is_dev)
             buildConfigField("boolean", "is_proxy", BuildConfig.debug_is_proxy)
-            buildConfigField("boolean", "is_inside", BuildConfig.is_inside)
         }
         release {
             isMinifyEnabled = true
@@ -59,7 +58,6 @@ android {
             buildConfigField("boolean", "is_debug", BuildConfig.release_is_debug)
             buildConfigField("boolean", "is_dev", BuildConfig.release_is_dev)
             buildConfigField("boolean", "is_proxy", BuildConfig.release_is_proxy)
-            buildConfigField("boolean", "is_inside", BuildConfig.is_inside)
         }
     }
 
