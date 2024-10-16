@@ -73,6 +73,28 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 startBadiMapLocation()
                 baiduLocationUtil?.startLocation()
             }
+            if (rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                var imei = ""
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    try {
+                        imei = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                    } catch (e: Exception) {
+                        val manufacturer = Build.MANUFACTURER
+                        val model = Build.MODEL
+                        val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+                        imei = id
+                    }
+                } else {
+                    imei = PhoneUtils.getIMEI()
+                }
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["version"] = AppUtils.getAppVersionCode()
+                jsonobject["imei"] = imei
+                jsonobject["softType"] = "14"
+                param["attr"] = jsonobject
+                mViewModel.checkUpdate(param)
+            }
         }
         binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
     }
@@ -151,12 +173,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     }
 
     override fun initData() {
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["version"] = AppUtils.getAppVersionCode()
-        jsonobject["softType"] = "14"
-        param["attr"] = jsonobject
-        mViewModel.checkUpdate(param)
+
     }
 
     fun startBadiMapLocation() {
@@ -240,10 +257,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             } catch (e: Exception) {
                 val manufacturer = Build.MANUFACTURER
                 val model = Build.MODEL
-                val id = manufacturer + model + " " + Settings.Secure.getString(
-                    BaseApplication.instance().getContentResolver(),
-                    Settings.Secure.ANDROID_ID
-                )
+                val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
                 jsonobject["imei"] = id
                 jsonobject["simId"] = id
             }
