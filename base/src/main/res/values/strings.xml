@@ -199,4 +199,9 @@
     <string name="临牌">临牌</string>
     <string name="去拍摄">去拍摄</string>
     <string name="已拍摄">已拍摄</string>
+    <string name="忘记密码">忘记密码</string>
+    <string name="重置密码">重置密码</string>
+    <string name="请输入旧密码">请输入旧密码</string>
+    <string name="请输入新密码">请输入新密码</string>
+    <string name="重复密码">重复密码</string>
 </resources>

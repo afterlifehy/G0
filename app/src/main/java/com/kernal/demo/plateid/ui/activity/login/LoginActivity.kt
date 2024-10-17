@@ -208,7 +208,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.tv_forgetPw -> {
-
+                startArouter(ARouterMap.RESET_PW)
             }
 
             R.id.rtv_login -> {
@@ -332,7 +332,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     }
 
     override val isFullScreen: Boolean
-        get() = false
+        get() = true
 
     override fun isRegEventBus(): Boolean {
         return true
