@@ -7,14 +7,18 @@ import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ClickUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
+import com.kernal.demo.base.ds.PreferencesDataStore
+import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.plateid.R
 import com.kernal.demo.plateid.databinding.ActivityResetPwBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.ResetPwViewModel
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.RESET_PW)
 class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>(), OnClickListener {
@@ -76,11 +80,29 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
             }
 
             R.id.rtv_reset -> {
+                if (binding.etOldPw.text.toString() == binding.etNewPw.text.toString()) {
+                    ToastUtil.showBottomToast("新密码不能和旧密码相同")
+                    return
+                }
                 if (binding.etNewPw.text.toString() != binding.etRepeatPw.text.toString()) {
                     ToastUtil.showBottomToast("两次输入密码不相同")
                     return
                 }
-                onBackPressedSupport()
+                runBlocking {
+                    showProgressDialog(20000)
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    jsonobject["loginName"] = binding.etAccount.text.toString()
+                    jsonobject["oldPassword"] = binding.etOldPw.text.toString()
+                    jsonobject["newPassword"] = binding.etNewPw.text.toString()
+                    jsonobject["platform"] = "G0"
+                    val longitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lon)
+                    val latitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lat)
+                    jsonobject["longitude"] = longitude.toString()
+                    jsonobject["latitude"] = latitude.toString()
+                    param["attr"] = jsonobject
+                    mViewModel.editPw(param)
+                }
             }
         }
     }
@@ -88,7 +110,17 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-
+            editPwLiveData.observe(this@ResetPwActivity) {
+                ToastUtil.showBottomToast("修改成功")
+                onBackPressedSupport()
+            }
+            errMsg.observe(this@ResetPwActivity) {
+                dismissProgressDialog()
+                ToastUtil.showBottomToast(it.msg)
+            }
+            mException.observe(this@ResetPwActivity) {
+                dismissProgressDialog()
+            }
         }
     }
 
