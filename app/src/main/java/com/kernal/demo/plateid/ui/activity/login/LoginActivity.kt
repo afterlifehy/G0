@@ -107,7 +107,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             startArouter(ARouterMap.LOG_FILE)
             true
         }
-        binding.tvForgetPw.setOnClickListener(this)
         binding.etAccount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -207,10 +206,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     @SuppressLint("CheckResult", "MissingPermission")
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.tv_forgetPw -> {
-                startArouter(ARouterMap.RESET_PW)
-            }
-
             R.id.rtv_login -> {
                 var rxPermissions = RxPermissions(this@LoginActivity)
                 if (locationEnable == 1) {
@@ -275,9 +270,12 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         mViewModel.apply {
             loginLiveData.observe(this@LoginActivity) {
                 dismissProgressDialog()
-                startAct<StreetChooseActivity>(data = Bundle().apply {
-                    putParcelable(ARouterMap.LOGIN_INFO, it)
-                })
+                runBlocking {
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName.toString())
+                    startAct<StreetChooseActivity>(data = Bundle().apply {
+                        putParcelable(ARouterMap.LOGIN_INFO, it)
+                    })
+                }
             }
             checkUpdateLiveDate.observe(this@LoginActivity) {
                 updateBean = it
@@ -296,6 +294,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             errMsg.observe(this@LoginActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
+                if (it.code == 1001 && it.api == "login") {
+                    startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
+                        putString(ARouterMap.RESET_PW_ACCOUNT, binding.etAccount.text.toString())
+                    })
+                }
             }
             mException.observe(this@LoginActivity) {
                 dismissProgressDialog()

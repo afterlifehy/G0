@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.view.View
@@ -70,6 +71,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         binding.flBaseInfo.setOnClickListener(this)
         binding.flVersion.setOnClickListener(this)
         binding.flFeeRate.setOnClickListener(this)
+        binding.flResetPw.setOnClickListener(this)
 //        binding.flBlueToothPrint.setOnClickListener(this)
         binding.rtvLogout.setOnClickListener(this)
     }
@@ -190,6 +192,15 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
 //                } else {
 //                    showBlueToothDeviceListDialog()
 //                }
+            }
+
+            R.id.fl_resetPw -> {
+                runBlocking {
+                    val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                    startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
+                        putString(ARouterMap.RESET_PW_ACCOUNT, loginName)
+                    })
+                }
             }
 
             R.id.rtv_logout -> {
