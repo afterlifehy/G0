@@ -111,6 +111,7 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
         super.startObserve()
         mViewModel.apply {
             editPwLiveData.observe(this@ResetPwActivity) {
+                dismissProgressDialog()
                 ToastUtil.showBottomToast("修改成功")
                 onBackPressedSupport()
             }
