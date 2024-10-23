@@ -39,7 +39,7 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
     var loginInfo: LoginBean? = null
 
     override fun initView() {
-        binding.layoutToolbar.tvTitle.text = "重置密码"
+        binding.layoutToolbar.tvTitle.text = "修改密码"
         loginInfo = intent.getParcelableExtra(ARouterMap.RESET_LOGIN_INFO)
         account = intent.getStringExtra(ARouterMap.RESET_PW_ACCOUNT).toString()
     }
