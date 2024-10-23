@@ -272,16 +272,18 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 dismissProgressDialog()
                 if (it.editPw == 0) {
                     runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName.toString())
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName)
                         startAct<StreetChooseActivity>(data = Bundle().apply {
                             putParcelable(ARouterMap.LOGIN_INFO, it)
                         })
                     }
                 } else {
                     startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
-                        putString(ARouterMap.RESET_PW_ACCOUNT, binding.etAccount.text.toString())
+                        putParcelable(ARouterMap.RESET_LOGIN_INFO, it)
+                        putString(ARouterMap.RESET_PW_ACCOUNT, it.loginName)
                     })
                 }
+                binding.etPw.setText("")
             }
             checkUpdateLiveDate.observe(this@LoginActivity) {
                 updateBean = it
