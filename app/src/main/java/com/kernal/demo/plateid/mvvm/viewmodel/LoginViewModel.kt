@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.kernal.demo.base.base.mvvm.BaseViewModel
 import com.kernal.demo.base.base.mvvm.ErrorMessage
 import com.kernal.demo.base.bean.LoginBean
+import com.kernal.demo.base.bean.QueryPwStatusBean
 import com.kernal.demo.base.bean.UpdateBean
 import com.kernal.demo.plateid.mvvm.repository.LoginRepository
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +18,7 @@ class LoginViewModel : BaseViewModel() {
 
     val loginLiveData = MutableLiveData<LoginBean>()
     val checkUpdateLiveDate = MutableLiveData<UpdateBean>()
+    val queryPwStatusLiveData = MutableLiveData<QueryPwStatusBean>()
 
     fun login(param: Map<String, Any?>) {
         launch {
@@ -44,4 +46,16 @@ class LoginViewModel : BaseViewModel() {
         }
     }
 
+    fun queryPwStatus(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.queryPwStatus(param)
+            }
+            executeResponse(response, {
+                queryPwStatusLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "queryPwStatus"))
+            })
+        }
+    }
 }

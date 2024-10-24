@@ -3,9 +3,11 @@ package com.kernal.demo.plateid.mvvm.repository
 import com.kernal.demo.base.base.mvvm.BaseRepository
 import com.kernal.demo.base.bean.HttpWrapper
 import com.kernal.demo.base.bean.LoginBean
+import com.kernal.demo.base.bean.QueryPwStatusBean
 import com.kernal.demo.base.bean.UpdateBean
 import okhttp3.MultipartBody
 import retrofit2.http.Body
+import retrofit2.http.POST
 import retrofit2.http.Part
 import java.io.File
 
@@ -44,5 +46,12 @@ class LoginRepository : BaseRepository() {
      */
     suspend fun editPw(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
         return mServer.editPw(param)
+    }
+
+    /**
+     * 查询是为初始密码
+     */
+    suspend fun queryPwStatus(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QueryPwStatusBean>{
+        return mServer.queryPwStatus(param)
     }
 }

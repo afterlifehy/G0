@@ -211,7 +211,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 if (locationEnable == 1) {
                     rxPermissions.request(Manifest.permission.READ_PHONE_STATE).subscribe {
                         if (it) {
-                            login()
+                            queryPwStatus()
                         } else {
                             ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.请授权电话权限))
                         }
@@ -237,8 +237,64 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     }
 
     @SuppressLint("MissingPermission")
-    fun login() {
+    fun queryPwStatus() {
         showProgressDialog(20000)
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["loginName"] = binding.etAccount.text.toString()
+        param["attr"] = jsonobject
+        mViewModel.queryPwStatus(param)
+    }
+
+    override fun startObserve() {
+        super.startObserve()
+        mViewModel.apply {
+            loginLiveData.observe(this@LoginActivity) {
+                dismissProgressDialog()
+                runBlocking {
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName)
+                    startAct<StreetChooseActivity>(data = Bundle().apply {
+                        putParcelable(ARouterMap.LOGIN_INFO, it)
+                    })
+                }
+            }
+            checkUpdateLiveDate.observe(this@LoginActivity) {
+                updateBean = it
+                if (updateBean?.state == "0") {
+                    UpdateUtil.instance?.checkNewVersion(updateBean!!, object : UpdateUtil.UpdateInterface {
+                        override fun requestionPermission() {
+                            requestPermissions()
+                        }
+
+                        override fun install(path: String) {
+
+                        }
+                    })
+                }
+            }
+            queryPwStatusLiveData.observe(this@LoginActivity) {
+                if (it.editPw == 0) {
+                    login()
+                } else {
+                    dismissProgressDialog()
+                    startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
+                        putString(ARouterMap.RESET_PW_ACCOUNT, binding.etAccount.text.toString())
+                    })
+                    binding.etPw.setText("")
+                }
+            }
+            errMsg.observe(this@LoginActivity) {
+                dismissProgressDialog()
+                ToastUtil.showBottomToast(it.msg)
+            }
+            mException.observe(this@LoginActivity) {
+                dismissProgressDialog()
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun login() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["loginName"] = binding.etAccount.text.toString()
@@ -263,50 +319,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         jsonobject["version"] = AppUtils.getAppVersionName()
         param["attr"] = jsonobject
         mViewModel.login(param)
-    }
-
-    override fun startObserve() {
-        super.startObserve()
-        mViewModel.apply {
-            loginLiveData.observe(this@LoginActivity) {
-                dismissProgressDialog()
-                if (it.editPw == 0) {
-                    runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName)
-                        startAct<StreetChooseActivity>(data = Bundle().apply {
-                            putParcelable(ARouterMap.LOGIN_INFO, it)
-                        })
-                    }
-                } else {
-                    startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
-                        putParcelable(ARouterMap.RESET_LOGIN_INFO, it)
-                        putString(ARouterMap.RESET_PW_ACCOUNT, it.loginName)
-                    })
-                }
-                binding.etPw.setText("")
-            }
-            checkUpdateLiveDate.observe(this@LoginActivity) {
-                updateBean = it
-                if (updateBean?.state == "0") {
-                    UpdateUtil.instance?.checkNewVersion(updateBean!!, object : UpdateUtil.UpdateInterface {
-                        override fun requestionPermission() {
-                            requestPermissions()
-                        }
-
-                        override fun install(path: String) {
-
-                        }
-                    })
-                }
-            }
-            errMsg.observe(this@LoginActivity) {
-                dismissProgressDialog()
-                ToastUtil.showBottomToast(it.msg)
-            }
-            mException.observe(this@LoginActivity) {
-                dismissProgressDialog()
-            }
-        }
     }
 
     @SuppressLint("CheckResult")
