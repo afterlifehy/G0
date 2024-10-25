@@ -138,10 +138,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rll_repeatPw"
         android:layout_marginStart="@dimen/dp_13"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_10"
         android:text="@string/注密码只能输入6到13位字母或数字"
         android:textColor="@color/color_ffe92404"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="@dimen/sp_16" />
 
     <com.aries.ui.view.radius.RadiusTextView
         android:id="@+id/rtv_reset"

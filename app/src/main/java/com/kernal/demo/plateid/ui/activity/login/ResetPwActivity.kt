@@ -44,7 +44,7 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
 
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
-        binding.rtvReset.setOnClickListener(this)
+        binding.rtvReset.setOnClickListener(null)
         binding.etOldPw.filters = arrayOf(letterAndDigitFilter, lengthFilter)
         binding.etNewPw.filters = arrayOf(letterAndDigitFilter, lengthFilter)
         binding.etRepeatPw.filters = arrayOf(letterAndDigitFilter, lengthFilter)
