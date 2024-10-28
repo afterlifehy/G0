@@ -106,7 +106,7 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
                     return
                 }
                 if (binding.etOldPw.text.toString() == binding.etNewPw.text.toString()) {
-                    ToastUtil.showBottomToast("新密码不能和旧密码相同")
+                    ToastUtil.showBottomToast("新密码不能和原密码相同")
                     return
                 }
                 if (binding.etNewPw.text.toString() != binding.etRepeatPw.text.toString()) {
