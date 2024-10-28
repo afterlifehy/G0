@@ -24,7 +24,7 @@
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_60"
         android:layout_marginEnd="@dimen/dp_13"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
             android:id="@+id/rll_oldPw"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_5"
             android:paddingStart="@dimen/dp_17"
             android:paddingEnd="@dimen/dp_17"
             app:rv_radius="@dimen/dp_7"
@@ -80,7 +80,7 @@
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_13"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
@@ -94,7 +94,7 @@
             android:id="@+id/rll_newPw"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_5"
             android:paddingStart="@dimen/dp_17"
             android:paddingEnd="@dimen/dp_17"
             app:rv_radius="@dimen/dp_7"
@@ -136,7 +136,7 @@
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_13"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
@@ -150,6 +150,7 @@
             android:id="@+id/rll_repeatPw"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
+            android:layout_marginTop="@dimen/dp_5"
             android:paddingStart="@dimen/dp_17"
             android:paddingEnd="@dimen/dp_17"
             app:rv_radius="@dimen/dp_7"
