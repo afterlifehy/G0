@@ -9,7 +9,6 @@ import android.telephony.TelephonyManager
 import com.blankj.utilcode.util.PhoneUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.BaseApplication
-import com.kernal.demo.base.BuildConfig
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileOutputStream
@@ -52,7 +51,7 @@ object LogFileUtil {
 
                 }
             }
-            val logDir = File(Environment.getExternalStorageDirectory().absolutePath, LOG_DIR_NAME)
+            val logDir = File(BaseApplication.instance().getExternalFilesDir(null), LOG_DIR_NAME)
             if (!logDir.exists()) {
                 logDir.mkdirs()
             }
@@ -123,7 +122,7 @@ object LogFileUtil {
      */
     @SuppressLint("SimpleDateFormat")
     fun delLog() {
-        val dirFile = File(Environment.getExternalStorageDirectory().absolutePath, LOG_DIR_NAME)
+        val dirFile = File(BaseApplication.instance().getExternalFilesDir(null), LOG_DIR_NAME)
         val files = dirFile.listFiles()
         if (files == null || files.isEmpty()) {
             return

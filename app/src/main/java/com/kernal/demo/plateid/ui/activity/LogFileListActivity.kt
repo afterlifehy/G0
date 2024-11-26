@@ -6,6 +6,7 @@ import android.view.View.OnClickListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
 import com.kernal.demo.base.util.LogFileUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
@@ -24,7 +25,7 @@ class LogFileListActivity : VbBaseActivity<LogFileListViewModel, ActivityLogList
     var logFileList: MutableList<File> = ArrayList()
 
     override fun initView() {
-        val logDir = File(Environment.getExternalStorageDirectory().absolutePath, LogFileUtil.LOG_DIR_NAME)
+        val logDir = File(BaseApplication.instance().getExternalFilesDir(null), LogFileUtil.LOG_DIR_NAME)
         if (logDir.exists() && logDir.isDirectory) {
             val files = logDir.listFiles()
             if (files != null && files.isNotEmpty()) {

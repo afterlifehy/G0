@@ -159,7 +159,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     }
 
     fun delete30DayLog() {
-        val logDir = File(Environment.getExternalStorageDirectory().absolutePath, LogFileUtil.LOG_DIR_NAME)
+        val logDir = File(BaseApplication.instance().getExternalFilesDir(null), LogFileUtil.LOG_DIR_NAME)
         if (logDir.exists() && logDir.isDirectory) {
             val files = logDir.listFiles()
             for (i in files) {
@@ -167,6 +167,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                     val name = i.name.split("_")
                     if (name.size == 4) {
                         val createTime = TimeUtils.string2Millis(name[3], "yyyyMMdd")
+//                        30 * 24 * 60 * 60 * 1000L
                         if (System.currentTimeMillis() - createTime > 30 * 24 * 60 * 60 * 1000L) {
                             Log.v("1111", "before  ${i.length()}")
                             i.delete()
