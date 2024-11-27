@@ -3,6 +3,7 @@ package com.kernal.demo.plateid.ui.activity.parking
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -12,6 +13,7 @@ import android.provider.MediaStore
 import android.util.ArrayMap
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -275,6 +277,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ).subscribe {
                     if (it) {
+                        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
                         takePhoto()
                     }
                 }
@@ -350,6 +354,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                                 ).subscribe {
                                     if (it) {
+                                        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                        imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
                                         takePhoto()
                                     }
                                 }

@@ -257,18 +257,22 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
                 paymentQrDialog = PaymentQrDialog(it.qrCode, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
-                paymentQrDialog?.show()
-                paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
-                count = 0
-                handler.postDelayed(runnable, 2000)
+                if (!isDestroyed && !isFinishing) {
+                    paymentQrDialog?.show()
+                    paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
+                    count = 0
+                    handler.postDelayed(runnable, 2000)
+                }
             }
             payResultInquiryLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
                 if (it != null && it.payMoney != null) {
                     handler.removeCallbacks(runnable)
                     ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
-                    if (paymentQrDialog != null) {
-                        paymentQrDialog?.dismiss()
+                    if (!isDestroyed && !isFinishing) {
+                        if (paymentQrDialog != null) {
+                            paymentQrDialog?.dismiss()
+                        }
                     }
                     val payResultBean = it
                     var rxPermissions = RxPermissions(this@PrepaidActivity)
@@ -298,7 +302,9 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
     val runnable = object : Runnable {
         override fun run() {
             if (count < 60) {
-                checkPayResult()
+                if (!isFinishing && !isDestroyed) {
+                    checkPayResult()
+                }
                 count++
                 handler.postDelayed(this, 3000)
             }

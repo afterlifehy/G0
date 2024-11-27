@@ -1,45 +1,50 @@
 package com.kernal.demo.base.http.interceptor
 
-import android.annotation.SuppressLint
 import android.util.Log
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.util.LogFileUtil.logToFile
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import okio.Buffer
 import java.io.IOException
 
-class LogInterceptor //可以从连几次
-    (private val isDebug: Boolean) : Interceptor {
+class LogInterceptor(private val isDebug: Boolean) : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request()
+
+        // 输出请求信息
         if (isDebug) {
-            Log.i("HttpRequest:", "okhttp3:$request") //输出请求前整个url
-            //去执行网络请求
+            Log.i("HttpRequest:", "okhttp3:$request") // 输出请求前整个URL
         }
         logToFile(currentTime + "    " + request)
+
+        // 执行请求
         val response: Response = chain.proceed(request)
-//        if (isDebug) {
-        val mediaType = response.body!!.contentType()
-        val content = response.body!!.string()
-//            if (isDebug) {
-//                String[] url = response.request().url().url().toString().split("/");
-//                String method = url[url.length - 1];
-//                if (method.contains("?")) {
-//                    method = method.split("?")[0];
-//                }
-//                Log.i("keey", "url:" + method);
-//                Log.i("method:", "request:" + request.toString() + "==" + "response body:" + content);//输出返回信息
-        Log.i("HttpResponse:", "request:$request==response body:$content") //输出返回信息
-//            }
+
+        // 获取响应体内容并复制
+        val responseBody = response.body
+        val content: String
+        if (responseBody != null) {
+            val buffer = Buffer()
+            responseBody.source().readAll(buffer)  // 将响应体的内容读取到buffer中
+            content = buffer.readUtf8()  // 获取字符串内容
+        } else {
+            content = ""  // 如果响应体为空，设置为空字符串
+        }
+
+        // 输出响应信息
+        if (isDebug) {
+            Log.i("HttpResponse:", "request:$request==response body:$content") // 输出返回信息
+        }
         logToFile(currentTime + "    " + response)
         logToFile(currentTime + "    " + request + "    " + content)
+
+        // 返回一个新的response，并保留原始的响应体内容
         return response.newBuilder()
-            .body(okhttp3.ResponseBody.create(mediaType, content))
-            .build();
-//        }
-//        return response
+            .body(okhttp3.ResponseBody.create(responseBody?.contentType(), content)) // 使用复制的响应体
+            .build()
     }
 
     val currentTime: String

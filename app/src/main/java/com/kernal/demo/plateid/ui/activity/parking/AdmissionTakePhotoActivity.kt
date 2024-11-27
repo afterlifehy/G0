@@ -411,25 +411,27 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             uploadImg(it.orderNo, plateBase64, "${orderNo}_10.png")
 
             if (it.historyCount > 0) {
-                promptDialog1 = PromptDialog(
-                    i18N(com.kernal.demo.base.R.string.下单成功当前车辆有欠费记录是否追缴),
-                    i18N(com.kernal.demo.base.R.string.是),
-                    i18N(com.kernal.demo.base.R.string.否),
-                    object : PromptDialog.PromptCallBack {
-                        override fun leftClick() {
-                            startArouter(ARouterMap.DEBT_COLLECTION, data = Bundle().apply {
-                                putString(ARouterMap.DEBT_CAR_LICENSE, binding.pvPlate.getPvTxt())
-                            })
-                            finish()
-                        }
+                if (!isFinishing && !isDestroyed) {
+                    promptDialog1 = PromptDialog(
+                        i18N(com.kernal.demo.base.R.string.下单成功当前车辆有欠费记录是否追缴),
+                        i18N(com.kernal.demo.base.R.string.是),
+                        i18N(com.kernal.demo.base.R.string.否),
+                        object : PromptDialog.PromptCallBack {
+                            override fun leftClick() {
+                                startArouter(ARouterMap.DEBT_COLLECTION, data = Bundle().apply {
+                                    putString(ARouterMap.DEBT_CAR_LICENSE, binding.pvPlate.getPvTxt())
+                                })
+                                finish()
+                            }
 
-                        override fun rightClick() {
-                            showPrePayDialog(it)
-                        }
+                            override fun rightClick() {
+                                showPrePayDialog(it)
+                            }
 
-                    })
-                promptDialog1?.show()
-                canGoBack = false
+                        })
+                    promptDialog1?.show()
+                    canGoBack = false
+                }
             } else {
                 showPrePayDialog(it)
             }
@@ -456,31 +458,33 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 ToastUtil.showBottomToast(it.msg)
                 countDownUtil?.onFinish()
                 if (it.code == 2) {
-                    DialogHelp.Builder().setTitle(it.msg)
-                        .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).isAloneButton(true)
-                        .setCancelable(false)
-                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                            override fun onLeftClickListener(msg: String) {
-                            }
-
-                            override fun onRightClickListener(msg: String) {
-                                runBlocking {
-                                    PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, false)
-                                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
-                                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
-                                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
-                                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+                    if (!isFinishing && !isDestroyed) {
+                        DialogHelp.Builder().setTitle(it.msg)
+                            .setRightMsg(i18N(com.kernal.demo.base.R.string.确定)).isAloneButton(true)
+                            .setCancelable(false)
+                            .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                override fun onLeftClickListener(msg: String) {
                                 }
-                                RealmUtil.instance?.deleteAllStreet()
-                                startArouter(ARouterMap.LOGIN)
-                                for (i in ActivityCacheManager.instance().getAllActivity()) {
-                                    if (i !is LoginActivity) {
-                                        i.finish()
+
+                                override fun onRightClickListener(msg: String) {
+                                    runBlocking {
+                                        PreferencesDataStore(BaseApplication.instance()).putBoolean(PreferencesKeys.isUpdateLocation, false)
+                                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.simId, "")
+                                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
+                                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+                                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+                                    }
+                                    RealmUtil.instance?.deleteAllStreet()
+                                    startArouter(ARouterMap.LOGIN)
+                                    for (i in ActivityCacheManager.instance().getAllActivity()) {
+                                        if (i !is LoginActivity) {
+                                            i.finish()
+                                        }
                                     }
                                 }
-                            }
 
-                        }).build(this@AdmissionTakePhotoActivity).showDailog()
+                            }).build(this@AdmissionTakePhotoActivity).showDailog()
+                    }
                 } else {
                     if (it.api == "picUpload") {
                         if (currentType == 10) {
@@ -515,29 +519,31 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     }
 
     fun showPrePayDialog(it: PlaceOrderResultBean) {
-        promptDialog2 = PromptDialog(
-            i18N(com.kernal.demo.base.R.string.下单成功是否预支付),
-            i18N(com.kernal.demo.base.R.string.取消),
-            i18N(com.kernal.demo.base.R.string.确定),
-            object : PromptDialog.PromptCallBack {
-                override fun leftClick() {
-                    canGoBack = true
-                    onBackPressedSupport()
-                }
+        if (!isFinishing && !isDestroyed) {
+            promptDialog2 = PromptDialog(
+                i18N(com.kernal.demo.base.R.string.下单成功是否预支付),
+                i18N(com.kernal.demo.base.R.string.取消),
+                i18N(com.kernal.demo.base.R.string.确定),
+                object : PromptDialog.PromptCallBack {
+                    override fun leftClick() {
+                        canGoBack = true
+                        onBackPressedSupport()
+                    }
 
-                override fun rightClick() {
-                    startArouter(ARouterMap.PREPAID, data = Bundle().apply {
-                        putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
-                        putString(ARouterMap.PREPAID_CARLICENSE, binding.pvPlate.getPvTxt())
-                        putString(ARouterMap.PREPAID_PARKING_NO, parkingNo)
-                        putString(ARouterMap.PREPAID_ORDER_NO, it.orderNo)
-                        putString(ARouterMap.PREPAID_CAR_COLOR, checkedColor)
-                    })
-                    finish()
-                }
+                    override fun rightClick() {
+                        startArouter(ARouterMap.PREPAID, data = Bundle().apply {
+                            putDouble(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
+                            putString(ARouterMap.PREPAID_CARLICENSE, binding.pvPlate.getPvTxt())
+                            putString(ARouterMap.PREPAID_PARKING_NO, parkingNo)
+                            putString(ARouterMap.PREPAID_ORDER_NO, it.orderNo)
+                            putString(ARouterMap.PREPAID_CAR_COLOR, checkedColor)
+                        })
+                        finish()
+                    }
 
-            })
-        promptDialog2?.show()
+                })
+            promptDialog2?.show()
+        }
     }
 
     fun takePhoto() {
