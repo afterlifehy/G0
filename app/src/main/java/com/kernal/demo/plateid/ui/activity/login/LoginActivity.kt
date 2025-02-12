@@ -303,6 +303,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         jsonobject["latitude"] = lat.toString()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             try {
+//                jsonobject["imei"] = ""
+//                jsonobject["simId"] = ""
                 jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
                 jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
             } catch (e: Exception) {

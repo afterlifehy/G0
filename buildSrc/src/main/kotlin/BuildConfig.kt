@@ -13,7 +13,7 @@ object BuildConfig {
     const val debug_is_dev = "false"
     const val debug_is_proxy = "true"
 
-    const val release_is_debug = "false"
+    const val release_is_debug = "true"
     const val release_is_dev = "false"
     const val release_is_proxy = "false"
 }
