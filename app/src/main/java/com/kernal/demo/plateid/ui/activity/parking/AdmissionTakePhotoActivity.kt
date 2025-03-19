@@ -761,7 +761,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
     override fun onBackPressedSupport() {
         if (canGoBack) {
-            super.onBackPressedSupport()
+            finish()
         }
     }
 
