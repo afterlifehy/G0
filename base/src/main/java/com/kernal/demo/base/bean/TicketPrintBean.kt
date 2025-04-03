@@ -10,7 +10,8 @@ data class TicketPrintBean(
     var remark: String = "",
     var roadName: String = "",
     var startTime: String = "",
-    var tradeNo: String = ""
+    var tradeNo: String = "",
+    var qrcode:String = ""
 )
 
 data class TicketPrintResultBean(

@@ -606,7 +606,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = 0
+            oweCount = 0,
+            qrcode = it.qrcode
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {

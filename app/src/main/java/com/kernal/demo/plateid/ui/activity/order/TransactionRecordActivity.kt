@@ -107,7 +107,8 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = it.oweCount
+            oweCount = it.oweCount,
+            qrcode = it.qrcode
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {
