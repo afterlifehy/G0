@@ -18,7 +18,6 @@ import com.kernal.demo.base.dialog.DialogHelp
 import com.kernal.demo.base.ext.i18n
 import com.kernal.demo.base.ext.startArouter
 import com.kernal.demo.base.help.ActivityCacheManager
-import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.base.util.ToastUtil
 import org.json.JSONException
 import zpCPCLSDK.zpCPCLSDK.PrinterInterface
@@ -249,14 +248,8 @@ class BluePrint() {
                 yLocation += 36
                 drawText(yLocation, 20, "1、扫描下载“上海停车”官方APP、小程序(微信、支付宝)")
                 yLocation += 36
-
-                var bitmap: Bitmap? = null
-                if (printInfo.qrcode.isEmpty()) {
-                    bitmap = BitmapFactory.decodeResource(BaseApplication.instance().resources, com.kernal.demo.common.R.mipmap.ic_print_qr)
-                } else {
-                    bitmap = AppUtil.base64ToBitmap(printInfo.qrcode)
-                }
-                val scaledBitmap = Bitmap.createScaledBitmap(bitmap!!, 300, 300, true)
+                val bitmap = BitmapFactory.decodeResource(BaseApplication.instance().resources, com.kernal.demo.common.R.mipmap.ic_print_qr)
+                val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true)
                 zpSDK!!.drawGraphic(
                     65 + 60,
                     yLocation,
