@@ -1,9 +1,16 @@
 package com.kernal.demo.base.http.interceptor
 
+import android.os.CountDownTimer
 import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.ThreadUtils.runOnUiThread
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.util.LogFileUtil
+import com.kernal.demo.base.util.NetTimeUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.Response
@@ -16,12 +23,40 @@ import java.net.UnknownHostException
 import java.nio.charset.Charset
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 class ExceptionInterceptor : Interceptor {
     private val UTF8 = Charset.forName("UTF-8")
+    private var countDownTimer: CountDownTimer? = null
+    var timeOn = true
+    fun start() {
+        countDownTimer = object : CountDownTimer(5 * 1000L, 1 * 1000L) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                timeOn = true
+                countDownTimer?.cancel()
+                countDownTimer = null
+            }
+        }.start()
+    }
 
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
+//        if (timeOn) {
+            val netTime = NetTimeUtil.getNtpTime()
+            if (abs(netTime) > 0 && abs(netTime - System.currentTimeMillis()) > 1000 * 60) {
+                throw IOException("本机时间有误，请联系后台客服人员处理")
+            }
+//            else {
+//                timeOn = false
+//                runOnUiThread {
+//                    start()
+//                }
+//            }
+//            Log.v("12345", (time2 - time1).toString())
+//        }
         val maxRetryCount = 3 // 最大重试次数
         var retryCount = 0 // 当前重试次数
         val retryDelayMs = 3000L // 重试间隔时间，单位毫秒
@@ -126,7 +161,7 @@ class ExceptionInterceptor : Interceptor {
     }
 
     fun getCurrentTime(): String {
-        val time = TimeUtils.millis2String(System.currentTimeMillis(),"yyyy-MM-dd HH:mm:ss")
+        val time = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss")
         return time
     }
 }

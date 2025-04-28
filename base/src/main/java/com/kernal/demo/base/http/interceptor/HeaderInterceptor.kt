@@ -1,6 +1,5 @@
 package com.kernal.demo.base.http.interceptor
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.text.TextUtils
 import com.alibaba.fastjson.JSON
