@@ -31,6 +31,7 @@ import com.kernal.demo.base.bean.ExitMethodBean
 import com.kernal.demo.base.bean.ParkingSpaceBean
 import com.kernal.demo.base.bean.PrintInfoBean
 import com.kernal.demo.base.bean.Street
+import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.dialog.DialogHelp
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
@@ -563,12 +564,12 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     if (paymentQrDialog != null) {
                         paymentQrDialog?.dismiss()
                     }
-                    val payResultBean = it
+                    val ticketPrintBean = it
                     var rxPermissions = RxPermissions(this@ParkingSpaceActivity)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                             if (it) {
-                                startPrint(payResultBean) {}
+                                startPrint(ticketPrintBean) {}
                             }
                         }
                     } else {

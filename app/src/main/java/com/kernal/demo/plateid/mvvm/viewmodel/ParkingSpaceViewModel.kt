@@ -5,7 +5,9 @@ import com.kernal.demo.base.base.mvvm.BaseViewModel
 import com.kernal.demo.base.base.mvvm.ErrorMessage
 import com.kernal.demo.base.bean.DebtUploadBean
 import com.kernal.demo.base.bean.ParkingSpaceBean
+import com.kernal.demo.base.bean.PayQRBean
 import com.kernal.demo.base.bean.TicketPrintResultBean
+import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.plateid.mvvm.repository.ParkingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,6 +22,8 @@ class ParkingSpaceViewModel : BaseViewModel() {
     val picUploadLiveData = MutableLiveData<Any>()
     val inquiryTransactionByOrderNoLiveData = MutableLiveData<TicketPrintResultBean>()
     val debtUploadLiveData = MutableLiveData<DebtUploadBean>()
+    val onsitePayQRLiveData = MutableLiveData<PayQRBean>()
+    val payResultInquiryLiveData = MutableLiveData<TicketPrintBean>()
 
     fun parkingSpace(param: Map<String, Any?>) {
         launch {
@@ -80,6 +84,32 @@ class ParkingSpaceViewModel : BaseViewModel() {
             }
             executeResponse(response, {
                 debtUploadLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun onsitePayQR(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.onsitePayQR(param)
+            }
+            executeResponse(response, {
+                onsitePayQRLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun payResultInquiry(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.payResultInquiry(param)
+            }
+            executeResponse(response, {
+                payResultInquiryLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })
