@@ -146,6 +146,12 @@ interface Api {
     suspend fun inquiryOrderNoByParkingNo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<OrderNoBean>
 
     /**
+     * 场内支付二维码
+     */
+    @POST("S_G0_25_1")
+    suspend fun onsitePayQR(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
+
+    /**
      * 离场支付二维码
      */
     @POST("S_OR_0112")

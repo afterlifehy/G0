@@ -5,6 +5,7 @@ import com.kernal.demo.base.bean.DebtUploadBean
 import com.kernal.demo.base.bean.HttpWrapper
 import com.kernal.demo.base.bean.ParkingLotResultBean
 import com.kernal.demo.base.bean.ParkingSpaceBean
+import com.kernal.demo.base.bean.PayQRBean
 import com.kernal.demo.base.bean.PlaceOrderResultBean
 import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.bean.TicketPrintResultBean
@@ -72,4 +73,18 @@ class ParkingRepository : BaseRepository() {
 //    suspend fun payResult(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
 //        return mServer.payResult(param)
 //    }
+
+    /**
+     * 场内支付
+     */
+    suspend fun onsitePayQR(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean> {
+        return mServer.onsitePayQR(param)
+    }
+
+    /**
+     * 查询支付结果
+     */
+    suspend fun payResultInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean> {
+        return mServer.payResultInquiry(param)
+    }
 }

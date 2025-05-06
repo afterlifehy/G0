@@ -209,4 +209,6 @@
     <string name="注密码只能输入6到13位字母或数字">注：密码只能输入6到13位字母或数字</string>
     <string name="原密码">原密码：</string>
     <string name="新密码">新密码：</string>
+    <string name="场内支付">场内支付</string>
+    <string name="请不要频繁点击">请不要频繁点击</string>
 </resources>
