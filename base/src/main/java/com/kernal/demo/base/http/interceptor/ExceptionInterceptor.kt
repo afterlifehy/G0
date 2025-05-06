@@ -7,10 +7,6 @@ import com.blankj.utilcode.util.ThreadUtils.runOnUiThread
 import com.blankj.utilcode.util.TimeUtils
 import com.kernal.demo.base.util.LogFileUtil
 import com.kernal.demo.base.util.NetTimeUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.Response
@@ -30,7 +26,7 @@ class ExceptionInterceptor : Interceptor {
     private var countDownTimer: CountDownTimer? = null
     var timeOn = true
     fun start() {
-        countDownTimer = object : CountDownTimer(5 * 1000L, 1 * 1000L) {
+        countDownTimer = object : CountDownTimer(60 * 60 * 1000L, 10 * 1000L) {
             override fun onTick(millisUntilFinished: Long) {
             }
 
@@ -44,19 +40,17 @@ class ExceptionInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
-//        if (timeOn) {
+        if (timeOn) {
             val netTime = NetTimeUtil.getNtpTime()
             if (abs(netTime) > 0 && abs(netTime - System.currentTimeMillis()) > 1000 * 60) {
                 throw IOException("本机时间有误，请联系后台客服人员处理")
+            } else {
+                timeOn = false
+                runOnUiThread {
+                    start()
+                }
             }
-//            else {
-//                timeOn = false
-//                runOnUiThread {
-//                    start()
-//                }
-//            }
-//            Log.v("12345", (time2 - time1).toString())
-//        }
+        }
         val maxRetryCount = 3 // 最大重试次数
         var retryCount = 0 // 当前重试次数
         val retryDelayMs = 3000L // 重试间隔时间，单位毫秒

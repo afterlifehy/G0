@@ -5,12 +5,12 @@ object BuildConfig {
     const val minSdk = 23
     const val targetSdk = 33
 
-    const val versionCode = 20200
-    const val versionName = "1.9.13_beta"
+    const val versionCode = 20201
+    const val versionName = "2.0.4_alpha"
     const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
     const val debug_is_debug = "true"
-    const val debug_is_dev = "false"
+    const val debug_is_dev = "true"
     const val debug_is_proxy = "true"
 
     const val release_is_debug = "true"

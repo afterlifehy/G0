@@ -36,7 +36,7 @@ class LogInterceptor(private val isDebug: Boolean) : Interceptor {
 
         // 输出响应信息
         if (isDebug) {
-            Log.i("HttpResponse:", "request:$request==response body:$content") // 输出返回信息
+            Log.i("HttpResponse:", "request:$request \n response body:$content") // 输出返回信息
         }
         logToFile(currentTime + "    " + response)
         logToFile(currentTime + "    " + request + "    " + content)
