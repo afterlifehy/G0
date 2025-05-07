@@ -34,13 +34,13 @@ interface Api {
     /**
      * 预支付数据查询
      */
-    @POST("S_G0_04")
+    @POST("S_G0_04_1")
     suspend fun prePayFeeInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
 
     /**
      * 支付结果查询
      */
-    @POST("S_G0_05")
+    @POST("S_G0_05_1")
     suspend fun payResultInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean>
 
     /**
@@ -100,7 +100,7 @@ interface Api {
     /**
      * 泊位订单查询
      */
-    @POST("S_G0_16")
+    @POST("S_G0_16_1")
     suspend fun parkingSpace(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<ParkingSpaceBean>
 
     /**
@@ -160,7 +160,7 @@ interface Api {
     /**
      * 追缴二维码
      */
-    @POST("S_OR4_0113")
+    @POST("S_G0_27_1")
     suspend fun debtPayQr(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
 
     /**
