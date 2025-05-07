@@ -106,8 +106,8 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         carColor = intent.getStringExtra(ARouterMap.PREPAID_CAR_COLOR).toString()
         binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
 
-        val street = RealmUtil.instance?.findCurrentStreet()
-        maxDuration = street?.prepayDuration!!
+//        val street = RealmUtil.instance?.findCurrentStreet()
+//        maxDuration = street?.prepayDuration!!
         if (maxDuration < 1.0) {
             maxDuration = 1.0
         }

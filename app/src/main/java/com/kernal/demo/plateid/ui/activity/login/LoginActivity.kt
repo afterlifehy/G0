@@ -91,7 +91,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 val jsonobject = JSONObject()
                 jsonobject["version"] = AppUtils.getAppVersionCode()
                 jsonobject["imei"] = imei
-                jsonobject["softType"] = "14"
+                jsonobject["softType"] = "30"
                 param["attr"] = jsonobject
                 mViewModel.checkUpdate(param)
             }

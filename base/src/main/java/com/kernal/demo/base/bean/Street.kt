@@ -11,10 +11,9 @@ open class Street(
     var streetNo: String = "",
     var streetName: String = "",
     var ischeck: Boolean = false,
-    var isCurrent: Boolean = false,
-    var prepayDuration: Double = 1.0
+    var isCurrent: Boolean = false
 ) : RealmObject(), Parcelable {
     fun copy(): Street {
-        return Street(streetNo, streetName, ischeck, isCurrent, prepayDuration)
+        return Street(streetNo, streetName, ischeck, isCurrent)
     }
 }

@@ -196,7 +196,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                 dismissProgressDialog()
                 isOrderCreate = true
                 tradeNo = it.tradeNo
-                paymentQrDialog = PaymentQrDialog(it.qr_code, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
+                paymentQrDialog = PaymentQrDialog(it.qr_code,"", AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
                 count = 0
