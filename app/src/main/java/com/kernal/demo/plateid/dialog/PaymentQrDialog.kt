@@ -13,13 +13,15 @@ import com.kernal.demo.common.util.CodeUtils
 import com.kernal.demo.common.util.GlideUtils
 import com.kernal.demo.plateid.databinding.DialogPaymentQrBinding
 import com.kernal.demo.base.util.AppUtil
+import com.kernal.demo.common.util.ImageUtil
 
-class PaymentQrDialog(var qr: String, var amount: String) : VBBaseLibDialog<DialogPaymentQrBinding>(
+class PaymentQrDialog(var qrCode: String = "", var qrUrl: String = "", var amount: String) : VBBaseLibDialog<DialogPaymentQrBinding>(
     ActivityCacheManager.instance().getCurrentActivity()!!,
     com.kernal.demo.base.R.style.CommonBottomDialogStyle
 ) {
     val sizes = intArrayOf(19, 30, 19)
-    val colors = intArrayOf(com.kernal.demo.plateid.R.color.white, com.kernal.demo.plateid.R.color.white, com.kernal.demo.plateid.R.color.white)
+    val colors =
+        intArrayOf(com.kernal.demo.plateid.R.color.white, com.kernal.demo.plateid.R.color.white, com.kernal.demo.plateid.R.color.white)
     val styles = arrayOf(TextStyle.NORMAL, TextStyle.BOLD, TextStyle.NORMAL)
 
     init {
@@ -28,8 +30,13 @@ class PaymentQrDialog(var qr: String, var amount: String) : VBBaseLibDialog<Dial
 
     private fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
-        val qrBitmap = CodeUtils.createImage(qr, SizeUtils.dp2px(184f), SizeUtils.dp2px(184f), null)
-        GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
+        if(qrCode.isEmpty()){
+            val qrBitmap = CodeUtils.createImage(qrUrl, SizeUtils.dp2px(184f), SizeUtils.dp2px(184f), null)
+            GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
+        }else{
+            val qrBitmap = ImageUtil.base64ToBitmap(qrCode)
+            GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
+        }
         val strings = arrayOf(i18N(com.kernal.demo.base.R.string.支付), amount, i18n(com.kernal.demo.base.R.string.元))
         binding.tvPayAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)
         binding.ivClose.setOnClickListener {

@@ -1,9 +1,10 @@
 package com.kernal.demo.base.bean
 
 data class PayQRBean(
-    var totalAmount: Double = 0.0,
+    var totalAmount: String = "",
     var qrCode: String = "",
     var tradeNo: String = "",
     var qr_code: String = "",
-    var amount: Double = 0.0
+    var amount: String = "",
+    var payUrl: String = ""
 )
