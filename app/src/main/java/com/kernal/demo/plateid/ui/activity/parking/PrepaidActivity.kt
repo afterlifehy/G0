@@ -18,14 +18,15 @@ import com.blankj.utilcode.util.ClickUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
+import com.kernal.demo.base.bean.PayResultBean
 import com.kernal.demo.base.bean.PrintInfoBean
-import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.hide
 import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.i18n
 import com.kernal.demo.base.ext.show
+import com.kernal.demo.base.util.AppUtil
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.plateid.R
@@ -33,7 +34,7 @@ import com.kernal.demo.plateid.databinding.ActivityPrepaidBinding
 import com.kernal.demo.plateid.dialog.PaymentQrDialog
 import com.kernal.demo.plateid.mvvm.viewmodel.PrepaidViewModel
 import com.kernal.demo.common.event.RefreshParkingSpaceEvent
-import com.kernal.demo.base.util.AppUtil
+import com.kernal.demo.common.realm.RealmUtil
 import com.kernal.demo.common.util.BluePrint
 import com.kernal.demo.common.util.Constant
 import com.kernal.demo.common.util.GlideUtils
@@ -43,9 +44,10 @@ import org.greenrobot.eventbus.EventBus
 @Route(path = ARouterMap.PREPAID)
 class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>(), OnClickListener {
     var timeDuration = 1.0
+    var maxDuration = 999.0
+    var minDuration = 1.0
     var paymentQrDialog: PaymentQrDialog? = null
 
-    var minAmount = 1.0
     var parkingNo = ""
     var carLicense = ""
     var orderNo = ""
@@ -98,16 +100,19 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.white))
 
-        minAmount = intent.getDoubleExtra(ARouterMap.PREPAID_MIN_AMOUNT, 1.0)
         carLicense = intent.getStringExtra(ARouterMap.PREPAID_CARLICENSE).toString()
         parkingNo = intent.getStringExtra(ARouterMap.PREPAID_PARKING_NO).toString()
         orderNo = intent.getStringExtra(ARouterMap.PREPAID_ORDER_NO).toString()
         carColor = intent.getStringExtra(ARouterMap.PREPAID_CAR_COLOR).toString()
-        if (minAmount == 1.0) {
-            binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
-        } else {
-            binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.续费)
+        binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
+
+        val street = RealmUtil.instance?.findCurrentStreet()
+        maxDuration = street?.prepayDuration!!
+        if (maxDuration < 1.0) {
+            maxDuration = 1.0
         }
+        binding.etTimeDuration.setText(timeDuration.toString())
+        binding.etTimeDuration.setSelection(timeDuration.toString().length)
 
         binding.tvPlate.text = carLicense
         binding.tvParkingNo.text = parkingNo
@@ -171,20 +176,14 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                     if (splitInput.size > 1 && splitInput[1].length > 1) {
                         s?.delete(s.length - 1, s.length)
                     }
-                    if (value.endsWith(".") && value.length > 1) {
-                        timeDuration = value.replace(".", "").toDouble()
-                    } else if (value.endsWith(".") && value.length <= 1) {
-                        timeDuration = minAmount - 0.5
-                    } else {
-                        timeDuration = value.toDouble()
-                    }
+                    timeDuration = s.toString().toDouble()
                 } else if (value.length > 0) {
                     timeDuration = value.toDouble()
                 } else {
-                    timeDuration = 0.0
+                    timeDuration = minDuration
                 }
-                if (timeDuration > 999) {
-                    timeDuration = 999.0
+                if (timeDuration > maxDuration) {
+                    timeDuration = maxDuration
                     binding.etTimeDuration.setText(timeDuration.toString())
                     binding.etTimeDuration.setSelection(timeDuration.toString().length)
                 }
@@ -197,6 +196,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         runBlocking {
             simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            prePayFeeInquiry()
         }
     }
 
@@ -207,11 +207,11 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_add -> {
-                if (timeDuration == 999.0) {
+                if (timeDuration == maxDuration) {
                     return
                 }
-                if (timeDuration < minAmount) {
-                    timeDuration = minAmount
+                if (timeDuration < minDuration) {
+                    timeDuration = minDuration
                 } else {
                     timeDuration += 0.5
                 }
@@ -220,8 +220,8 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_minus -> {
-                if (timeDuration <= minAmount) {
-                    timeDuration = minAmount
+                if (timeDuration <= minDuration) {
+                    timeDuration = minDuration
                 } else {
                     timeDuration -= 0.5
                 }
@@ -230,23 +230,27 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_scanPay -> {
-                if (timeDuration >= minAmount) {
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["parkingNo"] = parkingNo
-                    jsonobject["orderNo"] = orderNo
-                    jsonobject["loginName"] = loginName
-                    jsonobject["simId"] = simId
-                    jsonobject["parkingHours"] = timeDuration.toString()
-                    jsonobject["orderType"] = "1"
-                    param["attr"] = jsonobject
-                    mViewModel.prePayFeeInquiry(param)
+                if (timeDuration >= minDuration) {
+                    prePayFeeInquiry()
                 } else {
                     ToastUtil.showBottomToast("时长过短")
                     return
                 }
             }
         }
+    }
+
+    fun prePayFeeInquiry() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["parkingNo"] = parkingNo
+        jsonobject["orderNo"] = orderNo
+        jsonobject["loginName"] = loginName
+        jsonobject["simId"] = simId
+        jsonobject["parkingHours"] = timeDuration.toString()
+        jsonobject["orderType"] = "1"
+        param["attr"] = jsonobject
+        mViewModel.prePayFeeInquiry(param)
     }
 
     @SuppressLint("CheckResult")
@@ -256,7 +260,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             prePayFeeInquiryLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
-                paymentQrDialog = PaymentQrDialog(it.qrCode, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
+                paymentQrDialog = PaymentQrDialog(it.qrCode,"", AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
                 if (!isDestroyed && !isFinishing) {
                     paymentQrDialog?.show()
                     paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
@@ -320,7 +324,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         mViewModel.payResultInquiry(param)
     }
 
-    fun startPrint(it: TicketPrintBean) {
+    fun startPrint(it: PayResultBean) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,
