@@ -18,8 +18,8 @@ import com.blankj.utilcode.util.ClickUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
-import com.kernal.demo.base.bean.PayResultBean
 import com.kernal.demo.base.bean.PrintInfoBean
+import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.hide
@@ -324,7 +324,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         mViewModel.payResultInquiry(param)
     }
 
-    fun startPrint(it: PayResultBean) {
+    fun startPrint(it: TicketPrintBean) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,
