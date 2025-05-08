@@ -309,6 +309,8 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                     currentTransactionBean?.hasPayed = "1"
                     currentTransactionBean?.payedAmount = currentTransactionBean!!.oweMoney
                     transactionInquiryAdapter?.notifyItemChanged(transactionInquiryList.indexOf(currentTransactionBean))
+                }else{
+                    ToastUtil.showBottomToast("未查询到支付结果")
                 }
             }
             errMsg.observe(this@TransactionInquiryActivity) {
