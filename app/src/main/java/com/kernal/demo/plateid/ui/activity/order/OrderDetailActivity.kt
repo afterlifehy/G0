@@ -193,6 +193,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             R.id.rtv_transactionRecord -> {
                 startArouter(ARouterMap.TRANSACTION_RECORD, data = Bundle().apply {
                     putString(ARouterMap.TRANSACTION_RECORD_ORDER_NO, order?.orderNo)
+                    putString(ARouterMap.TRANSACTION_RECORD_CARLICENSE, order?.carLicense)
                 })
             }
 

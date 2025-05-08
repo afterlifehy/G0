@@ -61,6 +61,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
     var tradeNo = ""
     var plateLogoColorMap: MutableMap<String, Int> = ArrayMap()
     var plateColorTxtMap: MutableMap<String, String> = ArrayMap()
+    var oweCount = 0
 
     init {
         plateLogoColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.black
@@ -197,7 +198,17 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
             prePayFeeInquiry()
+            debtInquiry()
         }
+    }
+
+    fun debtInquiry() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["simId"] = simId
+        jsonobject["plateId"] = carLicense
+        param["attr"] = jsonobject
+        mViewModel.debtInquiry(param)
     }
 
     override fun onClick(v: View?) {
@@ -260,13 +271,16 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             prePayFeeInquiryLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
-                paymentQrDialog = PaymentQrDialog(it.qrCode,"", AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
+                paymentQrDialog = PaymentQrDialog(it.qrCode, "", AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
                 if (!isDestroyed && !isFinishing) {
                     paymentQrDialog?.show()
                     paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
                     count = 0
                     handler.postDelayed(runnable, 2000)
                 }
+            }
+            debtInquiryLiveData.observe(this@PrepaidActivity) {
+                oweCount = it.result.size
             }
             payResultInquiryLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
@@ -336,8 +350,9 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = it.oweCount,
-            qrcode = it.qrcode
+            oweCount = oweCount,
+            qrcode = it.qrcode,
+            orderType = it.orderType
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {

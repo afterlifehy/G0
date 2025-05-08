@@ -36,6 +36,7 @@ object ARouterMap {
 
     const val ORDER_INFO = "/G0_app/orderInfo"
     const val ORDER_INFO_ORDER_NO = "orderNo"
+    const val ORDER_INFO_CARLICENSE ="carLicense"
 
     const val ABNORMAL_REPORT = "/G0_app/abnormalReport"
     const val ABNORMAL_PARKING_NO = "parkingNo"
@@ -79,6 +80,7 @@ object ARouterMap {
 
     const val TRANSACTION_RECORD = "/G0_app/transactionRecord"
     const val TRANSACTION_RECORD_ORDER_NO = "orderNo"
+    const val TRANSACTION_RECORD_CARLICENSE = "carLicense"
 
     class common {
         companion object {

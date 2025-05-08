@@ -106,6 +106,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var loginName = ""
 
     var isOnsitePay = false
+    var oweCount = 0
 
     init {
         plateLogoColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.black
@@ -501,6 +502,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 )
                 binding.tvPendingFee.text = AppUtil.getSpan(strings4, sizes, colors2, styles)
 
+                oweCount = parkingSpaceBean?.historyCount!!
                 binding.tvArrearsNum.text = "${parkingSpaceBean?.historyCount}笔"
                 binding.tvArrearsAmount.text = "${parkingSpaceBean?.historySum}元"
                 val startTime = TimeUtils.string2Millis(parkingSpaceBean?.startTime, "yyyy-MM-dd HH:mm:ss")
@@ -619,8 +621,9 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = 0,
-            qrcode = it.qrcode
+            oweCount = oweCount,
+            qrcode = it.qrcode,
+            orderType = it.orderType
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {

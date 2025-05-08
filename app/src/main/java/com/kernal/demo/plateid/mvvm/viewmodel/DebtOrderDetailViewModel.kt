@@ -3,6 +3,7 @@ package com.kernal.demo.plateid.mvvm.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.kernal.demo.base.base.mvvm.BaseViewModel
 import com.kernal.demo.base.base.mvvm.ErrorMessage
+import com.kernal.demo.base.bean.DebtCollectionResultBean
 import com.kernal.demo.base.bean.PayQRBean
 import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.bean.PicInquiryBean
@@ -18,6 +19,20 @@ class DebtOrderDetailViewModel : BaseViewModel() {
     val debtPayQrLiveData = MutableLiveData<PayQRBean>()
     val payResultInquiryLiveData = MutableLiveData<TicketPrintBean>()
     val picInquiryLiveData = MutableLiveData<PicInquiryBean>()
+    val debtInquiryLiveData = MutableLiveData<DebtCollectionResultBean>()
+
+    fun debtInquiry(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.debtInquiry(param)
+            }
+            executeResponse(response, {
+                debtInquiryLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
 
     fun picInquiry(param: Map<String, Any?>) {
         launch {

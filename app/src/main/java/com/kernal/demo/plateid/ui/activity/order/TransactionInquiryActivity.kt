@@ -58,6 +58,7 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
     var simId = ""
     var currentTransactionBean: TransactionBean? = null
     var isQueryResult = false
+    var oweCount = 0
 
     override fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -189,23 +190,13 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                         if (it) {
                             showProgressDialog(20000)
                             currentTransactionBean = v.tag as TransactionBean
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-                            jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
-                            jsonobject["simId"] = simId
-                            param["attr"] = jsonobject
-                            mViewModel.ticketPrint(param)
+                            debtInquiry()
                         }
                     }
                 } else {
                     showProgressDialog(20000)
                     currentTransactionBean = v.tag as TransactionBean
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
-                    jsonobject["simId"] = simId
-                    param["attr"] = jsonobject
-                    mViewModel.ticketPrint(param)
+                    debtInquiry()
                 }
 
             }
@@ -225,6 +216,18 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
             binding.root.id -> {
                 keyboardUtil.hideKeyboard()
             }
+        }
+    }
+
+    fun debtInquiry(){
+        runBlocking {
+            simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["simId"] = simId
+            jsonobject["plateId"] = currentTransactionBean?.carLicense
+            param["attr"] = jsonobject
+            mViewModel.debtInquiry(param)
         }
     }
 
@@ -259,6 +262,15 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                     }
                 }
             }
+            debtInquiryLiveData.observe(this@TransactionInquiryActivity) {
+                oweCount = it.result.size
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
+                jsonobject["simId"] = simId
+                param["attr"] = jsonobject
+                mViewModel.ticketPrint(param)
+            }
             ticketPrintLiveData.observe(this@TransactionInquiryActivity) {
                 dismissProgressDialog()
                 val payMoney = it.payMoney
@@ -272,8 +284,9 @@ class TransactionInquiryActivity : VbBaseActivity<TransactionInquiryViewModel, A
                     leftTime = it.endTime,
                     remark = it.remark,
                     company = it.businessCname,
-                    oweCount = it.oweCount,
-                    qrcode = it.qrcode
+                    oweCount = oweCount,
+                    qrcode = it.qrcode,
+                    orderType = it.orderType
                 )
                 val printList = BluePrint.instance?.blueToothDevice!!
                 if (printList.size == 1) {

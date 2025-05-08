@@ -26,7 +26,7 @@ class ExceptionInterceptor : Interceptor {
     private var countDownTimer: CountDownTimer? = null
     var timeOn = true
     fun start() {
-        countDownTimer = object : CountDownTimer(60 * 60 * 1000L, 10 * 1000L) {
+        countDownTimer = object : CountDownTimer(1 * 60 * 1000L, 10 * 1000L) {
             override fun onTick(millisUntilFinished: Long) {
             }
 

@@ -34,7 +34,9 @@ import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
 import com.kernal.demo.base.bean.PrintInfoBean
 import com.kernal.demo.base.bean.TicketPrintBean
+import com.kernal.demo.base.ext.gone
 import com.kernal.demo.base.ext.i18n
+import com.kernal.demo.base.ext.show
 import com.kernal.demo.base.ext.startArouter
 import com.kernal.demo.common.util.BluePrint
 import kotlinx.coroutines.runBlocking
@@ -55,6 +57,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     var count = 0
     var handler = Handler(Looper.getMainLooper())
     var picList: MutableList<String> = ArrayList()
+    var oweCount = 0
 
     @SuppressLint("NewApi")
     override fun initView() {
@@ -98,6 +101,19 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         jsonobject["orderNo"] = debtCollectionBean?.orderNo
         param["attr"] = jsonobject
         mViewModel.picInquiry(param)
+        debtInquiry()
+    }
+
+    fun debtInquiry(){
+        runBlocking {
+            simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["simId"] = simId
+            jsonobject["plateId"] = debtCollectionBean?.carLicense
+            param["attr"] = jsonobject
+            mViewModel.debtInquiry(param)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -182,6 +198,10 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
+            debtInquiryLiveData.observe(this@DebtOrderDetailActivity) {
+                dismissProgressDialog()
+                oweCount = it.result.size
+            }
             picInquiryLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 picList.add(it.inPicture10)
@@ -194,7 +214,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             debtPayQrLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
-                paymentQrDialog = PaymentQrDialog(it.qr_code,"", AppUtil.keepNDecimals((it.amount / 100).toString(), 2))
+                paymentQrDialog = PaymentQrDialog(it.qr_code, "", AppUtil.keepNDecimals((it.amount / 100).toString(), 2))
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
                 count = 0
@@ -243,8 +263,9 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = it.oweCount,
-            qrcode = it.qrcode
+            oweCount = oweCount,
+            qrcode = it.qrcode,
+            orderType = it.orderType
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {
