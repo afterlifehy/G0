@@ -154,20 +154,17 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                     loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
-                    jsonobject["loginName"] = loginName
-                    jsonobject["carLicense"] = debtCollectionBean?.carLicense
-                    jsonobject["districtId"] = debtCollectionBean?.districtId
-                    jsonobject["businessId"] = debtCollectionBean?.orderNo
                     jsonobject["simId"] = simId
-                    jsonobject["channel"] = "pos"
-                    jsonobject["orderId"] = debtCollectionBean?.oweOrderId
+                    jsonobject["oweOrderId"] = debtCollectionBean?.oweOrderId
+                    jsonobject["orderNo"] = debtCollectionBean?.orderNo
+                    jsonobject["loginName"] = loginName
+                    jsonobject["startTime"] = debtCollectionBean?.startTime!!.replace("-", "").replace(":", "").replace(" ", "")
+                    jsonobject["endTime"] = debtCollectionBean?.endTime!!.replace("-", "").replace(":", "").replace(" ", "")
+                    jsonobject["streetName"] = debtCollectionBean?.streetName
+                    jsonobject["streetNo"] = debtCollectionBean?.streetNo
+                    jsonobject["districtId"] = debtCollectionBean?.districtId
+                    jsonobject["carLicense"] = debtCollectionBean?.carLicense
                     jsonobject["parkingTime"] = debtCollectionBean?.parkingTime
-                    jsonobject["arrivedTime"] = debtCollectionBean?.startTime!!.replace("-", "").replace(":", "").replace(" ", "")
-                    jsonobject["leftTime"] = debtCollectionBean?.endTime!!.replace("-", "").replace(":", "").replace(" ", "")
-                    jsonobject["roadName"] = debtCollectionBean?.streetName
-                    jsonobject["dueMoney"] = debtCollectionBean?.dueMoney.toString()
-                    jsonobject["oweMoney"] = debtCollectionBean?.oweMoney.toString()
-                    jsonobject["paidMoney"] = debtCollectionBean?.paidMoney.toString()
                     param["attr"] = jsonobject
                     mViewModel.debtPayQr(param)
                 }
