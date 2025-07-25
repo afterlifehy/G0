@@ -205,7 +205,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             binding.flIncomeCounting,
             binding.flOrder,
             binding.flBerthAbnormal,
-            binding.flLogout
+            binding.flLogout,
+            binding.ivG2
         )
         ClickUtils.applySingleDebouncing(views, 1000, this)
     }
@@ -225,7 +226,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                     val printResult = BluePrint.instance?.connet(device.address)
                     if (printResult != 0) {
                         runOnUiThread {
-                            DialogHelp.Builder().setTitle(i18N(com.kernal.demo.base.R.string.打印机连接失败需要手动连接))
+                            DialogHelp.Builder().setTitle("打印机连接失败需要手动连接")
                                 .setLeftMsg(i18N(com.kernal.demo.base.R.string.取消))
                                 .setRightMsg(i18N(com.kernal.demo.base.R.string.去连接)).setCancelable(true)
                                 .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
@@ -337,6 +338,10 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     override fun onClick(v: View?) {
         when (v?.id) {
+            R.id.iv_g2 -> {
+                startArouter(ARouterMap.LOG_FILE)
+            }
+
             R.id.iv_head -> {
                 startArouter(ARouterMap.MINE, data = Bundle().apply {
                     putInt(ARouterMap.MINE_BLUE_PRINT, 0)

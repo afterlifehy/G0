@@ -66,7 +66,7 @@ class DebtOrderDetailViewModel : BaseViewModel() {
                 mOrderRepository.payResultInquiry(param)
             }
             executeResponse(response, {
-                payResultInquiryLiveData.value = response.attr
+                payResultInquiryLiveData.postValue(response.attr)
             }, {
                 traverseErrorMsg(ErrorMessage(msg = "", code = response.status))
             })

@@ -402,7 +402,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     override fun startObserve() {
         super.startObserve()
         placeOrderObserver = Observer {
-            dismissProgressDialog()
+            dismissProgressDialog() 
             countDownUtil?.onFinish()
             orderNo = it.orderNo
             val plateSavedFile = FileUtil.FileSaveToInside("${orderNo}_10.png", plateImageBitmap!!)

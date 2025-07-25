@@ -104,7 +104,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         debtInquiry()
     }
 
-    fun debtInquiry(){
+    fun debtInquiry() {
         runBlocking {
             simId = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.simId)
             val param = HashMap<String, Any>()
@@ -218,25 +218,27 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 handler.postDelayed(runnable, 2000)
             }
             payResultInquiryLiveData.observe(this@DebtOrderDetailActivity) {
-                dismissProgressDialog()
-                handler.removeCallbacks(runnable)
-                ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
-                if (paymentQrDialog != null) {
-                    paymentQrDialog?.dismiss()
-                }
-                val payResultBean = it
-                var rxPermissions = RxPermissions(this@DebtOrderDetailActivity)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
-                        if (it) {
-                            startPrint(payResultBean)
-                        }
+                if (it != null && it.carLicense.isNotEmpty()) {
+                    dismissProgressDialog()
+                    handler.removeCallbacks(runnable)
+                    ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.支付成功))
+                    if (paymentQrDialog != null) {
+                        paymentQrDialog?.dismiss()
                     }
-                } else {
-                    startPrint(it)
+                    val payResultBean = it
+                    var rxPermissions = RxPermissions(this@DebtOrderDetailActivity)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                            if (it) {
+                                startPrint(payResultBean)
+                            }
+                        }
+                    } else {
+                        startPrint(it)
+                    }
+                    EventBus.getDefault().post(RefreshDebtOrderListEvent())
+                    onBackPressedSupport()
                 }
-                EventBus.getDefault().post(RefreshDebtOrderListEvent())
-                onBackPressedSupport()
             }
             errMsg.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
