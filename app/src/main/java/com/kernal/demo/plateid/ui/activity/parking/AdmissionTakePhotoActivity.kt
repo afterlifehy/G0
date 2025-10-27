@@ -314,7 +314,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                             if (AppUtil.isFastClick(2000)) {
                                 return
                             }
-                            showProgressDialog(20000)
+                            showProgressDialog(60000)
                             binding.rflStartBilling.delegate.setBackgroundColor(
                                 ContextCompat.getColor(
                                     BaseApplication.instance(),
@@ -323,7 +323,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                             )
                             binding.rflStartBilling.delegate.init()
                             binding.rflStartBilling.setOnClickListener(null)
-                            countDownUtil = CountDownUtil(20000, 1000, object : CountDownUtil.TimeCallBack {
+                            countDownUtil = CountDownUtil(60000, 1000, object : CountDownUtil.TimeCallBack {
                                 override fun onTimeOut() {
                                     binding.rflStartBilling.delegate.setBackgroundColor(
                                         ContextCompat.getColor(
