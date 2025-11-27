@@ -1,64 +1,60 @@
 package com.kernal.demo.plateid.ui.activity
 
-import android.os.Environment
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
-import com.kernal.demo.base.util.LogFileUtil
+import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.plateid.R
-import com.kernal.demo.plateid.adapter.LogFileListAdapter
+import com.kernal.demo.plateid.adapter.LogAdapter
 import com.kernal.demo.plateid.databinding.ActivityLogListBinding
-import com.kernal.demo.plateid.mvvm.viewmodel.LogFileListViewModel
+import com.kernal.demo.plateid.dialog.ConfirmDialog
+import com.kernal.demo.plateid.mvvm.viewmodel.LogViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
-@Route(path = ARouterMap.LOG_FILE)
-class LogFileListActivity : VbBaseActivity<LogFileListViewModel, ActivityLogListBinding>(), OnClickListener {
-    var logFileListAdapter: LogFileListAdapter? = null
+@Route(path = ARouterMap.LOG_UPLOAD)
+class LogUploadActivity : VbBaseActivity<LogViewModel, ActivityLogListBinding>(), OnClickListener {
+    lateinit var logAdapter: LogAdapter
     var logFileList: MutableList<File> = ArrayList()
+    var logFileCheckedList: MutableList<File> = ArrayList()
+    var isCheckedAll = false
+    lateinit var confirmDialog: ConfirmDialog
+    var position = 0
 
     override fun initView() {
-        val logDir = File(BaseApplication.instance().getExternalFilesDir(null), LogFileUtil.LOG_DIR_NAME)
-        if (logDir.exists() && logDir.isDirectory) {
-            val files = logDir.listFiles()
-            if (files != null && files.isNotEmpty()) {
-                logFileList.addAll(files)
+        binding.layoutToolbar.tvTitle.text = "日志上传"
+        logAdapter = LogAdapter(logFileList, logFileCheckedList) { file, isChecked ->
+            if (isChecked) logFileCheckedList.add(file) else logFileCheckedList.remove(file)
+            binding.tvSelectCount.text = "已选择${logFileCheckedList.size}个日志"
+            if (logFileCheckedList.size == logFileList.size) {
+                binding.ivSelectAll.setImageResource(com.kernal.demo.common.R.mipmap.ic_parking_street_checked)
+                isCheckedAll = true
             } else {
+                binding.ivSelectAll.setImageResource(com.kernal.demo.common.R.mipmap.ic_parking_street_unchecked)
+                isCheckedAll = false
             }
-        } else {
         }
-        logFileListAdapter = LogFileListAdapter(logFileList) {
-            val param = HashMap<String, File>()
-            param["file"] = it
-            mViewModel.logFileUpload(prepareFilePart("file", it))
-        }
-        binding.rvFileList.apply {
+        binding.rvLog.apply {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(this@LogFileListActivity)
-            adapter = logFileListAdapter
+            layoutManager = LinearLayoutManager(this@LogUploadActivity)
+            adapter = logAdapter
         }
-    }
-
-    fun prepareFilePart(partName: String, file: File): MultipartBody.Part {
-        // 创建 RequestBody 实例，指定文件类型
-        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-
-        // 使用 MultipartBody.Part 封装文件
-        return MultipartBody.Part.createFormData(partName, file.name, requestBody)
     }
 
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
+        binding.llSelectAll.setOnClickListener(this)
+        binding.rtvUpload.setOnClickListener(this)
     }
 
     override fun initData() {
+        mViewModel.logFileList()
     }
 
     override fun onClick(v: View?) {
@@ -66,27 +62,97 @@ class LogFileListActivity : VbBaseActivity<LogFileListViewModel, ActivityLogList
             R.id.fl_back -> {
                 onBackPressedSupport()
             }
+
+            R.id.ll_selectAll -> {
+                if (isCheckedAll) {
+                    binding.ivSelectAll.setImageResource(com.kernal.demo.common.R.mipmap.ic_parking_street_unchecked)
+                    logFileCheckedList.clear()
+                    isCheckedAll = false
+                } else {
+                    binding.ivSelectAll.setImageResource(com.kernal.demo.common.R.mipmap.ic_parking_street_checked)
+                    logFileCheckedList.clear()
+                    logFileCheckedList.addAll(logFileList)
+                    isCheckedAll = true
+                }
+                binding.tvSelectCount.text = "已选择${logFileCheckedList.size}个日志"
+                logAdapter.setCheckedFileList(logFileCheckedList)
+            }
+
+            R.id.rtv_upload -> {
+                if (logFileCheckedList.size > 0) {
+                    if (!::confirmDialog.isInitialized) {
+                        confirmDialog = ConfirmDialog("确认上传", {}, {
+                            showProgressDialog(300000)
+                            binding.rtvUpload.setOnClickListener(null)
+                            binding.layoutToolbar.flBack.setOnClickListener(null)
+                            mViewModel.logFileUpload(prepareFilePart("file", logFileCheckedList[position]))
+                        })
+                    }
+                    confirmDialog.show()
+                } else {
+                    ToastUtil.showBottomToast("请选择日志")
+                }
+            }
         }
     }
 
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            logFileUploadLiveData.observe(this@LogFileListActivity) {
-
+            logFileListLiveData.observe(this@LogUploadActivity) {
+                logAdapter.setList(it)
+                logAdapter.notifyDataSetChanged()
+            }
+            upLoadLogLiveData.observe(this@LogUploadActivity) {
+                if (position < logFileCheckedList.size - 1) {
+                    position++
+                    mViewModel.logFileUpload(prepareFilePart("file", logFileCheckedList[position]))
+                } else {
+                    dismissProgressDialog()
+                    binding.rtvUpload.setOnClickListener(this@LogUploadActivity)
+                    binding.layoutToolbar.flBack.setOnClickListener(this@LogUploadActivity)
+                    ToastUtil.showBottomToast("上传完成")
+                    position = 0
+                }
+            }
+            errMsg.observe(this@LogUploadActivity) {
+                ToastUtil.showBottomToast(it.msg)
+                if (it.api == "upLoadLog") {
+                    if (position < logFileCheckedList.size) {
+                        position++
+                        mViewModel.logFileUpload(prepareFilePart("file", logFileCheckedList[position]))
+                    } else {
+                        binding.rtvUpload.setOnClickListener(this@LogUploadActivity)
+                        binding.layoutToolbar.flBack.setOnClickListener(this@LogUploadActivity)
+                        ToastUtil.showBottomToast("上传完成")
+                        position = 0
+                    }
+                }
+            }
+            mException.observe(this@LogUploadActivity) {
             }
         }
+    }
+
+    fun prepareFilePart(partName: String, file: File): MultipartBody.Part {
+        // 创建 RequestBody 实例，指定文件类型
+        val requestBody = file.asRequestBody("text/plain".toMediaTypeOrNull())
+        // 使用 MultipartBody.Part 封装文件
+        return MultipartBody.Part.createFormData(partName, file.name, requestBody)
     }
 
     override fun getVbBindingView(): ViewBinding {
         return ActivityLogListBinding.inflate(layoutInflater)
     }
 
-    override fun providerVMClass(): Class<LogFileListViewModel> {
-        return LogFileListViewModel::class.java
-    }
-
     override val isFullScreen: Boolean
         get() = true
 
+    override fun marginStatusBarView(): View {
+        return binding.layoutToolbar.toolbar
+    }
+
+    override fun providerVMClass(): Class<LogViewModel> {
+        return LogViewModel::class.java
+    }
 }

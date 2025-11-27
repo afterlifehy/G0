@@ -40,7 +40,6 @@ import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.ext.startArouter
-import com.kernal.demo.base.util.LogFileUtil
 import com.kernal.demo.common.event.BaiduLocationEvent
 import com.kernal.demo.common.util.BaiduLocationUtil
 import com.kernal.demo.plateid.ui.activity.abnormal.AbnormalReportActivity
@@ -76,7 +75,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     override fun initView() {
         delete2DayPic()
-        delete30DayLog()
         initHyperLPR()
         runBlocking {
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
@@ -155,30 +153,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                     i.delete()
                 }
             }
-        }
-    }
-
-    fun delete30DayLog() {
-        val logDir = File(BaseApplication.instance().getExternalFilesDir(null), LogFileUtil.LOG_DIR_NAME)
-        if (logDir.exists() && logDir.isDirectory) {
-            val files = logDir.listFiles()
-            for (i in files) {
-                if (i.name.contains("_")) {
-                    val name = i.name.split("_")
-                    if (name.size == 4) {
-                        val createTime = TimeUtils.string2Millis(name[3], "yyyyMMdd")
-//                        30 * 24 * 60 * 60 * 1000L
-                        if (System.currentTimeMillis() - createTime > 30 * 24 * 60 * 60 * 1000L) {
-                            Log.v("1111", "before  ${i.length()}")
-                            i.delete()
-                            Log.v("1111", "after  ${i.length()}")
-                        }
-                    }
-                } else {
-                    i.delete()
-                }
-            }
-        } else {
         }
     }
 
@@ -339,7 +313,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.iv_g2 -> {
-                startArouter(ARouterMap.LOG_FILE)
+                startArouter(ARouterMap.LOG_UPLOAD)
             }
 
             R.id.iv_head -> {

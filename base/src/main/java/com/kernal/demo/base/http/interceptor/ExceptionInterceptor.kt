@@ -5,13 +5,14 @@ import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.ThreadUtils.runOnUiThread
 import com.blankj.utilcode.util.TimeUtils
-import com.kernal.demo.base.util.LogFileUtil
 import com.kernal.demo.base.util.NetTimeUtil
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.internal.http.promisesBody
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -25,6 +26,8 @@ class ExceptionInterceptor : Interceptor {
     private val UTF8 = Charset.forName("UTF-8")
     private var countDownTimer: CountDownTimer? = null
     var timeOn = true
+    val log: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
+
     fun start() {
         countDownTimer = object : CountDownTimer(1 * 60 * 1000L, 10 * 1000L) {
             override fun onTick(millisUntilFinished: Long) {
@@ -69,7 +72,7 @@ class ExceptionInterceptor : Interceptor {
                 log("<-- HTTP FAILED: $e, retrying ($retryCount/$maxRetryCount)")
                 if (retryCount > maxRetryCount) {
                     val errorMsg = "连接超时，请检查网络"
-                    LogFileUtil.logToFile("${getCurrentTime()}   --- HTTP FAILED---: retryCount: $retryCount$errorMsg${request.url}")
+                    log.info("--- HTTP FAILED---: retryCount: $retryCount$errorMsg${request.url}")
                     throw IOException(errorMsg, e)
                 }
                 Thread.sleep(retryDelayMs)

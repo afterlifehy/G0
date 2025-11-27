@@ -74,6 +74,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         binding.flResetPw.setOnClickListener(this)
 //        binding.flBlueToothPrint.setOnClickListener(this)
         binding.rtvLogout.setOnClickListener(this)
+        binding.flLog.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -201,6 +202,10 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                         putString(ARouterMap.RESET_PW_ACCOUNT, loginName)
                     })
                 }
+            }
+
+            R.id.fl_log -> {
+                startArouter(ARouterMap.LOG_UPLOAD)
             }
 
             R.id.rtv_logout -> {

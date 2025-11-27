@@ -4,7 +4,7 @@ package com.kernal.demo.base.arouter
  * Created by huy  on 2022/8/4.
  */
 object ARouterMap {
-    const val LOG_FILE = "/G0_app/logFile"
+    const val LOG_UPLOAD = "/G0_app/log"
 
     const val MAIN = "/G0_app/main"
 

@@ -52,8 +52,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         startBadiMapLocation()
     }
 
-    @SuppressLint("CheckResult", "MissingPermission")
+    @SuppressLint("CheckResult")
     override fun initView() {
+        binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
         var rxPermissions = RxPermissions(this@LoginActivity)
         rxPermissions.request(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_CONNECT,
@@ -68,38 +69,43 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 startBadiMapLocation()
                 baiduLocationUtil?.startLocation()
             }
-            if (rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
-                var imei = ""
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    try {
-                        imei = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                    } catch (e: Exception) {
-                        val manufacturer = Build.MANUFACTURER
-                        val model = Build.MODEL
-                        val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-                        imei = id
-                    }
-                } else {
-                    imei = PhoneUtils.getIMEI()
-                }
-                val param = HashMap<String, Any>()
-                val jsonobject = JSONObject()
-                jsonobject["version"] = AppUtils.getAppVersionCode()
-                jsonobject["imei"] = imei
-                jsonobject["softType"] = "30"
-                param["attr"] = jsonobject
-                mViewModel.checkUpdate(param)
-            }
         }
-        binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onResume() {
+        super.onResume()
+        var rxPermissions = RxPermissions(this@LoginActivity)
+        if (rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+            var imei = ""
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                try {
+                    imei = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                } catch (e: Exception) {
+                    val manufacturer = Build.MANUFACTURER
+                    val model = Build.MODEL
+                    val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+                    imei = id
+                }
+            } else {
+                imei = PhoneUtils.getIMEI()
+            }
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["version"] = AppUtils.getAppVersionCode()
+            jsonobject["imei"] = imei
+            jsonobject["softType"] = "30"
+            param["attr"] = jsonobject
+            mViewModel.checkUpdate(param)
+        }
     }
 
     override fun initListener() {
         binding.viewLog.setOnClickListener {
-            startArouter(ARouterMap.LOG_FILE)
+            startArouter(ARouterMap.LOG_UPLOAD)
         }
         binding.ivLogo.setOnLongClickListener {
-            startArouter(ARouterMap.LOG_FILE)
+            startArouter(ARouterMap.LOG_UPLOAD)
             true
         }
         binding.etAccount.addTextChangedListener(object : TextWatcher {

@@ -219,6 +219,9 @@ dependencies {
     api(ThirdPart.bugly)
 
     api(ThirdPart.baiduMapLocation)
+
+    api(ThirdPart.slf4j)
+    api(ThirdPart.logback)
 //    {
 //        exclude(group = "androidx.appcompat")
 //        exclude(group = "androidx.core")

@@ -258,7 +258,7 @@
             android:launchMode="singleTask" />
 
         <activity
-            android:name=".ui.activity.LogFileListActivity"
+            android:name=".ui.activity.LogUploadActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
