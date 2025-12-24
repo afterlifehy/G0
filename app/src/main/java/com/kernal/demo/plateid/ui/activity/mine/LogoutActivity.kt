@@ -30,10 +30,12 @@ import com.kernal.demo.plateid.databinding.ActivityLogOutBinding
 import com.kernal.demo.plateid.mvvm.viewmodel.LogoutViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.kernal.demo.base.ext.startArouter
+import com.kernal.demo.base.help.ActivityCacheManager
 import com.kernal.demo.common.event.BaiduLocationEvent
 import com.kernal.demo.common.util.BaiduLocationUtil
 import com.kernal.demo.common.util.Constant
 import com.kernal.demo.plateid.BuildConfig
+import com.kernal.demo.plateid.ui.activity.login.LoginActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -201,6 +203,11 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                 startArouter(ARouterMap.DATA_PRINT, data = Bundle().apply {
                     putString(ARouterMap.DATA_PRINT_LOGIN_NAME, loginName)
                 })
+                for (i in ActivityCacheManager.instance().getAllActivity()) {
+                    if (i !is LoginActivity) {
+                        i.finish()
+                    }
+                }
                 ToastUtil.showBottomToast(i18N(com.kernal.demo.base.R.string.签退成功))
             }
             errMsg.observe(this@LogoutActivity) {

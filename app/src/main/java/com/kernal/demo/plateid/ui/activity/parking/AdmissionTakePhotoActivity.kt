@@ -7,6 +7,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.View
@@ -93,13 +95,13 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var loginName = ""
     var street: Street? = null
     var countDownUtil: CountDownUtil? = null
-    var canGoBack = true
 
     private lateinit var photoObserver: Observer<Any>
     private lateinit var placeOrderObserver: Observer<PlaceOrderResultBean>
     private lateinit var errorObserver: Observer<ErrorMessage>
     private var currentType = 10
     private var orderNo = ""
+    var placeOrdering = false
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
@@ -223,7 +225,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         }
         when (v?.id) {
             R.id.fl_back -> {
-                canGoBack = true
                 onBackPressedSupport()
             }
 
@@ -346,6 +347,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                             })
                             countDownUtil?.start()
+                            placeOrdering = true
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
                             jsonobject["carLicense"] = binding.pvPlate.getPvTxt()
@@ -402,8 +404,9 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     override fun startObserve() {
         super.startObserve()
         placeOrderObserver = Observer {
-            dismissProgressDialog() 
+            dismissProgressDialog()
             countDownUtil?.onFinish()
+            placeOrdering = false
             orderNo = it.orderNo
             val plateSavedFile = FileUtil.FileSaveToInside("${orderNo}_10.png", plateImageBitmap!!)
             plateBase64 = FileUtil.fileToBase64(plateSavedFile).toString()
@@ -430,7 +433,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
 
                         })
                     promptDialog1?.show()
-                    canGoBack = false
                 }
             } else {
                 showPrePayDialog(it)
@@ -454,9 +456,10 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
         }
         errorObserver = Observer {
             try {
-                dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
+                dismissProgressDialog()
                 countDownUtil?.onFinish()
+                placeOrdering = false
                 if (it.code == 2) {
                     if (!isFinishing && !isDestroyed) {
                         DialogHelp.Builder().setTitle(it.msg)
@@ -514,6 +517,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
             mException.observe(this@AdmissionTakePhotoActivity) {
                 dismissProgressDialog()
                 countDownUtil?.onFinish()
+                placeOrdering = false
             }
         }
     }
@@ -526,8 +530,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 i18N(com.kernal.demo.base.R.string.确定),
                 object : PromptDialog.PromptCallBack {
                     override fun leftClick() {
-                        canGoBack = true
-                        onBackPressedSupport()
+                        finish()
                     }
 
                     override fun rightClick() {
@@ -760,8 +763,8 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     }
 
     override fun onBackPressedSupport() {
-        if (canGoBack) {
-            finish()
+        if (!placeOrdering) {
+            super.onBackPressedSupport()
         }
     }
 
