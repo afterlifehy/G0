@@ -6,6 +6,11 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +36,7 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
     private var networkErrorTagList = ArrayList<String>()
     private lateinit var mProgressDialog: IOSLoadingDialog
     val log: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
+    var loadingView: View? = null
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(baseEvent: BaseEvent) {
@@ -131,24 +137,30 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
     }
 
     fun showProgressDialog(i: Long) {
-        if (!isFinishing && !isDestroyed) {
-            mProgressDialog.show()
-            Handler(Looper.getMainLooper()).postDelayed({
-                dismissProgressDialog()
-            }, i)
+//        mProgressDialog.show()
+        runOnUiThread {
+            loadingView?.let {
+                it.visibility = View.VISIBLE
+            } ?: run {
+                val view = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null, false)
+                loadingView = view.findViewById(R.id.flLoading)
+                window.addContentView(loadingView,
+                    FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
+                        gravity = Gravity.CENTER
+                    }
+                )
+                loadingView?.visibility = View.VISIBLE
+                loadingView?.bringToFront()
+            }
         }
+        Handler(Looper.getMainLooper()).postDelayed({ dismissProgressDialog() }, i)
     }
 
     fun dismissProgressDialog() {
-        if (!isFinishing && !isDestroyed) {
-            mProgressDialog?.let {
-                if (it.isShowing) {
-                    try {
-                        it.dismiss()
-                    } catch (e: Exception) {
-
-                    }
-                }
+//        mProgressDialog.dismiss()
+        runOnUiThread {
+            loadingView?.let {
+                it.visibility = View.GONE
             }
         }
     }

@@ -332,6 +332,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                                             com.kernal.demo.base.R.color.color_ffea9a00
                                         )
                                     )
+                                    placeOrdering = false
                                     binding.tvStartBilling.text = i18N(com.kernal.demo.base.R.string.开始计费)
                                     binding.rflStartBilling.delegate.init()
                                     ClickUtils.applySingleDebouncing(binding.rflStartBilling, 1000, this@AdmissionTakePhotoActivity)
