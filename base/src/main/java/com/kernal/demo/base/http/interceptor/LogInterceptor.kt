@@ -14,7 +14,7 @@ class LogInterceptor(private val isDebug: Boolean) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request()
         val requestContent = request.toString()
-        val printContent = requestContent.replace(Regex("photo=([^&]*)")) { matchResult ->
+        val printContent = requestContent.replace(Regex("""photo":"([^&]*)"""")) { matchResult ->
             val value = matchResult.groupValues[1] // 获取 photo 参数值
             if (value.isEmpty()) {
                 "photo:空值"

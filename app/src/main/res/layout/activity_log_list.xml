@@ -34,7 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/iv_selectAll"
@@ -72,8 +73,8 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_toStartOf="@+id/rtv_upload"
+            android:text="已选择0个"
             android:textColor="@color/black_60_color"
-            android:textSize="@dimen/sp_12"
-            android:text="已选择0个" />
+            android:textSize="@dimen/sp_12" />
     </RelativeLayout>
 </RelativeLayout>
