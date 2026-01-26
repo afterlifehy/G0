@@ -16,14 +16,4 @@ interface BaseViewAddFactory {
      */
     fun getRootView(context: Context): View
 
-    /**
-     * 添加一个暂无数据框
-     */
-    fun getNotDataView(context: Context): View
-
-    /**
-     * 添加一个加载效果框
-     */
-    fun getLoadProgressView(context: Context): View
-
 }

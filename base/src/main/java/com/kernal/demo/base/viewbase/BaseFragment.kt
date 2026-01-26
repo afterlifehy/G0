@@ -17,10 +17,7 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment(){
     var mInflater: LayoutInflater? = null
     private var mFragment: Fragment? = null
 
-    //用来存储需要监听的网络错误
-    private var networkErrorTagList = ArrayList<String>()
     private lateinit var mProgressDialog: IOSLoadingDialog
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,20 +100,6 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment(){
             mFragment = fragment
             transaction?.commit()
         }
-    }
-
-    /**
-     * 如果需在要当前界面知道是否有网络，就可以实现这个类
-     */
-    open fun currentNetWorkState(isNetWork: Boolean) {
-
-    }
-
-    /**
-     * 需要响应调用方法出现网络错误时候，需要添加一个
-     */
-    fun addNetWorkErrorTag(tag: String) {
-        networkErrorTagList.add(tag)
     }
 
     override fun onDestroy() {

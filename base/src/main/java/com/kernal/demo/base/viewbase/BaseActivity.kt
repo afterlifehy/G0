@@ -32,8 +32,6 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
     private var mFragment: Fragment? = null
     private var isLoadContentView = true
 
-    //用来存储需要监听的网络错误
-    private var networkErrorTagList = ArrayList<String>()
     private lateinit var mProgressDialog: IOSLoadingDialog
     val log: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
     var loadingView: View? = null

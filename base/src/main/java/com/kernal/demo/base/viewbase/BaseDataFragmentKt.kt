@@ -35,7 +35,6 @@ abstract class BaseDataFragmentKt<VM : BaseViewModel> : BaseFragment<VM>(), View
                 mRoot = mViewAddManager?.getRootViewId(requireContext(), getLayoutResId())!!
             } else {
                 mRoot = mViewAddManager?.getRootView(requireContext(), mBinView)!!
-
             }
             savedInstanceState?.let { }
             mInflater = inflater
