@@ -47,6 +47,14 @@ public void *(android.webkit.WebView, java.lang.String);
 #-------------------------------------------------------------------------
 
 #---------------------------------2.第三方包-------------------------------
+#logback
+# 保留 Logback 核心类
+-keep class ch.qos.logback.** { *; }
+-dontwarn ch.qos.logback.**
+
+# 特别确保 LogcatAppender 不被移除（即使上面规则已覆盖）
+-keep class ch.qos.logback.classic.android.LogcatAppender { *; }
+
 #bugly
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
