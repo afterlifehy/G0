@@ -172,7 +172,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                         rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                             if (it) {
                                 val printList = BluePrint.instance?.blueToothDevice!!
-                                if (printList.size == 1) {
+                                if (printList.size >= 1) {
                                     Thread {
                                         val device = printList[0]
                                         var connectResult = BluePrint.instance?.connet(device.address)
@@ -188,7 +188,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                         }
                     } else {
                         val printList = BluePrint.instance?.blueToothDevice!!
-                        if (printList.size == 1) {
+                        if (printList.size >= 1) {
                             Thread {
                                 val device = printList[0]
                                 var connectResult = BluePrint.instance?.connet(device.address)

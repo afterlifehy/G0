@@ -27,7 +27,6 @@ class LogInterceptor(private val isDebug: Boolean) : Interceptor {
         val response: Response = chain.proceed(request)
         val content = response.body!!.string()
         val mediaType = response.body!!.contentType()
-//        if (isDebug) {
         log.info(response.toString())
         log.info("=============request:{}\n=============response body:{}\n", printContent, content)
 //        }

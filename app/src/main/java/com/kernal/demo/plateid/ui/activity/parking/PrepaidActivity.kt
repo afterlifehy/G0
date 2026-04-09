@@ -107,8 +107,8 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         carColor = intent.getStringExtra(ARouterMap.PREPAID_CAR_COLOR).toString()
         binding.layoutToolbar.tvTitle.text = i18N(com.kernal.demo.base.R.string.预支付)
 
-//        val street = RealmUtil.instance?.findCurrentStreet()
-//        maxDuration = street?.prepayDuration!!
+        val street = RealmUtil.instance?.findCurrentStreet()
+        maxDuration = street?.prepayDuration!!
         if (maxDuration < 1.0) {
             maxDuration = 1.0
         }
@@ -355,7 +355,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             orderType = it.orderType
         )
         val printList = BluePrint.instance?.blueToothDevice!!
-        if (printList.size == 1) {
+        if (printList.size >= 1) {
             Thread {
                 val device = printList[0]
                 var connectResult = BluePrint.instance?.connet(device.address)

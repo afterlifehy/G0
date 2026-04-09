@@ -229,7 +229,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                     if (it) {
                         BluePrint.instance?.disConnect()
                         val printList = BluePrint.instance?.blueToothDevice!!
-                        if (printList.size == 1) {
+                        if (printList.size >= 1) {
                             Thread {
                                 val device = printList[0]
                                 var connectResult = BluePrint.instance?.connet(device.address)
@@ -259,7 +259,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 }
             } else {
                 val printList = BluePrint.instance?.blueToothDevice!!
-                if (printList.size == 1) {
+                if (printList.size >= 1) {
                     Thread {
                         val device = printList[0]
                         var connectResult = BluePrint.instance?.connet(device.address)
