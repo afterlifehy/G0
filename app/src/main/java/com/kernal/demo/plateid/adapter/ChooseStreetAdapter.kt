@@ -59,7 +59,7 @@ class ChooseStreetAdapter(data: MutableList<Street>? = null, var streetChoosedLi
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemChooseStreetBinding {
-        val lp = ViewGroup.MarginLayoutParams(WindowManager.LayoutParams.MATCH_PARENT, SizeUtils.dp2px(55f))
+        val lp = ViewGroup.MarginLayoutParams(WindowManager.LayoutParams.MATCH_PARENT, SizeUtils.dp2px(60f))
         val binding = ItemChooseStreetBinding.inflate(inflater)
         binding.root.layoutParams = lp
         return binding

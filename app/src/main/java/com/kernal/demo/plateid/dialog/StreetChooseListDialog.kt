@@ -35,7 +35,7 @@ class StreetChooseListDialog(
     }
 
     private fun initView() {
-        var height = (SizeUtils.dp2px(55f) * (streetList.size + 0.5) + SizeUtils.dp2px(10f)).toInt()
+        var height = SizeUtils.dp2px(60f) * (streetList.size + 0.5f).toInt() + SizeUtils.dp2px(138f)
         if (height > ScreenUtils.getAppScreenHeight() - BarUtils.getStatusBarHeight()) {
             height = ScreenUtils.getAppScreenHeight() - BarUtils.getStatusBarHeight()
         }

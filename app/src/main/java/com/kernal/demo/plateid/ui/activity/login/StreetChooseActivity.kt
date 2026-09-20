@@ -101,9 +101,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
     override fun initData() {
         streetList.clear()
-        streetList = loginInfo?.result as MutableList<Street>
-        streetList.add(Street())
-        streetList.add(Street())
+        streetList.addAll(loginInfo?.result as MutableList<Street>)
     }
 
     @SuppressLint("CheckResult")
