@@ -216,4 +216,6 @@
     <string name="确认">确认</string>
     <string name="温馨提示">温馨提示</string>
     <string name="日志上传">日志上传</string>
+    <string name="小型车">小型车</string>
+    <string name="大型车">大型车</string>
 </resources>

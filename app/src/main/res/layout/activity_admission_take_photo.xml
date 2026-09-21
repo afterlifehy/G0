@@ -41,8 +41,8 @@
             android:layout_height="@dimen/dp_37"
             android:layout_gravity="end|center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingEnd="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
             app:rv_backgroundColor="@color/color_ff2fe8d6"
             app:rv_radius="@dimen/dp_10">
 
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_5"
                 android:layout_toStartOf="@+id/iv_head"
                 android:layout_toEndOf="@+id/iv_g2"
                 android:ellipsize="end"
@@ -93,6 +93,41 @@
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_13">
+
+        <com.aries.ui.view.radius.RadiusLinearLayout
+            android:id="@+id/rfl_vehicleType"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_37"
+            android:layout_gravity="end"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
+            app:rv_backgroundColor="@color/color_ff2fe8d6"
+            app:rv_radius="@dimen/dp_10">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_vehicleType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_toStartOf="@+id/iv_head"
+                android:layout_toEndOf="@+id/iv_g2"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxEms="8"
+                android:maxLines="1"
+                android:text="@string/小型车"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_17" />
+
+            <ImageView
+                android:id="@+id/iv_arrow2"
+                android:layout_width="@dimen/dp_17"
+                android:layout_height="@dimen/dp_17"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/ic_multiple_seat_arrow_down" />
+        </com.aries.ui.view.radius.RadiusLinearLayout>
 
         <com.aries.ui.view.radius.RadiusLinearLayout
             android:layout_width="match_parent"

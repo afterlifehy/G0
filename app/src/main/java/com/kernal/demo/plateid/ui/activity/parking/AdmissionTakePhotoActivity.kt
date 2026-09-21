@@ -61,6 +61,7 @@ import com.kernal.demo.common.util.ImageCompressor
 import com.kernal.demo.common.util.ImageUtil
 import com.kernal.demo.common.view.PlateView
 import com.kernal.demo.common.view.keyboard.KeyboardUtil
+import com.kernal.demo.plateid.pop.VehicleTypePop
 import com.kernal.demo.plateid.ui.activity.login.LoginActivity
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -81,6 +82,9 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var multipleSeatsPop: MultipleSeatsPop? = null
     var multipleSeat = ""
 
+    var vehicleTypePop: VehicleTypePop? = null
+    var vehicleType = 1
+
     var photoType = 10
     var plateBase64 = ""
     var panoramaBase64 = ""
@@ -90,7 +94,6 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     var promptDialog1: PromptDialog? = null
     var promptDialog2: PromptDialog? = null
     var simId = ""
-    var vehicleType = "1"
     var extParkingNo = ""
     var loginName = ""
     var street: Street? = null
@@ -135,6 +138,7 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.rflMultipleSeats.setOnClickListener(this)
+        binding.rflVehicleType.setOnClickListener(this)
         ClickUtils.applySingleDebouncing(binding.ivRecognize, 1000, this@AdmissionTakePhotoActivity)
         ClickUtils.applySingleDebouncing(binding.rflTakePhoto, 1000, this@AdmissionTakePhotoActivity)
         ClickUtils.applySingleDebouncing(binding.rflTakePhoto2, 1000, this@AdmissionTakePhotoActivity)
@@ -257,6 +261,30 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 multipleSeatsPop?.setOnDismissListener(object : PopupWindow.OnDismissListener {
                     override fun onDismiss() {
                         GlideUtils.instance?.loadImage(binding.ivArrow, com.kernal.demo.common.R.mipmap.ic_multiple_seat_arrow_down)
+                    }
+                })
+            }
+
+            R.id.rfl_vehicleType -> {
+                vehicleTypePop =
+                    VehicleTypePop(
+                        this@AdmissionTakePhotoActivity,
+                        vehicleType,
+                        object : VehicleTypePop.VehicleTypeCallBack {
+                            override fun selectType(type: Int) {
+                                vehicleType = type
+                                if (type == 1) {
+                                    binding.tvVehicleType.text = "小型车"
+                                } else if (type == 2) {
+                                    binding.tvVehicleType.text = "大型车   "
+                                }
+                            }
+                        })
+                vehicleTypePop?.showAsDropDown(v, (binding.rflVehicleType.width - SizeUtils.dp2px(92f)) / 2, SizeUtils.dp2px(3f))
+                GlideUtils.instance?.loadImage(binding.ivArrow2, com.kernal.demo.common.R.mipmap.ic_multiple_seat_arrow_up)
+                vehicleTypePop?.setOnDismissListener(object : PopupWindow.OnDismissListener {
+                    override fun onDismiss() {
+                        GlideUtils.instance?.loadImage(binding.ivArrow2, com.kernal.demo.common.R.mipmap.ic_multiple_seat_arrow_down)
                     }
                 })
             }
@@ -393,6 +421,13 @@ class AdmissionTakePhotoActivity : VbBaseActivity<AdmissionTakePhotoViewModel, A
                 checkedColor = v.tag as String
                 collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
                 binding.pvPlate.setPlateBgAndTxtColor(checkedColor)
+                if (checkedColor == Constant.YELLOW || checkedColor == Constant.YELLOW_GREEN) {
+                    vehicleType = 2
+                    binding.tvVehicleType.text = "大型车"
+                } else {
+                    vehicleType = 1
+                    binding.tvVehicleType.text = "小型车"
+                }
             }
 
             R.id.toolbar,
