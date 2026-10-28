@@ -19,9 +19,9 @@ import com.zrq.spanbuilder.TextStyle
 class TransactionInquiryAdapter(data: MutableList<TransactionBean>? = null, val onClickListener: OnClickListener) :
     BaseBindingAdapter<TransactionBean, ItemTransactionQueryBinding>(data) {
     val colors = intArrayOf(
-        com.kernal.demo.base.R.color.color_ff04a091,
-        com.kernal.demo.base.R.color.color_ff04a091,
-        com.kernal.demo.base.R.color.color_ff04a091
+        com.kernal.demo.base.R.color.mainColor,
+        com.kernal.demo.base.R.color.mainColor,
+        com.kernal.demo.base.R.color.mainColor
     )
     val colors2 = intArrayOf(
         com.kernal.demo.base.R.color.color_ffe92404,

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_ff04a091"
+    android:background="@color/mainColor"
     android:orientation="vertical">
 
     <com.aries.ui.view.radius.RadiusRelativeLayout
@@ -230,7 +230,7 @@
             android:text="@string/重新登录"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_17"
-            app:rv_backgroundColor="@color/color_ff04a091"
+            app:rv_backgroundColor="@color/mainColor"
             app:rv_radius="@dimen/dp_7" />
     </com.aries.ui.view.radius.RadiusRelativeLayout>
 

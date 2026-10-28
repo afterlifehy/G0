@@ -64,7 +64,7 @@
                 android:layout_marginEnd="@dimen/dp_10"
                 android:layout_toStartOf="@+id/view_liner"
                 android:text="@string/催缴"
-                android:textColor="@color/color_ff04a091"
+                android:textColor="@color/mainColor"
                 android:textSize="@dimen/sp_19"
                 android:visibility="gone" />
 
@@ -74,7 +74,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dp_10"
                 android:layout_toStartOf="@+id/iv_camera"
-                android:background="@color/color_ff04a091"
+                android:background="@color/mainColor"
                 android:visibility="gone" />
 
             <ImageView

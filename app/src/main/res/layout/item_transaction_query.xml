@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:textColor="@color/color_ff04a091"
+                android:textColor="@color/mainColor"
                 android:textSize="@dimen/sp_20"
                 tools:text="已付:15.00元" />
         </RelativeLayout>
@@ -184,7 +184,7 @@
             android:paddingEnd="@dimen/dp_5"
             android:visibility="gone"
             app:rv_radius="@dimen/dp_7"
-            app:rv_strokeColor="@color/color_ff04a091"
+            app:rv_strokeColor="@color/mainColor"
             app:rv_strokeWidth="@dimen/dp_1">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -196,7 +196,7 @@
                 android:drawablePadding="@dimen/dp_10"
                 android:gravity="center"
                 android:text="@string/支付查询"
-                android:textColor="@color/color_ff04a091"
+                android:textColor="@color/mainColor"
                 android:textSize="@dimen/sp_19" />
         </com.aries.ui.view.radius.RadiusFrameLayout>
     </com.aries.ui.view.radius.RadiusLinearLayout>

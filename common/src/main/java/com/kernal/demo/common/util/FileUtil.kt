@@ -176,6 +176,20 @@ object FileUtil {
         )
     }
 
+    fun FileSaveToInside(context: Context, fileName: String?, bytes: ByteArray): File? {
+        val folder = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return try {
+            val file = File(folder, fileName)
+            FileOutputStream(file).use {
+                it.write(bytes)
+            }
+            file
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     /**
      * 保存图片到沙盒目录
      *
@@ -224,5 +238,14 @@ object FileUtil {
             e.printStackTrace()
         }
         return null
+    }
+
+    fun createImageFile(context: Context): File {
+        val storageDir = context.filesDir
+        return File.createTempFile(
+            "photo_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir
+        )
     }
 }

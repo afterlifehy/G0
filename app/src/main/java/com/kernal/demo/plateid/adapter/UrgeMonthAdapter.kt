@@ -1,0 +1,23 @@
+package com.kernal.demo.plateid.adapter
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import com.kernal.demo.base.adapter.BaseBindingAdapter
+import com.kernal.demo.base.adapter.VBViewHolder
+import com.kernal.demo.base.bean.UrgeMonthBean
+import com.kernal.demo.plateid.databinding.ItemUrgeMonthBinding
+import com.kernal.demo.base.util.AppUtil
+
+class UrgeMonthAdapter(data: MutableList<UrgeMonthBean>? = null, val onclick: (order: UrgeMonthBean) -> Unit) :
+    BaseBindingAdapter<UrgeMonthBean, ItemUrgeMonthBinding>(data) {
+    override fun convert(holder: VBViewHolder<ItemUrgeMonthBinding>, item: UrgeMonthBean) {
+        holder.vb.tvNum.text = AppUtil.fillZero((data.indexOf(item) + 1).toString())
+        holder.vb.tvMonth.text = "月结月份：${item.month}"
+        holder.vb.tvMonthPayId.text = item.monthPayId
+        holder.vb.tvOweAmount.text = "欠费：${AppUtil.keepNDecimal(item.oweAmount / 100.0, 2)}"
+    }
+
+    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemUrgeMonthBinding {
+        return ItemUrgeMonthBinding.inflate(inflater)
+    }
+}

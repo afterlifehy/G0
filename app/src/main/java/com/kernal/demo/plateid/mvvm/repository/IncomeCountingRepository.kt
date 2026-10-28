@@ -10,6 +10,6 @@ class IncomeCountingRepository : BaseRepository() {
      * 营收盘点
      */
     suspend fun incomeCounting(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<IncomeCountingBean> {
-        return mServer.incomeCounting(param)
+        return mRTServer.incomeCounting(param)
     }
 }

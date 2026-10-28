@@ -20,7 +20,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         val keys = keyboard.keys
         if (keys != null && keys.size > 0) {
             val paint = Paint()
-            paint.setColor(getContext().getResources().getColor(com.kernal.demo.base.R.color.color_ff04a091));
+            paint.setColor(getContext().getResources().getColor(com.kernal.demo.base.R.color.mainColor));
             paint.setTextAlign(Paint.Align.CENTER)
             val font: Typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
             paint.setTypeface(font)
@@ -30,7 +30,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             //此处进行特殊按键的背景色处理
             for (key in keys) {
                 if (key.codes[0] == -2) {
-                    paint.setColor(getContext().getResources().getColor(com.kernal.demo.base.R.color.color_ff04a091));
+                    paint.setColor(getContext().getResources().getColor(com.kernal.demo.base.R.color.mainColor));
                     val rect = RectF(
                         key.x.toFloat(),
                         key.y.toFloat() + SizeUtils.dp2px(10f),
@@ -57,7 +57,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 }
 
                 if (key.codes[0] == -1) {
-                    paint.setColor(getContext().getResources().getColor(com.kernal.demo.base.R.color.color_ff04a091));
+                    paint.setColor(getContext().getResources().getColor(com.kernal.demo.base.R.color.mainColor));
                     val rect = RectF(
                         key.x.toFloat(),
                         key.y.toFloat() + SizeUtils.dp2px(10f),
@@ -85,7 +85,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
                 if (key.codes[0] == -3) {
                     val paint = Paint()
-                    paint.setColor(getContext().getResources().getColor(com.kernal.demo.base.R.color.color_ff04a091));
+                    paint.setColor(getContext().getResources().getColor(com.kernal.demo.base.R.color.mainColor));
 
                     val rect = RectF(
                         key.x.toFloat(),

@@ -64,7 +64,7 @@
                         android:drawableEnd="@mipmap/ic_question"
                         android:drawablePadding="@dimen/dp_11"
                         android:text="总收费"
-                        android:textColor="@color/color_ff04a091"
+                        android:textColor="@color/mainColor"
                         android:textSize="@dimen/sp_19" />
 
                     <TextView
@@ -369,6 +369,6 @@
         android:text="@string/打印"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_19"
-        app:rv_backgroundColor="@color/color_ff04a091"
+        app:rv_backgroundColor="@color/mainColor"
         app:rv_radius="@dimen/dp_7" />
 </RelativeLayout>

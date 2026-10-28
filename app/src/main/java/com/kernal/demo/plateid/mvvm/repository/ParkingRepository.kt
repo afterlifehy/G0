@@ -16,56 +16,56 @@ class ParkingRepository : BaseRepository() {
      * 停车场泊位列表
      */
     suspend fun getParkingLotList(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<ParkingLotResultBean> {
-        return mServer.getParkingLotList(param)
+        return mRTServer.getParkingLotList(param)
     }
 
     /**
      * 场内停车费查询
      */
     suspend fun parkingSpace(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<ParkingSpaceBean> {
-        return mServer.parkingSpace(param)
+        return mRTServer.parkingSpace(param)
     }
 
     /**
      * 下单
      */
     suspend fun placeOrder(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PlaceOrderResultBean> {
-        return mServer.placeOrder(param)
+        return mRTServer.placeOrder(param)
     }
 
     /**
      * 结单
      */
     suspend fun endOrder(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.endOrder(param)
+        return mRTServer.endOrder(param)
     }
 
     /**
      * 图片上传
      */
     suspend fun picUpload(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.picUpload(param)
+        return mRTServer.picUpload(param)
     }
 
     /**
      *  场内支付
      */
     suspend fun ticketPrint(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean> {
-        return mServer.ticketPrint(param)
+        return mRTServer.ticketPrint(param)
     }
 
     /**
      *  根据订单查交易
      */
     suspend fun inquiryTransactionByOrderNo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintResultBean> {
-        return mServer.inquiryTransactionByOrderNo(param)
+        return mRTServer.inquiryTransactionByOrderNo(param)
     }
 
     /**
      * 欠费上传
      */
     suspend fun debtUpload(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<DebtUploadBean> {
-        return mServer.debtUpload(param)
+        return mRTServer.debtUpload(param)
     }
 //    /**
 //     *  支付结果
@@ -78,13 +78,13 @@ class ParkingRepository : BaseRepository() {
      * 场内支付
      */
     suspend fun onsitePayQR(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean> {
-        return mServer.onsitePayQR(param)
+        return mRTServer.onsitePayQR(param)
     }
 
     /**
      * 查询支付结果
      */
     suspend fun payResultInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean> {
-        return mServer.payResultInquiry(param)
+        return mRTServer.payResultInquiry(param)
     }
 }

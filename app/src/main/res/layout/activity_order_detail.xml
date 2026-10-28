@@ -184,7 +184,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/sp_19"
             android:textStyle="bold"
-            app:rv_backgroundColor="@color/color_ff04a091"
+            app:rv_backgroundColor="@color/mainColor"
             app:rv_radius="@dimen/dp_7" />
 
         <com.aries.ui.view.radius.RadiusTextView
@@ -199,7 +199,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/sp_19"
             android:textStyle="bold"
-            app:rv_backgroundColor="@color/color_ff04a091"
+            app:rv_backgroundColor="@color/mainColor"
             app:rv_radius="@dimen/dp_7" />
 
         <com.aries.ui.view.radius.RadiusTextView
@@ -213,7 +213,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/sp_19"
             android:textStyle="bold"
-            app:rv_backgroundColor="@color/color_ff04a091"
+            app:rv_backgroundColor="@color/mainColor"
             app:rv_radius="@dimen/dp_7" />
     </LinearLayout>
 </RelativeLayout>

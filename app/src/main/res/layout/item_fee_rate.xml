@@ -44,7 +44,7 @@
                 android:text="@string/白天"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_19"
-                app:rv_backgroundColor="@color/color_ff04a091"
+                app:rv_backgroundColor="@color/mainColor"
                 app:rv_topLeftRadius="@dimen/dp_3" />
 
             <com.aries.ui.view.radius.RadiusTextView

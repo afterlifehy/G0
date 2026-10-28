@@ -58,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_13"
-                    android:textColor="@color/color_ff04a091"
+                    android:textColor="@color/mainColor"
                     android:textSize="@dimen/sp_20"
                     tools:text="已付:15.00元" />
 

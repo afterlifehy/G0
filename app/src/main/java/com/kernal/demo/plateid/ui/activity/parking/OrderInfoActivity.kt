@@ -153,7 +153,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                         binding.rflScanPay.delegate.setBackgroundColor(
                             ContextCompat.getColor(
                                 BaseApplication.instance(),
-                                com.kernal.demo.base.R.color.color_ff04a091
+                                com.kernal.demo.base.R.color.mainColor
                             )
                         )
                         binding.rflScanPay.delegate.init()
@@ -277,7 +277,7 @@ class OrderInfoActivity : VbBaseActivity<OrderInfoViewModel, ActivityOrderInfoBi
                     runOnUiThread {
                         ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                     }
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo),2)
                 }
             }.start()
         }

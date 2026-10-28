@@ -1,11 +1,11 @@
 <resources>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/color_ff04a091</item>
-        <item name="colorPrimaryDark">@color/color_ff04a091</item>
-        <item name="colorAccent">@color/color_ff04a091</item>
-        <item name="android:navigationBarColor">@color/color_ff04a091</item>
-        <item name="android:statusBarColor">@color/color_ff04a091</item>
+        <item name="colorPrimary">@color/mainColor</item>
+        <item name="colorPrimaryDark">@color/mainColor</item>
+        <item name="colorAccent">@color/mainColor</item>
+        <item name="android:navigationBarColor">@color/mainColor</item>
+        <item name="android:statusBarColor">@color/mainColor</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowTranslucentNavigation">true</item>
@@ -14,11 +14,11 @@
     </style>
 
     <style name="ColorTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/color_ff04a091</item>
-        <item name="colorPrimaryDark">@color/color_ff04a091</item>
-        <item name="colorAccent">@color/color_ff04a091</item>
-        <item name="android:navigationBarColor">@color/color_ff04a091</item>
-        <item name="android:statusBarColor">@color/color_ff04a091</item>
+        <item name="colorPrimary">@color/mainColor</item>
+        <item name="colorPrimaryDark">@color/mainColor</item>
+        <item name="colorAccent">@color/mainColor</item>
+        <item name="android:navigationBarColor">@color/mainColor</item>
+        <item name="android:statusBarColor">@color/mainColor</item>
     </style>
 
     <style name="startTheme" parent="AppTheme">

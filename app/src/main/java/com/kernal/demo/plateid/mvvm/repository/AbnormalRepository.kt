@@ -9,20 +9,20 @@ class AbnormalRepository : BaseRepository() {
      * 异常上报
      */
     suspend fun abnormalReport(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.abnormalReport(param)
+        return mRTServer.abnormalReport(param)
     }
 
     /**
      * 图片上传
      */
     suspend fun picUpload(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.picUpload(param)
+        return mRTServer.picUpload(param)
     }
 
     /**
      * 根据parkingNo查询orderNo
      */
     suspend fun inquiryOrderNoByParkingNo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<OrderNoBean> {
-        return mServer.inquiryOrderNoByParkingNo(param)
+        return mRTServer.inquiryOrderNoByParkingNo(param)
     }
 }

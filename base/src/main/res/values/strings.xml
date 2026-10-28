@@ -218,4 +218,13 @@
     <string name="日志上传">日志上传</string>
     <string name="小型车">小型车</string>
     <string name="大型车">大型车</string>
+    <string name="催缴管理">催缴管理</string>
+    <string name="欠费订单">欠费订单</string>
+    <string name="月结欠费">月结欠费</string>
+    <string name="催缴告知书打印">催缴告知书打印</string>
+    <string name="欠费支付">欠费支付</string>
+    <string name="催缴记录上传">催缴记录上传</string>
+    <string name="路段名称">路段名称</string>
+    <string name="拍摄照片">拍摄照片</string>
+    <string name="提交">提交</string>
 </resources>

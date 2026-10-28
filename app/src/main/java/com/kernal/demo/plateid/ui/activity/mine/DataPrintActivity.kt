@@ -180,7 +180,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                                             runOnUiThread {
                                                 ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                                             }
-                                            BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
+                                            BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean),1)
                                         }
                                     }.start()
                                 }
@@ -196,7 +196,7 @@ class DataPrintActivity : VbBaseActivity<DataPrintViewModel, ActivityDataPrintBi
                                     runOnUiThread {
                                         ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                                     }
-                                    BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
+                                    BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean),1)
                                 }
                             }.start()
                         }

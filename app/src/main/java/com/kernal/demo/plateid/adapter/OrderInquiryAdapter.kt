@@ -19,9 +19,9 @@ import com.kernal.demo.base.ext.show
 class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListener: OnClickListener) :
     BaseBindingAdapter<OrderBean, ItemOrderBinding>(data) {
     val colorsBlue = intArrayOf(
-        com.kernal.demo.base.R.color.color_ff04a091,
-        com.kernal.demo.base.R.color.color_ff04a091,
-        com.kernal.demo.base.R.color.color_ff04a091
+        com.kernal.demo.base.R.color.mainColor,
+        com.kernal.demo.base.R.color.mainColor,
+        com.kernal.demo.base.R.color.mainColor
     )
     val colorsRed = intArrayOf(
         com.kernal.demo.base.R.color.color_ffe92404,

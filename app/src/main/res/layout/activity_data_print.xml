@@ -81,7 +81,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/sp_19"
             android:textStyle="bold"
-            app:rv_backgroundColor="@color/color_ff04a091"
+            app:rv_backgroundColor="@color/mainColor"
             app:rv_radius="@dimen/dp_7"
             app:rv_strokeColor="@color/color_ffececec"
             app:rv_strokeWidth="@dimen/dp_1" />

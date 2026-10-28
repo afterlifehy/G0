@@ -3,7 +3,6 @@ package com.kernal.demo.base.request
 import com.kernal.demo.base.bean.*
 import okhttp3.MultipartBody
 import retrofit2.http.*
-import java.io.File
 
 
 interface Api {
@@ -187,4 +186,124 @@ interface Api {
      */
     @POST("S_V_05")
     suspend fun queryPwStatus(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QueryPwStatusBean>
+
+    /**
+     * 欠费催缴单查询
+     */
+    @POST("urgepaylist")
+    suspend fun urgepaylist(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<List<UrgeBean>>
+
+    /**
+     * 催缴告知书详情
+     */
+    @POST("urgepaydetail")
+    suspend fun urgepaydetail(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>,
+        @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<UrgeDetailBean>
+
+    /**
+     * 欠费支付请求
+     */
+    @POST("payowemoney")
+    suspend fun payowemoney(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>,
+        @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<OweMoneyBean>
+
+    /**
+     * 催缴告知书支付二维码
+     */
+    @POST("consume/urgepay")
+    suspend fun consumeUrgePay(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>,
+        @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<PayQRBean>
+
+    /**
+     * 催缴告知书二维码
+     */
+    @POST("urgepay/qrcode")
+    suspend fun urgepayQrcode(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>,
+        @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<PayQRBean>
+
+    /**
+     * 支付结果查询
+     */
+    @POST("querypay")
+    suspend fun querypay(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>,
+        @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<QueryPayBean>
+
+    /**
+     * 欠费催缴告知书打印通知
+     */
+    @POST("urgepayprint")
+    suspend fun urgepayprint(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>,
+        @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<Any>
+
+    /**
+     * 欠费单催缴记录上传
+     */
+    @POST("urgepay")
+    suspend fun urgepay(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<Any>
+
+    /**
+     * 欠费催缴单通知
+     */
+    @POST("S_UR_01")
+    suspend fun urgeBeanNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费催缴单欠费通知
+     */
+    @POST("S_UR_02")
+    suspend fun urgeDetailNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费催缴单支付通知
+     */
+    @POST("S_UR_04")
+    suspend fun urgePayNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费催缴单支付结果通知
+     */
+    @POST("S_UR_05")
+    suspend fun urgePayResultNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费催缴单打印通知
+     */
+    @POST("S_UR_06")
+    suspend fun urgePrintNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费催缴单催缴通知
+     */
+    @POST("S_UR_07")
+    suspend fun urgeNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 催缴告知书二维码
+     */
+    @POST("freepark")
+    suspend fun freePark(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<FreeParkBean>
+
+    /**
+     * 图片上传我们平台
+     */
+    @POST("uploadFileForApp")
+    suspend fun uploadFileForApp(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<UploadImageBean>
 }

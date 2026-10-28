@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:textColor="@color/color_ff04a091"
+                android:textColor="@color/mainColor"
                 android:textSize="@dimen/sp_22"
                 android:textStyle="bold"
                 tools:text="JAZ02109" />
@@ -194,7 +194,7 @@
                 android:layout_height="@dimen/dp_47"
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="@dimen/dp_20"
-                app:rv_backgroundColor="@color/color_ff04a091"
+                app:rv_backgroundColor="@color/mainColor"
                 app:rv_radius="@dimen/dp_7">
 
                 <androidx.appcompat.widget.AppCompatTextView

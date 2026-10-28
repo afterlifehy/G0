@@ -1,0 +1,30 @@
+package com.kernal.demo.base.bean
+
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class UrgeBean(
+    val urgePayId: String,
+    val subject:String,
+    val oweCount: Int,
+    val oweAmount:Int,
+    val oweBeginTime:Long,
+    val oweEndTime:Long,
+    val urgePayType: Int,
+    val plateId: String,
+    val plateColor: Int,
+    val urgeCount:Int,
+    val districtId: String,
+    val urgePayFile: String,
+    val overdueTime:Long,
+    val dataTime: Long,
+    val printCount: Int,
+    val companyId: String,
+    val companyName: String,
+    val companyPhone: String,
+    val manageName: String,
+    val paidMoney: Int,
+    val status: Int,
+): Parcelable
+

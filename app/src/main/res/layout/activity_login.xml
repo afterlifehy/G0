@@ -37,7 +37,7 @@
         android:paddingStart="@dimen/dp_17"
         android:paddingEnd="@dimen/dp_17"
         app:rv_radius="@dimen/dp_7"
-        app:rv_strokeColor="@color/color_ff04a091"
+        app:rv_strokeColor="@color/mainColor"
         app:rv_strokeWidth="@dimen/dp_1">
 
         <ImageView
@@ -73,7 +73,7 @@
         android:paddingStart="@dimen/dp_17"
         android:paddingEnd="@dimen/dp_17"
         app:rv_radius="@dimen/dp_7"
-        app:rv_strokeColor="@color/color_ff04a091"
+        app:rv_strokeColor="@color/mainColor"
         app:rv_strokeWidth="@dimen/dp_1">
 
         <ImageView
@@ -110,7 +110,7 @@
         android:layout_marginTop="@dimen/dp_45"
         android:layout_marginEnd="@dimen/dp_26"
         android:text="@string/忘记密码"
-        android:textColor="@color/color_ff04a091"
+        android:textColor="@color/mainColor"
         android:textSize="@dimen/sp_19"
         android:visibility="invisible" />
 

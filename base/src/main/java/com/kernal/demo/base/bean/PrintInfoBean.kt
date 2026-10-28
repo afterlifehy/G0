@@ -12,7 +12,8 @@ class PrintInfoBean(
     var company: String,
     var oweCount: Int,
     var qrcode: String,
-    var orderType: Int? = 1
+    var ticketQrCode:String = "",
+    var orderType:Int? = 2
 ) {
     override fun toString(): String = "$orderId,$plateId,$roadId,$startTime,$leftTime,$payMoney,$oweCount,$phone,$remark,$company"
 }

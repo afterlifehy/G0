@@ -82,6 +82,13 @@ object ARouterMap {
     const val TRANSACTION_RECORD_ORDER_NO = "orderNo"
     const val TRANSACTION_RECORD_CARLICENSE = "carLicense"
 
+    const val URGE_LIST = "/ipms_app/urgeList"
+
+    const val URGE_DETAIL = "/ipms_app/urgeDetail"
+    const val URGE = "urge"
+
+    const val URGE_RECORD_UPLOAD = "/ipms_app/urgeRecordUpload"
+
     class common {
         companion object {
 

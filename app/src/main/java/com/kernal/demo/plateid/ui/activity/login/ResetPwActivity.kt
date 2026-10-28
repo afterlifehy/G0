@@ -1,6 +1,5 @@
 package com.kernal.demo.plateid.ui.activity.login
 
-import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -13,10 +12,8 @@ import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ClickUtils
 import com.kernal.demo.base.BaseApplication
 import com.kernal.demo.base.arouter.ARouterMap
-import com.kernal.demo.base.bean.LoginBean
 import com.kernal.demo.base.ds.PreferencesDataStore
 import com.kernal.demo.base.ds.PreferencesKeys
-import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.plateid.R
@@ -69,7 +66,7 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
                 binding.etRepeatPw.text.isNotEmpty()
 
         val color = if (isAllFieldsFilled) {
-            com.kernal.demo.base.R.color.color_ff04a091
+            com.kernal.demo.base.R.color.mainColor
         } else {
             com.kernal.demo.base.R.color.color_9904a091
         }

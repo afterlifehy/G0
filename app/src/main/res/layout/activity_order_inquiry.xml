@@ -130,7 +130,7 @@
         android:layout_marginEnd="@dimen/dp_13"
         android:layout_marginBottom="@dimen/dp_13"
         android:visibility="gone"
-        app:rv_backgroundColor="@color/color_ff04a091"
+        app:rv_backgroundColor="@color/mainColor"
         app:rv_radius="@dimen/dp_7">
 
         <androidx.appcompat.widget.AppCompatTextView

@@ -36,9 +36,9 @@ import org.greenrobot.eventbus.EventBus
 @Route(path = ARouterMap.ORDER_DETAIL)
 class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDetailBinding>(), OnClickListener {
     val colors = intArrayOf(
-        com.kernal.demo.base.R.color.color_ff04a091,
-        com.kernal.demo.base.R.color.color_ff04a091,
-        com.kernal.demo.base.R.color.color_ff04a091
+        com.kernal.demo.base.R.color.mainColor,
+        com.kernal.demo.base.R.color.mainColor,
+        com.kernal.demo.base.R.color.mainColor
     )
     val colors1 = intArrayOf(
         com.kernal.demo.base.R.color.color_ffe92404,
@@ -71,7 +71,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                 if (order?.isPrinted == "0") {
                     binding.rtvUpload.delegate.setBackgroundColor(
                         ContextCompat.getColor(
-                            BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
+                            BaseApplication.instance(), com.kernal.demo.base.R.color.mainColor
                         )
                     )
                     ClickUtils.applySingleDebouncing(binding.rtvUpload, 1000, this)
@@ -88,7 +88,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             }
             binding.rtvTransactionRecord.delegate.setBackgroundColor(
                 ContextCompat.getColor(
-                    BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
+                    BaseApplication.instance(), com.kernal.demo.base.R.color.mainColor
                 )
             )
             binding.rtvTransactionRecord.setOnClickListener(this)
@@ -129,7 +129,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             if (order?.isPrinted == "0") {
                 binding.rtvUpload.delegate.setBackgroundColor(
                     ContextCompat.getColor(
-                        BaseApplication.instance(), com.kernal.demo.base.R.color.color_ff04a091
+                        BaseApplication.instance(), com.kernal.demo.base.R.color.mainColor
                     )
                 )
                 ClickUtils.applySingleDebouncing(binding.rtvUpload, 1000, this)

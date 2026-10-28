@@ -10,5 +10,6 @@ data class LoginBean(
     var phone: String,
     var result: List<Street>,
     var simId: String,
+    var token: String,
     var editPw: Int = 0
 ) : Parcelable

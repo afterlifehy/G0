@@ -266,5 +266,20 @@
             android:name=".ui.activity.login.ResetPwActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.UrgeListActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.UrgeDetailActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.UrgeRecordUploadActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

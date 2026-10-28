@@ -11,27 +11,27 @@ class MineRepository : BaseRepository() {
      * 版本更新查询
      */
     suspend fun checkUpdate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<UpdateBean> {
-        return mServer.checkUpdate(param)
+        return mRTServer.checkUpdate(param)
     }
 
     /**
      * 营收打印
      */
     suspend fun incomeCounting(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<IncomeCountingBean> {
-        return mServer.incomeCounting(param)
+        return mRTServer.incomeCounting(param)
     }
 
     /**
      * 费率
      */
     suspend fun feeRate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<FeeRateResultBean> {
-        return mServer.feeRate(param)
+        return mRTServer.feeRate(param)
     }
 
     /**
      * 上传经纬度
      */
     suspend fun locationUpload(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.locationUpload(param)
+        return mRTServer.locationUpload(param)
     }
 }

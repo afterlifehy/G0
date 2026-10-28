@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_ff04a091">
+    android:background="@color/mainColor">
 
     <ImageView
         android:layout_width="match_parent"
@@ -204,7 +204,7 @@
             android:layout_marginTop="@dimen/dp_10"
             app:rv_backgroundColor="@color/color_ffeefaf9"
             app:rv_radius="@dimen/dp_7"
-            app:rv_strokeColor="@color/color_ff04a091"
+            app:rv_strokeColor="@color/mainColor"
             app:rv_strokeWidth="@dimen/dp_1">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -214,7 +214,7 @@
                 android:drawableTop="@mipmap/ic_camera"
                 android:drawablePadding="@dimen/dp_17"
                 android:text="@string/上传车牌照"
-                android:textColor="@color/color_ff04a091"
+                android:textColor="@color/mainColor"
                 android:textSize="@dimen/sp_16" />
 
         </com.aries.ui.view.radius.RadiusFrameLayout>
@@ -253,7 +253,7 @@
             android:layout_toEndOf="@+id/rfl_takePhoto"
             app:rv_backgroundColor="@color/color_ffeefaf9"
             app:rv_radius="@dimen/dp_7"
-            app:rv_strokeColor="@color/color_ff04a091"
+            app:rv_strokeColor="@color/mainColor"
             app:rv_strokeWidth="@dimen/dp_1">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -263,7 +263,7 @@
                 android:drawableTop="@mipmap/ic_camera"
                 android:drawablePadding="@dimen/dp_17"
                 android:text="@string/上传全景照"
-                android:textColor="@color/color_ff04a091"
+                android:textColor="@color/mainColor"
                 android:textSize="@dimen/sp_16" />
         </com.aries.ui.view.radius.RadiusFrameLayout>
 

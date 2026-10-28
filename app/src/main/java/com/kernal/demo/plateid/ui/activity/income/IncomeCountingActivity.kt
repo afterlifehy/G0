@@ -44,7 +44,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
     var loginName = ""
     var searchRange = "0"
     var promptDialog: PromptDialog? = null
-    var colors = intArrayOf(com.kernal.demo.base.R.color.color_ff04a091, com.kernal.demo.base.R.color.color_ff04a091)
+    var colors = intArrayOf(com.kernal.demo.base.R.color.mainColor, com.kernal.demo.base.R.color.mainColor)
     var sizes = intArrayOf(27, 19)
     var styles = arrayOf(TextStyle.BOLD, TextStyle.NORMAL)
     var colors2 = intArrayOf(com.kernal.demo.base.R.color.color_ff282828, com.kernal.demo.base.R.color.color_ff282828)
@@ -137,7 +137,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                                         runOnUiThread {
                                             ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                                         }
-                                        BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
+                                        BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean),1)
                                     }
                                 }.start()
                             }
@@ -153,7 +153,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                                 runOnUiThread {
                                     ToastUtil.showBottomToast(i18n(com.kernal.demo.base.R.string.开始打印))
                                 }
-                                BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
+                                BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean),1)
                             }
                         }.start()
                     }

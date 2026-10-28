@@ -275,7 +275,7 @@
                 android:layout_weight="1"
                 app:rv_backgroundColor="@color/color_ffeefaf9"
                 app:rv_radius="@dimen/dp_7"
-                app:rv_strokeColor="@color/color_ff04a091"
+                app:rv_strokeColor="@color/mainColor"
                 app:rv_strokeWidth="@dimen/dp_1">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -286,7 +286,7 @@
                     android:drawablePadding="@dimen/dp_10"
                     android:gravity="center"
                     android:text="@string/告知书"
-                    android:textColor="@color/color_ff04a091"
+                    android:textColor="@color/mainColor"
                     android:textSize="@dimen/sp_19" />
             </com.aries.ui.view.radius.RadiusFrameLayout>
 
@@ -298,7 +298,7 @@
                 android:layout_weight="1"
                 app:rv_backgroundColor="@color/color_ffeefaf9"
                 app:rv_radius="@dimen/dp_7"
-                app:rv_strokeColor="@color/color_ff04a091"
+                app:rv_strokeColor="@color/mainColor"
                 app:rv_strokeWidth="@dimen/dp_1">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -309,7 +309,7 @@
                     android:drawablePadding="@dimen/dp_10"
                     android:gravity="center"
                     android:text="@string/上报"
-                    android:textColor="@color/color_ff04a091"
+                    android:textColor="@color/mainColor"
                     android:textSize="@dimen/sp_19" />
             </com.aries.ui.view.radius.RadiusFrameLayout>
         </LinearLayout>
@@ -331,7 +331,7 @@
             android:layout_marginEnd="@dimen/dp_6"
             android:layout_weight="1"
             android:visibility="gone"
-            app:rv_backgroundColor="@color/color_ff04a091"
+            app:rv_backgroundColor="@color/mainColor"
             app:rv_radius="@dimen/dp_7">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -353,7 +353,7 @@
             android:layout_marginEnd="@dimen/dp_6"
             android:layout_weight="1"
             android:visibility="gone"
-            app:rv_backgroundColor="@color/color_ff04a091"
+            app:rv_backgroundColor="@color/mainColor"
             app:rv_radius="@dimen/dp_7">
 
             <androidx.appcompat.widget.AppCompatTextView

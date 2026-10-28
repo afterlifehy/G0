@@ -121,7 +121,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     binding.rtvLogin.delegate.setBackgroundColor(
                         ContextCompat.getColor(
                             BaseApplication.instance(),
-                            com.kernal.demo.base.R.color.color_ff04a091
+                            com.kernal.demo.base.R.color.mainColor
                         )
                     )
                     ClickUtils.applySingleDebouncing(binding.rtvLogin, 3000, this@LoginActivity)
@@ -153,7 +153,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     binding.rtvLogin.delegate.setBackgroundColor(
                         ContextCompat.getColor(
                             BaseApplication.instance(),
-                            com.kernal.demo.base.R.color.color_ff04a091
+                            com.kernal.demo.base.R.color.mainColor
                         )
                     )
                     ClickUtils.applySingleDebouncing(binding.rtvLogin, 3000, this@LoginActivity)
@@ -254,6 +254,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 dismissProgressDialog()
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName)
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)
                     startAct<StreetChooseActivity>(data = Bundle().apply {
                         putParcelable(ARouterMap.LOGIN_INFO, it)
                     })

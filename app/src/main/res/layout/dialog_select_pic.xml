@@ -19,7 +19,7 @@
             android:layout_height="@dimen/dp_55"
             android:gravity="center"
             android:text="@string/拍照"
-            android:textColor="@color/color_ff04a091"
+            android:textColor="@color/mainColor"
             android:textSize="@dimen/sp_19" />
 
         <View
@@ -33,7 +33,7 @@
             android:layout_height="@dimen/dp_55"
             android:gravity="center"
             android:text="@string/相册"
-            android:textColor="@color/color_ff04a091"
+            android:textColor="@color/mainColor"
             android:textSize="@dimen/sp_19"
             app:rv_backgroundColor="@color/white_bg"
             app:rv_bottomLeftRadius="@dimen/dp_15"

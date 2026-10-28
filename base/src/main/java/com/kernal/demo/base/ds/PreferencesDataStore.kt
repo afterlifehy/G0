@@ -107,6 +107,8 @@ object PreferencesKeys {
 
     val loginName by stringPreferencesKey()
 
+    val token by stringPreferencesKey()
+
     val isUpdateLocation by booleanPreferencesKey()
 
     val lat by doublePreferencesKey()

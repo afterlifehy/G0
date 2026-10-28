@@ -1,0 +1,464 @@
+package com.kernal.demo.plateid.ui.activity.order
+
+import android.Manifest
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
+import android.view.View.OnClickListener
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewbinding.ViewBinding
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.fastjson.JSONObject
+import com.kernal.demo.base.BaseApplication
+import com.kernal.demo.base.arouter.ARouterMap
+import com.kernal.demo.base.bean.OweMoneyBean
+import com.kernal.demo.base.bean.PrintInfoBean
+import com.kernal.demo.base.bean.QueryPayBean
+import com.kernal.demo.base.bean.UrgeBean
+import com.kernal.demo.base.bean.UrgeDetailBean
+import com.kernal.demo.base.bean.UrgeMonthBean
+import com.kernal.demo.base.bean.UrgeOrderBean
+import com.kernal.demo.base.ds.PreferencesDataStore
+import com.kernal.demo.base.ds.PreferencesKeys
+import com.kernal.demo.base.ext.startArouter
+import com.kernal.demo.base.util.AppUtil
+import com.kernal.demo.base.util.ToastUtil
+import com.kernal.demo.base.viewbase.VbBaseActivity
+import com.kernal.demo.common.util.BluePrint
+import com.kernal.demo.common.util.GlideUtils
+import com.kernal.demo.plateid.R
+import com.kernal.demo.plateid.adapter.UrgeMonthAdapter
+import com.kernal.demo.plateid.adapter.UrgeOrderAdapter
+import com.kernal.demo.plateid.databinding.ActivityUrgeDetailBinding
+import com.kernal.demo.plateid.dialog.PaymentQrDialog
+import com.kernal.demo.plateid.mvvm.viewmodel.UrgeDetailViewModel
+import com.tbruyelle.rxpermissions3.RxPermissions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+
+@Route(path = ARouterMap.URGE_DETAIL)
+class UrgeDetailActivity : VbBaseActivity<UrgeDetailViewModel, ActivityUrgeDetailBinding>(), OnClickListener {
+    private var urgeDetailBean: UrgeDetailBean? = null
+    private var oweMoneyBean: OweMoneyBean? = null
+    private var queryPayBean: QueryPayBean? = null
+    var urgeOrderAdapter: UrgeOrderAdapter? = null
+    var urgeMonthAdapter: UrgeMonthAdapter? = null
+    var urgeOrderList: MutableList<UrgeOrderBean> = ArrayList()
+    var urgeMonthList: MutableList<UrgeMonthBean> = ArrayList()
+    var paymentQrDialog: PaymentQrDialog? = null
+    lateinit var urgeBean: UrgeBean
+    var count = 0
+    var handler = Handler(Looper.getMainLooper())
+    var token = ""
+    var loginName = ""
+    var printType = 3
+
+    override fun initView() {
+        binding.layoutToolbar.tvTitle.text = "催缴告知书详情"
+        GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.kernal.demo.common.R.mipmap.ic_back_white)
+        binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.kernal.demo.base.R.color.white))
+
+        urgeBean = intent.getParcelableExtra(ARouterMap.URGE)!!
+        binding.tvPlate.text = urgeBean.plateId
+
+        binding.rvOrders.isNestedScrollingEnabled = true
+        binding.rvOrders.setHasFixedSize(true)
+        binding.rvOrders.layoutManager = LinearLayoutManager(this)
+        urgeOrderAdapter = UrgeOrderAdapter(urgeOrderList) { order: UrgeOrderBean ->
+        }
+        binding.rvOrders.adapter = urgeOrderAdapter
+
+        binding.rvMonth.isNestedScrollingEnabled = true
+        binding.rvMonth.setHasFixedSize(true)
+        binding.rvMonth.layoutManager = LinearLayoutManager(this)
+        urgeMonthAdapter = UrgeMonthAdapter(urgeMonthList) {
+
+        }
+        binding.rvMonth.adapter = urgeMonthAdapter
+    }
+
+    override fun initListener() {
+        binding.layoutToolbar.flBack.setOnClickListener(this)
+        binding.rtvUrge.setOnClickListener(this)
+        binding.rtvPay.setOnClickListener(this)
+        binding.rtvPrint.setOnClickListener(this)
+    }
+
+    override fun initData() {
+        runBlocking {
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            urgepaydetail()
+        }
+    }
+
+    fun urgepaydetail() {
+        showProgressDialog(60000)
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["urgePayId"] = urgeBean.urgePayId
+        param["plateId"] = urgeBean.plateId
+        param["plateColor"] = urgeBean.plateColor
+        mViewModel.urgepaydetail(param)
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.fl_back -> {
+                finish()
+            }
+
+            R.id.rtv_urge -> {
+                startArouter(ARouterMap.URGE_RECORD_UPLOAD, data = Bundle().apply {
+                    putParcelable(ARouterMap.URGE, urgeBean)
+                })
+            }
+
+            R.id.rtv_pay -> {
+                showProgressDialog(60000)
+                val param = HashMap<String, Any>()
+                param["token"] = token
+                param["orderId"] = urgeBean.urgePayId
+                param["orderType"] = "7"
+                param["channel"] = "pos"
+                mViewModel.payowemoney(param)
+            }
+
+            R.id.rtv_print -> {
+                showProgressDialog(60000)
+                urgepayQrcode()
+                urgeBeanNotice()
+                urgeDetailNotice()
+            }
+        }
+    }
+
+    fun urgepayQrcode() {
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["urgePayId"] = urgeBean.urgePayId
+        param["plateId"] = urgeBean.plateId
+        param["plateColor"] = urgeBean.plateColor
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.urgepayQrcode(param)
+    }
+
+    override fun startObserve() {
+        super.startObserve()
+        mViewModel.apply {
+            urgepaydetailLiveData.observe(this@UrgeDetailActivity) {
+                urgeDetailBean = it
+                dismissProgressDialog()
+                urgeOrderList.clear()
+                urgeOrderList.addAll(it.oweList)
+                urgeOrderAdapter?.setList(urgeOrderList)
+
+                urgeMonthList.clear()
+                urgeMonthList.addAll(it.monthList)
+                urgeMonthAdapter?.setList(urgeMonthList)
+            }
+            urgepayQrcodeLiveData.observe(this@UrgeDetailActivity) {
+                dismissProgressDialog()
+                urgePrintNotice()
+                urgeDetailBean?.qrcode = it.qrcode
+                urgeDetailBean?.manageName = urgeBean.manageName
+                urgeDetailBean?.companyPhone = urgeBean.companyPhone
+                printType = 3
+                performPrintTasks(urgeDetailBean!!) {
+                    urgepayprint()
+                    ToastUtil.showBottomToast("打印完成")
+                }
+            }
+            payowemoneyLiveData.observe(this@UrgeDetailActivity) {
+                oweMoneyBean = it
+                val param = HashMap<String, Any>()
+                param["token"] = token
+                param["urgePayId"] = urgeBean.urgePayId
+                param["orderId"] = it.orderId
+                param["payMoney"] = it.amount
+                param["dataTime"] = System.currentTimeMillis()
+                mViewModel.consumeUrgePay(param)
+            }
+            consumeUrgePayLiveData.observe(this@UrgeDetailActivity) {
+                urgePayNotice(it.qrCode, it.userId ?: "")
+                paymentQrDialog =
+                    PaymentQrDialog(
+                        it.qrCode,
+                        "",
+                        AppUtil.keepNDecimals((oweMoneyBean!!.amount / 100).toString(), 2),
+                    )
+                paymentQrDialog?.show()
+                paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
+                count = 0
+                handler.postDelayed(runnable, 2000)
+            }
+            querypayLiveData.observe(this@UrgeDetailActivity) {
+                queryPayBean = it
+                if (it != null && it.payMoney != null) {
+                    urgePayResultNotice()
+                    handler.removeCallbacks(runnable)
+                    ToastUtil.showBottomToast("支付成功")
+                }
+            }
+            urgePayNoticeLiveData.observe(this@UrgeDetailActivity){
+                if (!isDestroyed && !isFinishing) {
+                    if (paymentQrDialog != null) {
+                        paymentQrDialog?.dismiss()
+                    }
+                }
+                urgepaydetail()
+            }
+            urgepayQrcodeLiveData.observe(this@UrgeDetailActivity) {
+
+            }
+            urgepayprintLiveData.observe(this@UrgeDetailActivity) {
+
+            }
+            errMsg.observe(this@UrgeDetailActivity) {
+                dismissProgressDialog()
+                ToastUtil.showBottomToast(it.msg)
+            }
+            mException.observe(this@UrgeDetailActivity) {
+                dismissProgressDialog()
+            }
+        }
+    }
+
+    fun querypay() {
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["orderId"] = oweMoneyBean!!.orderId
+        mViewModel.querypay(param)
+    }
+
+    fun urgeBeanNotice() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["inputter"] = loginName
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        jsonObject["subject"] = urgeBean.subject
+        jsonObject["oweCount"] = urgeBean.oweCount
+        jsonObject["oweAmount"] = urgeBean.oweAmount
+        jsonObject["oweBeginTime"] = urgeBean.oweBeginTime
+        jsonObject["oweEndTime"] = urgeBean.oweEndTime
+        jsonObject["urgePayType"] = urgeBean.urgePayType
+        jsonObject["plateId"] = urgeBean.plateId
+        jsonObject["plateColor"] = urgeBean.plateColor
+        jsonObject["urgeCount"] = urgeBean.urgeCount
+        jsonObject["districtId"] = urgeBean.districtId
+        jsonObject["urgePayFile"] = urgeBean.urgePayFile
+        jsonObject["overdueTime"] = urgeBean.overdueTime
+        jsonObject["dataTime"] = urgeBean.dataTime
+        param["attr"] = jsonObject
+        mViewModel.urgeBeanNotice(param)
+    }
+
+    fun urgeDetailNotice() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["inputter"] = loginName
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        jsonObject["plateId"] = urgeDetailBean?.plateId
+        jsonObject["plateColor"] = urgeDetailBean?.plateColor
+        jsonObject["oweList"] = urgeDetailBean?.oweList
+        jsonObject["monthList"] = urgeDetailBean?.monthList
+        param["attr"] = jsonObject
+        mViewModel.urgeDetailNotice(param)
+    }
+
+    fun urgePayNotice(qrCode: String, userId: String) {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["inputter"] = loginName
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        jsonObject["orderId"] = oweMoneyBean?.orderId
+        jsonObject["payMoney"] = oweMoneyBean?.amount
+        jsonObject["dataTime"] = System.currentTimeMillis()
+        jsonObject["qrCode"] = qrCode
+        jsonObject["payUrl"] = ""
+        jsonObject["userId"] = userId
+        param["attr"] = jsonObject
+        mViewModel.urgePayNotice(param)
+    }
+
+    fun urgePayResultNotice() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["inputter"] = loginName
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        jsonObject["orderId"] = oweMoneyBean?.orderId ?: "123"
+        jsonObject["payStatus"] = queryPayBean?.payStatus ?: "01"
+        jsonObject["payTime"] = queryPayBean?.payTime ?: "1792400040000"
+        param["attr"] = jsonObject
+        mViewModel.urgePayResultNotice(param)
+    }
+
+    fun urgePrintNotice() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["inputter"] = loginName
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        param["attr"] = jsonObject
+        mViewModel.urgePrintNotice(param)
+    }
+
+    fun printNotice(
+        urgeDetailBean: UrgeDetailBean,
+        type: Int,
+        owePageIndex: Int = 0, // 明细分页索引，type=4时生效
+        onComplete: () -> Unit
+    ) {
+        val printList = BluePrint.instance?.blueToothDevice ?: run {
+            return
+        }
+        urgeDetailBean.plateId = urgeBean.plateId
+        urgeDetailBean.urgePayId = urgeBean.urgePayId
+        if (printList.isEmpty()) {
+            return
+        }
+
+        val device = printList[0]
+        val flag = when (type) {
+            3 -> 0
+            4, 5 -> 1
+            else -> 0
+        }
+        // 启动协程处理重试+打印
+        CoroutineScope(Dispatchers.IO).launch {
+            var connectSuccess = false
+            val maxRetry = 3
+            for (retryCount in 0 until maxRetry) {
+                try {
+                    val connectResult = BluePrint.instance?.connet(device.address, flag)
+                    if (connectResult == 0) {
+                        // 连接成功，执行打印
+                        BluePrint.instance?.zkblueprint(
+                            JSONObject.toJSONString(urgeDetailBean),
+                            type,
+                            owePageIndex
+                        )
+                        connectSuccess = true
+                        break
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                if (retryCount != maxRetry - 1) {
+                    delay(2000)
+                }
+            }
+            // 连接成功才需要等待对应时长，失败直接回调
+            if (connectSuccess) {
+                val waitTime = when (type) {
+                    3 -> 6000L
+                    4, 5 -> 5000L
+                    else -> 0L
+                }
+                delay(waitTime)
+            }
+            // 最终回调，切回主线程
+            withContext(Dispatchers.Main) {
+                onComplete()
+            }
+        }
+    }
+
+    fun performPrintTasks(urgeDetailBean: UrgeDetailBean, onComplete: () -> Unit) {
+        // 1. 拆分欠费明细，每页最多10条
+        val oweListPages = urgeDetailBean.oweList.splitPage(10)
+        // 任务队列：
+        // 0 -> type3 头部
+        // 1,2,... -> type4 明细分页
+        // 最后一个 -> type5二维码
+        val taskQueue = mutableListOf<Int>()
+        taskQueue.add(3) // 头部告知书固定一页
+        repeat(oweListPages.size) {
+            taskQueue.add(4)
+        }
+        taskQueue.add(5) // 二维码页
+
+        var currentTaskIndex = 0
+        runOnUiThread {
+            ToastUtil.showBottomToast("开始打印")
+        }
+        fun printNext() {
+            if (currentTaskIndex >= taskQueue.size) {
+                // 全部打印完成
+                Handler(Looper.getMainLooper()).postDelayed({ onComplete() }, 1000)
+                return
+            }
+            val type = taskQueue[currentTaskIndex]
+            var owePageIndex = 0
+            if (type == 4) {
+                // 统计前面有多少个type4，作为分片索引
+                owePageIndex = taskQueue.take(currentTaskIndex).count { it == 4 }
+            }
+            printNotice(urgeDetailBean, type, owePageIndex) {
+                currentTaskIndex++
+                printNext()
+            }
+        }
+        printNext()
+    }
+
+
+    /**
+     * 将列表分片，每一页最多[pageSize]条
+     */
+    fun <T> List<T>.splitPage(pageSize: Int): List<List<T>> {
+        val result = mutableListOf<List<T>>()
+        var start = 0
+        while (start < this.size) {
+            val end = minOf(start + pageSize, this.size)
+            result.add(this.subList(start, end))
+            start = end
+        }
+        return result
+    }
+
+    fun urgepayprint() {
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["urgePayId"] = urgeBean.urgePayId
+        param["plateId"] = urgeBean.plateId
+        param["plateColor"] = urgeBean.plateColor
+        mViewModel.urgepayprint(param)
+    }
+
+    val runnable = object : Runnable {
+        override fun run() {
+            if (count < 60) {
+                if (!isFinishing && !isDestroyed) {
+                    querypay()
+                }
+                count++
+                handler.postDelayed(this, 3000)
+            } else {
+                paymentQrDialog?.dismiss()
+            }
+        }
+    }
+
+    override fun getVbBindingView(): ViewBinding {
+        return ActivityUrgeDetailBinding.inflate(layoutInflater)
+    }
+
+    override fun providerVMClass(): Class<UrgeDetailViewModel>? {
+        return UrgeDetailViewModel::class.java
+    }
+
+    override fun marginStatusBarView(): View? {
+        return binding.layoutToolbar.ablToolbar
+    }
+
+    override val isFullScreen: Boolean
+        get() = true
+
+}

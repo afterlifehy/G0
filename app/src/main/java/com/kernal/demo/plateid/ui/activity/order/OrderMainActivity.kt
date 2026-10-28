@@ -36,6 +36,7 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
         binding.rflTransactionQuery.setOnClickListener(this)
         binding.rflDebtCollect.setOnClickListener(this)
         binding.rflOrderInquiry.setOnClickListener(this)
+        binding.rflUrgeMangement.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -57,6 +58,10 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
 
             R.id.rfl_orderInquiry -> {
                 startArouter(ARouterMap.ORDER_INQUIRY)
+            }
+
+            R.id.rfl_urgeMangement -> {
+                startArouter(ARouterMap.URGE_LIST)
             }
         }
     }

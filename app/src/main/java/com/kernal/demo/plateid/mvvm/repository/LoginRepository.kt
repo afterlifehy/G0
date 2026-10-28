@@ -7,9 +7,7 @@ import com.kernal.demo.base.bean.QueryPwStatusBean
 import com.kernal.demo.base.bean.UpdateBean
 import okhttp3.MultipartBody
 import retrofit2.http.Body
-import retrofit2.http.POST
 import retrofit2.http.Part
-import java.io.File
 
 class LoginRepository : BaseRepository() {
 
@@ -17,21 +15,21 @@ class LoginRepository : BaseRepository() {
      * 登录
      */
     suspend fun login(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean> {
-        return mServer.login(param)
+        return mRTServer.login(param)
     }
 
     /**
      * 版本更新查询
      */
     suspend fun checkUpdate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<UpdateBean> {
-        return mServer.checkUpdate(param)
+        return mRTServer.checkUpdate(param)
     }
 
     /**
      * 考勤排班
      */
     suspend fun checkOnWork(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.checkOnWork(param)
+        return mRTServer.checkOnWork(param)
     }
 
     /**
@@ -45,13 +43,13 @@ class LoginRepository : BaseRepository() {
      * 修改密码
      */
     suspend fun editPw(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.editPw(param)
+        return mRTServer.editPw(param)
     }
 
     /**
      * 查询是为初始密码
      */
     suspend fun queryPwStatus(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QueryPwStatusBean>{
-        return mServer.queryPwStatus(param)
+        return mRTServer.queryPwStatus(param)
     }
 }

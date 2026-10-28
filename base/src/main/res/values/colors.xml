@@ -49,7 +49,7 @@
     <color name="color_ff666666">#ff666666</color>
     <color name="color_ff1a1a1a">#ff1a1a1a</color>
     <color name="color_ff99a7a6">#ff99a7a6</color>
-    <color name="color_ff04a091">#ff04a091</color>
+    <color name="mainColor">#ff04a091</color>
     <color name="color_9904a091">#9904a091</color>
     <color name="color_ffeefffd">#ffeefffd</color>
     <color name="color_ffcccccc">#ffcccccc</color>

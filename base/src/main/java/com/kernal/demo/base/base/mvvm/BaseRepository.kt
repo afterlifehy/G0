@@ -7,6 +7,13 @@ import com.kernal.demo.base.request.Api
 
 open class BaseRepository {
 
+    val mRTServer by lazy {
+        RetrofitUtils.getInstance().createCoroutineRetrofit(
+            Api::class.java,
+            UrlManager.getRTServerUrl()
+        )
+    }
+
     val mServer by lazy {
         RetrofitUtils.getInstance().createCoroutineRetrofit(
             Api::class.java,
@@ -18,6 +25,13 @@ open class BaseRepository {
         RetrofitUtils.getInstance().createCoroutineRetrofit(
             Api::class.java,
             UrlManager.getFileServerUrl()
+        )
+    }
+
+    val mImageUploadServer by lazy {
+        RetrofitUtils.getInstance().createCoroutineRetrofit(
+            Api::class.java,
+            UrlManager.getImageUploadServerUrl()
         )
     }
 
