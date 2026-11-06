@@ -281,5 +281,10 @@
             android:name=".ui.activity.order.UrgeRecordUploadActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.FreeParkDetailActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

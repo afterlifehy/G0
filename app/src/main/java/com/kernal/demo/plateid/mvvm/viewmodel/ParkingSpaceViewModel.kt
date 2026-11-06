@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.kernal.demo.base.base.mvvm.BaseViewModel
 import com.kernal.demo.base.base.mvvm.ErrorMessage
 import com.kernal.demo.base.bean.DebtUploadBean
+import com.kernal.demo.base.bean.FreeParkBean
 import com.kernal.demo.base.bean.ParkingSpaceBean
 import com.kernal.demo.base.bean.PayQRBean
 import com.kernal.demo.base.bean.TicketPrintResultBean
@@ -24,6 +25,7 @@ class ParkingSpaceViewModel : BaseViewModel() {
     val debtUploadLiveData = MutableLiveData<DebtUploadBean>()
     val onsitePayQRLiveData = MutableLiveData<PayQRBean>()
     val payResultInquiryLiveData = MutableLiveData<TicketPrintBean>()
+    val freeParkLiveData = MutableLiveData<FreeParkBean>()
 
     fun parkingSpace(param: Map<String, Any?>) {
         launch {
@@ -112,6 +114,19 @@ class ParkingSpaceViewModel : BaseViewModel() {
                 payResultInquiryLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun freePark(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.freePark(param)
+            }
+            executeResponse(response, {
+                freeParkLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "freePark"))
             })
         }
     }

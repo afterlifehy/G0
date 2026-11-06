@@ -75,8 +75,14 @@ import java.util.Locale
 @Route(path = ARouterMap.PARKING_SPACE)
 class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParkingSpaceBinding>(), OnClickListener {
     val sizes = intArrayOf(19, 19)
+    val sizes2 = intArrayOf(19, 19, 19)
     val colors = intArrayOf(com.kernal.demo.base.R.color.color_ff666666, com.kernal.demo.base.R.color.color_ff1a1a1a)
     val colors2 = intArrayOf(com.kernal.demo.base.R.color.color_ff666666, com.kernal.demo.base.R.color.color_fff70f0f)
+    val colors3 = intArrayOf(
+        com.kernal.demo.base.R.color.color_ff666666,
+        com.kernal.demo.base.R.color.color_ff1a1a1a,
+        com.kernal.demo.base.R.color.mainColor
+    )
     val styles = arrayOf(TextStyle.NORMAL, TextStyle.BOLD)
 
     var orderNo = ""
@@ -107,6 +113,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     var isOnsitePay = false
     var oweCount = 0
+    var token = ""
 
     init {
         plateLogoColorMap[Constant.BLACK] = com.kernal.demo.base.R.color.black
@@ -216,11 +223,13 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         binding.rflOnSitePay.setOnClickListener(this)
         binding.rflPrepaid.setOnClickListener(this)
         ClickUtils.applySingleDebouncing(binding.rflFinish, 1000, this)
+        binding.tvFreePark.setOnClickListener(this)
     }
 
     override fun initData() {
         runBlocking {
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
         }
         currentStreet = RealmUtil.instance?.findCurrentStreet()
 
@@ -474,6 +483,19 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         mViewModel.inquiryTransactionByOrderNo(param)
     }
 
+    fun freePark() {
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["businessId"] = parkingSpaceBean?.orderNo.toString()
+        param["plateColor"] = parkingSpaceBean?.carColor.toString()
+        param["plateId"] = carLicense
+//        param["plateId"] = "沪A1G296"
+//        param["businessId"] = "202610300PD013028587828"
+//        param["plateColor"] = "5"
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.freePark(param)
+    }
+
     @SuppressLint("CheckResult")
     override fun startObserve() {
         super.startObserve()
@@ -481,6 +503,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             parkingSpaceLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
                 parkingSpaceBean = it
+                freePark()
                 binding.layoutToolbar.tvTitle.text = parkingSpaceBean?.parkingNo
                 binding.tvPlate.text = parkingSpaceBean?.carLicense
 
@@ -531,6 +554,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     mViewModel.onsitePayQR(param)
                     isOnsitePay = false
                 }
+            }
+            freeParkLiveData.observe(this@ParkingSpaceActivity) {
+                val strings = arrayOf("剩余免费短停次数：", "${it.remain}次", "  查看记录")
+                binding.tvFreePark.text = AppUtil.getSpan(strings, sizes2, colors3)
             }
             endOrderLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
@@ -631,7 +658,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 val device = printList[0]
                 var connectResult = BluePrint.instance?.connet(device.address)
                 if (connectResult == 0) {
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo),2)
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo), 2)
                 }
             }.start()
         }

@@ -302,6 +302,14 @@ interface Api {
     ): HttpWrapper2<FreeParkBean>
 
     /**
+     * 免费停车记录查询
+     */
+    @POST("freepark/detail")
+    suspend fun freeParkDetail(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<List<FreeParkDetailBean>>
+
+    /**
      * 图片上传我们平台
      */
     @POST("uploadFileForApp")

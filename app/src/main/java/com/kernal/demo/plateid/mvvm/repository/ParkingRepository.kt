@@ -1,14 +1,18 @@
 package com.kernal.demo.plateid.mvvm.repository
 
+import com.blankj.utilcode.util.EncryptUtils
 import com.kernal.demo.base.base.mvvm.BaseRepository
 import com.kernal.demo.base.bean.DebtUploadBean
+import com.kernal.demo.base.bean.FreeParkBean
 import com.kernal.demo.base.bean.HttpWrapper
+import com.kernal.demo.base.bean.HttpWrapper2
 import com.kernal.demo.base.bean.ParkingLotResultBean
 import com.kernal.demo.base.bean.ParkingSpaceBean
 import com.kernal.demo.base.bean.PayQRBean
 import com.kernal.demo.base.bean.PlaceOrderResultBean
 import com.kernal.demo.base.bean.TicketPrintBean
 import com.kernal.demo.base.bean.TicketPrintResultBean
+import com.kernal.demo.base.util.Constant
 
 class ParkingRepository : BaseRepository() {
 
@@ -86,5 +90,21 @@ class ParkingRepository : BaseRepository() {
      */
     suspend fun payResultInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TicketPrintBean> {
         return mRTServer.payResultInquiry(param)
+    }
+
+    /**
+     * 免费停车额度查询
+     */
+    suspend fun freePark(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<FreeParkBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.freePark(param, options)
     }
 }

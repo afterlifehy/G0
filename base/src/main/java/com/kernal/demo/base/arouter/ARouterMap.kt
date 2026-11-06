@@ -89,6 +89,11 @@ object ARouterMap {
 
     const val URGE_RECORD_UPLOAD = "/ipms_app/urgeRecordUpload"
 
+    const val FREE_PARK_DETAIL = "/ipms_app/freeParkDetail"
+    const val FREE_PARK_CARLICENSE = "carLicense"
+    const val FREE_PARK_BUSINESS_ID = "businessId"
+    const val FREE_PARK_CAR_COLOR = "carColor"
+
     class common {
         companion object {
 

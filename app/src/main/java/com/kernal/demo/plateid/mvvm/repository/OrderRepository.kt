@@ -6,6 +6,7 @@ import com.kernal.demo.base.bean.DebtCollectionResultBean
 import com.kernal.demo.base.bean.DebtUploadBean
 import com.kernal.demo.base.bean.EndOrderInfoBean
 import com.kernal.demo.base.bean.FreeParkBean
+import com.kernal.demo.base.bean.FreeParkDetailBean
 import com.kernal.demo.base.bean.HttpWrapper
 import com.kernal.demo.base.bean.HttpWrapper2
 import com.kernal.demo.base.bean.OrderResultBean
@@ -298,5 +299,21 @@ class OrderRepository : BaseRepository() {
             "appId" to Constant.APP_ID
         )
         return mServer.freePark(param, options)
+    }
+
+    /**
+     * 免费停车记录
+     */
+    suspend fun freeParkDetail(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<List<FreeParkDetailBean>> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.freeParkDetail(param, options)
     }
 }
