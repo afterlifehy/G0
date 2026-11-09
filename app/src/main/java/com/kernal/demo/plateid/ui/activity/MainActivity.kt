@@ -48,6 +48,7 @@ import com.kernal.demo.plateid.ui.activity.login.LoginActivity
 import com.kernal.demo.plateid.ui.activity.login.StreetChooseActivity
 import com.kernal.demo.plateid.ui.activity.mine.LogoutActivity
 import com.kernal.demo.plateid.ui.activity.order.OrderMainActivity
+import com.kernal.demo.plateid.ui.activity.order.UrgeListActivity
 import com.kernal.demo.plateid.ui.activity.parking.ParkingLotActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -180,7 +181,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             binding.flOrder,
             binding.flBerthAbnormal,
             binding.flLogout,
-            binding.ivG2
+            binding.ivG2,
+            binding.flUrge
         )
         ClickUtils.applySingleDebouncing(views, 1000, this)
     }
@@ -336,6 +338,10 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
             R.id.fl_berthAbnormal -> {
                 startAct<AbnormalReportActivity>()
+            }
+
+            R.id.fl_urge -> {
+                startAct<UrgeListActivity>()
             }
 
             R.id.fl_logout -> {
