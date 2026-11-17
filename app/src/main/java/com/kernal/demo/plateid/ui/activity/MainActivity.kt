@@ -341,7 +341,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.fl_urge -> {
-                startAct<UrgeListActivity>()
+                ToastUtil.showBottomToast("功能开发中，敬请期待")
+//                startAct<UrgeListActivity>()
             }
 
             R.id.fl_logout -> {
