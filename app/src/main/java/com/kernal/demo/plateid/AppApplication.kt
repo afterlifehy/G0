@@ -44,7 +44,7 @@ class AppApplication : BaseApplication() {
 
     override fun onAddOkHttpInterceptor(): List<Interceptor> {
         val list = ArrayList<Interceptor>()
-//        list.add(HeaderInterceptor())
+        list.add(HeaderInterceptor())
 //        list.add(LoginExpiredInterceptor())
 //        list.add(HostInterceptor())
 //        list.add(TokenInterceptor())

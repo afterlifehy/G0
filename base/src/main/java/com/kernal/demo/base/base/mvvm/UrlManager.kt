@@ -14,11 +14,21 @@ object UrlManager {
     const val UPLOAD_IMAGE_DEV_HOST = "http://114.94.20.110/ipms/rest/ZJPM0401/"
     const val UPLOAD_IMAGE_FORMAL_HOST = "http://ipms.rentongtek.com/ipms/rest/ZJPM0401/"
 
+    const val DEV_CA = "http://103.36.136.173:1880/possdk/v1"
+    const val FORMAL_CA = "https://parkapp.jtcx.sh.cn/ca/possdk/v1"
+
     fun getRTServerUrl(): String {
         if (BuildConfig.is_dev) {
             return RT_DEV_HOST
         } else {
             return RT_FORMAL_HOST
+        }
+    }
+    fun getCAUrl(): String {
+        if (BuildConfig.is_dev) {
+            return DEV_CA
+        } else {
+            return FORMAL_CA
         }
     }
 

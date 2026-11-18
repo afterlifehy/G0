@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.FileUtils
@@ -334,7 +335,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (timeout > 1000 * 60 * 5) {
                     binding.rflOnSitePay.show()
                     binding.rflPrepaid.gone()
-                    val strings3 = arrayOf(i18N(com.kernal.demo.base.R.string.超时时长), AppUtil.millisToDate(timeout))
+                    val strings3 = arrayOf(i18N(com.kernal.demo.base.R.string.停车时长), AppUtil.millisToDate(timeout))
                     binding.tvTimeoutDuration.text = AppUtil.getSpan(strings3, sizes, colors)
                 } else {
                     startArouter(ARouterMap.PREPAID, data = Bundle().apply {
@@ -386,6 +387,12 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                         }
 
                     }).build(this@ParkingSpaceActivity).showDailog()
+            }
+            R.id.tv_freePark->{
+                ARouter.getInstance().build(ARouterMap.FREE_PARK_DETAIL).withString(ARouterMap.FREE_PARK_CARLICENSE, carLicense)
+                    .withString(ARouterMap.FREE_PARK_BUSINESS_ID, parkingSpaceBean?.orderNo.toString())
+                    .withString(ARouterMap.FREE_PARK_CAR_COLOR, parkingSpaceBean?.carColor.toString())
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
     }
@@ -516,7 +523,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 )
                 binding.tvPrepayAmount.text = AppUtil.getSpan(strings2, sizes, colors)
 
-                val strings3 = arrayOf(i18N(com.kernal.demo.base.R.string.超时时长), parkingSpaceBean?.timeOut.toString())
+                val strings3 = arrayOf(i18N(com.kernal.demo.base.R.string.停车时长), parkingSpaceBean?.timeOut.toString())
                 binding.tvTimeoutDuration.text = AppUtil.getSpan(strings3, sizes, colors)
 
                 val strings4 = arrayOf(

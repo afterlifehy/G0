@@ -26,6 +26,7 @@ import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.ext.i18N
 import com.kernal.demo.base.ext.startAct
 import com.kernal.demo.base.ext.startArouter
+import com.kernal.demo.base.util.Constant
 import com.kernal.demo.base.util.ToastUtil
 import com.kernal.demo.base.viewbase.VbBaseActivity
 import com.kernal.demo.common.event.BaiduLocationLoginEvent
@@ -252,6 +253,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         mViewModel.apply {
             loginLiveData.observe(this@LoginActivity) {
                 dismissProgressDialog()
+                Constant.APP_ID = it.appId
+                Constant.PASSWORD = it.password
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName)
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)

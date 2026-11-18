@@ -12,6 +12,8 @@ import com.kernal.demo.base.ds.PreferencesKeys
 import com.kernal.demo.base.util.Constant
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okio.Buffer
 import java.nio.charset.Charset
@@ -27,6 +29,9 @@ class HeaderInterceptor : Interceptor {
         val body = chain.request().body
         val buffer = Buffer()
         body?.writeTo(buffer)
+        val parameterStr = buffer.readUtf8()
+        val orgSign = Constant.PASSWORD + "|" + parameterStr
+        val sign = EncryptUtils.encryptMD5ToString(orgSign).lowercase()
         var charset = Charset.forName("UTF-8")
         val contentType = body?.contentType()
         if (contentType == null) {
@@ -56,7 +61,7 @@ class HeaderInterceptor : Interceptor {
                 .addHeader("token", token)
                 .addHeader("version", AppUtils.getAppVersionName())
                 .addHeader("versionCode", AppUtils.getAppVersionCode().toString())
-                .addHeader("sign", EncryptUtils.encryptMD5ToString(sortParam + timeStamp + Constant.secret))
+                .addHeader("sign", sign)
         }
         val request = addHeader.build()
         return chain.proceed(request)
